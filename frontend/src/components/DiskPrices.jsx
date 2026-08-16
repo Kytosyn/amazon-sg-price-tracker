@@ -58,12 +58,15 @@ function DiskPriceCard({ product }) {
 export default function DiskPrices() {
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)
-  const [filter, setFilter] = useState('all') // all, ssd, hdd
-  const [platform, setPlatform] = useState('all') // all, Shopee, Lazada, Amazon.sg
+  const [stats, setStats] = useState({ total: 0, ssd: 0, hdd: 0 })
+  const [filter, setFilter] = useState('all')
+  const [platform, setPlatform] = useState('all')
   const [sortBy, setSortBy] = useState('cost_per_tb')
+  const [scraping, setScraping] = useState(false)
 
   useEffect(() => {
     fetchProducts()
+    fetchStats()
   }, [filter, platform, sortBy])
 
   const fetchProducts = async () => {
@@ -83,18 +86,69 @@ export default function DiskPrices() {
     setLoading(false)
   }
 
+  const fetchStats = async () => {
+    try {
+      const res = await fetch(`${API_URL}/api/diskprices/stats`)
+      if (res.ok) setStats(await res.json())
+    } catch (err) {
+      console.error('Failed to fetch stats:', err)
+    }
+  }
+
+  const handleScrape = async () => {
+    setScraping(true)
+    try {
+      await fetch(`${API_URL}/api/diskprices/scrape`, { method: 'POST' })
+      setTimeout(() => {
+        fetchProducts()
+        fetchStats()
+        setScraping(false)
+      }, 5000)
+    } catch (err) {
+      console.error('Scrape failed:', err)
+      setScraping(false)
+    }
+  }
+
   return (
     <div className="min-h-screen bg-[#131921] text-white">
       <header className="bg-[#232f3e] border-b border-gray-700">
         <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex items-center gap-4">
-            <span className="text-2xl">💾</span>
-            <span className="text-xl font-bold">DiskPrices Singapore</span>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <span className="text-2xl">💾</span>
+              <span className="text-xl font-bold">DiskPrices Singapore</span>
+            </div>
+            <button
+              onClick={handleScrape}
+              disabled={scraping}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                scraping ? 'bg-gray-600 cursor-not-allowed' : 'bg-[#ff9900] text-black hover:bg-[#ffb84d]'
+              }`}
+            >
+              {scraping ? 'Scraping...' : 'Refresh Prices'}
+            </button>
           </div>
         </div>
       </header>
 
       <main className="max-w-7xl mx-auto px-4 py-6">
+        {/* Stats */}
+        <div className="grid grid-cols-3 gap-4 mb-6">
+          <div className="bg-white/5 rounded-xl p-4 text-center border border-white/10">
+            <div className="text-2xl font-bold text-[#4ade80]">{stats.total}</div>
+            <div className="text-xs text-slate-400 mt-1">Total Products</div>
+          </div>
+          <div className="bg-white/5 rounded-xl p-4 text-center border border-white/10">
+            <div className="text-2xl font-bold text-[#4ade80]">{stats.ssd}</div>
+            <div className="text-xs text-slate-400 mt-1">SSDs</div>
+          </div>
+          <div className="bg-white/5 rounded-xl p-4 text-center border border-white/10">
+            <div className="text-2xl font-bold text-[#4ade80]">{stats.hdd}</div>
+            <div className="text-xs text-slate-400 mt-1">HDDs</div>
+          </div>
+        </div>
+
         {/* Filters */}
         <div className="flex flex-wrap gap-3 mb-6">
           <div className="flex gap-2">
@@ -150,7 +204,7 @@ export default function DiskPrices() {
 
         {!loading && products.length === 0 && (
           <div className="text-center py-20 text-slate-400">
-            No products found. Run the scanner first.
+            No products found. Click "Refresh Prices" to start scraping.
           </div>
         )}
       </main>

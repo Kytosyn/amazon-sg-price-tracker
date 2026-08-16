@@ -1,6 +1,6 @@
 """
-Amazon.sg Price Tracker - Backend
-FastAPI + Playwright + SQLite
+DiskPrices Singapore - Multi-Platform HDD/SSD Price Comparison API
+FastAPI + SQLite
 """
 
 from fastapi import FastAPI, HTTPException, BackgroundTasks
@@ -11,72 +11,358 @@ import sqlite3
 import asyncio
 import random
 import time
-from datetime import datetime, timedelta
+from datetime import datetime
 from playwright.async_api import async_playwright, Page, Browser
-from contextlib import asynccontextmanager
+import re
+import requests
+from urllib.parse import quote_plus
 
-DATABASE_URL = "./prices.db"
+DATABASE_URL = "./diskprices.db"
 AMAZON_SG_BASE = "https://www.amazon.sg"
 
-# Database setup
+# ─── Database Setup ────────────────────────────────────────────
+
 def init_db():
     conn = sqlite3.connect(DATABASE_URL)
     c = conn.cursor()
     c.execute('''
         CREATE TABLE IF NOT EXISTS products (
-            id TEXT PRIMARY KEY,
-            asin TEXT UNIQUE NOT NULL,
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            platform TEXT NOT NULL,
             title TEXT NOT NULL,
-            category TEXT,
+            url TEXT UNIQUE NOT NULL,
             image_url TEXT,
-            url TEXT NOT NULL,
-            current_price REAL,
+            price REAL NOT NULL,
             original_price REAL,
-            rating REAL,
-            review_count INTEGER,
-            last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            capacity_gb REAL NOT NULL,
+            capacity_tb REAL NOT NULL,
+            is_ssd BOOLEAN NOT NULL,
+            cost_per_tb REAL NOT NULL,
+            rating REAL DEFAULT 0,
+            review_count INTEGER DEFAULT 0,
+            seller TEXT,
+            timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     ''')
     c.execute('''
         CREATE TABLE IF NOT EXISTS price_history (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            asin TEXT NOT NULL,
+            url TEXT NOT NULL,
             price REAL NOT NULL,
             timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (asin) REFERENCES products(asin)
+            FOREIGN KEY (url) REFERENCES products(url)
         )
     ''')
-    c.execute('''
-        CREATE TABLE IF NOT EXISTS categories (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT UNIQUE NOT NULL,
-            url TEXT
-        )
-    ''')
+    c.execute('CREATE INDEX IF NOT EXISTS idx_products_platform ON products(platform)')
+    c.execute('CREATE INDEX IF NOT EXISTS idx_products_ssd ON products(is_ssd)')
+    c.execute('CREATE INDEX IF NOT EXISTS idx_products_cost ON products(cost_per_tb)')
     conn.commit()
     conn.close()
 
 init_db()
 
-# Pydantic models
-class Product(BaseModel):
-    asin: str
-    title: str
-    category: Optional[str] = None
-    image_url: Optional[str] = None
-    url: str
-    current_price: Optional[float] = None
-    original_price: Optional[float] = None
-    rating: Optional[float] = None
-    review_count: Optional[int] = None
+# ─── Capacity Parser ───────────────────────────────────────────
 
-class PriceAlert(BaseModel):
-    asin: str
-    target_price: float
-    email: Optional[str] = None
+def parse_capacity(title: str) -> tuple:
+    """Extract capacity in GB and TB from product title."""
+    title_lower = title.lower()
+    
+    # Check for TB
+    tb_match = re.search(r'(\d+(?:\.\d+)?)\s*tb', title_lower)
+    if tb_match:
+        tb = float(tb_match.group(1))
+        return tb * 1000, tb
+    
+    # Check for GB
+    gb_match = re.search(r'(\d+(?:\.\d+)?)\s*gb', title_lower)
+    if gb_match:
+        gb = float(gb_match.group(1))
+        return gb, gb / 1000
+    
+    return 0, 0
 
-# FastAPI app
-app = FastAPI(title="Amazon.sg Price Tracker")
+def is_ssd(title: str) -> bool:
+    """Determine if product is SSD or HDD."""
+    title_lower = title.lower()
+    ssd_keywords = ['ssd', 'solid state', 'nvme', 'm.2', 'pcie']
+    hdd_keywords = ['hdd', 'hard drive', 'hard disk', 'mechanical', 'desktop drive']
+    
+    for kw in ssd_keywords:
+        if kw in title_lower:
+            return True
+    for kw in hdd_keywords:
+        if kw in title_lower:
+            return False
+    
+    return False
+
+# ─── Scrapers ──────────────────────────────────────────────────
+
+class ShopeeScraper:
+    BASE_URL = "https://shopee.sg/api/v4/search/search_items"
+    
+    HEADERS = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+        'Referer': 'https://shopee.sg/',
+        'X-Requested-With': 'XMLHttpRequest',
+    }
+    
+    def search(self, query: str, limit: int = 50) -> List[dict]:
+        params = {
+            'by': 'relevancy',
+            'keyword': quote_plus(query),
+            'limit': limit,
+            'newest': 0,
+            'order': 'desc',
+            'page_type': 'search',
+            'version': '2',
+        }
+        
+        try:
+            resp = requests.get(self.BASE_URL, params=params, headers=self.HEADERS, timeout=15)
+            resp.raise_for_status()
+            data = resp.json()
+            
+            items = []
+            for item in data.get('items', []):
+                item_basic = item.get('itembasic', {})
+                price = item_basic.get('price', 0) / 100000
+                original_price = item_basic.get('original_price', 0) / 100000 or price
+                
+                items.append({
+                    'title': item_basic.get('name', ''),
+                    'url': f"https://shopee.sg/product/{item_basic.get('shopid')}/{item_basic.get('itemid')}",
+                    'image_url': f"https://cf.shopee.sg/file/{item_basic.get('image', '')}",
+                    'price': price,
+                    'original_price': original_price,
+                    'rating': item_basic.get('item_rating', {}).get('rating_star', 0),
+                    'review_count': item_basic.get('item_rating', {}).get('rating_count', [0])[0],
+                    'seller': item_basic.get('shop_name', ''),
+                })
+            
+            return items
+        except Exception as e:
+            print(f"Shopee search error: {e}")
+            return []
+
+class LazadaScraper:
+    BASE_URL = "https://www.lazada.sg/catalog/"
+    
+    HEADERS = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+        'Accept': 'application/json',
+        'Referer': 'https://www.lazada.sg/',
+    }
+    
+    def search(self, query: str, limit: int = 40) -> List[dict]:
+        params = {
+            'q': quote_plus(query),
+            'from': 'wangpu',
+            'langFlag': 'en',
+            'page': '1',
+            'pageSize': str(limit),
+        }
+        
+        try:
+            resp = requests.get(self.BASE_URL, params=params, headers=self.HEADERS, timeout=15)
+            resp.raise_for_status()
+            data = resp.json()
+            
+            items = []
+            for item in data.get('mods', {}).get('listItems', []):
+                price = float(item.get('price', 0))
+                original_price = float(item.get('originalPrice', 0)) or price
+                
+                items.append({
+                    'title': item.get('name', ''),
+                    'url': f"https://www.lazada.sg{item.get('productUrl', '')}",
+                    'image_url': item.get('image', ''),
+                    'price': price,
+                    'original_price': original_price,
+                    'rating': float(item.get('ratingScore', 0)),
+                    'review_count': int(item.get('review', 0)),
+                    'seller': item.get('sellerName', ''),
+                })
+            
+            return items
+        except Exception as e:
+            print(f"Lazada search error: {e}")
+            return []
+
+class AmazonSGScraper:
+    BASE_URL = "https://www.amazon.sg/s"
+    
+    HEADERS = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml',
+        'Accept-Language': 'en-US,en;q=0.9',
+        'Referer': 'https://www.amazon.sg/',
+    }
+    
+    def search(self, query: str, limit: int = 50) -> List[dict]:
+        params = {
+            'k': quote_plus(query),
+            'ref': 'nb_sb_noss',
+        }
+        
+        try:
+            resp = requests.get(self.BASE_URL, params=params, headers=self.HEADERS, timeout=15)
+            resp.raise_for_status()
+            
+            html = resp.text
+            items = []
+            
+            asin_pattern = r'data-asin="([A-Z0-9]{10})"'
+            asins = re.findall(asin_pattern, html)
+            
+            title_pattern = r'<span class="a-text-normal">([^<]+)</span>'
+            titles = re.findall(title_pattern, html)
+            
+            price_pattern = r'class="a-price-whole">(\d+)[^<]*</span><span class="a-price-decimal">'
+            prices = re.findall(price_pattern, html)
+            
+            img_pattern = r'src="([^"]+\.jpg)"[^>]*class="s-image"'
+            images = re.findall(img_pattern, html)
+            
+            for i, asin in enumerate(asins[:limit]):
+                price = float(prices[i]) if i < len(prices) else 0
+                items.append({
+                    'title': titles[i].strip() if i < len(titles) else '',
+                    'url': f"https://www.amazon.sg/dp/{asin}",
+                    'image_url': images[i] if i < len(images) else '',
+                    'price': price,
+                    'original_price': price,
+                    'rating': 0,
+                    'review_count': 0,
+                    'seller': 'Amazon.sg',
+                })
+            
+            return items
+        except Exception as e:
+            print(f"Amazon search error: {e}")
+            return []
+
+# ─── Price Processor ───────────────────────────────────────────
+
+def process_storage_products(items: List[dict], platform: str) -> List[dict]:
+    products = []
+    
+    for item in items:
+        title = item.get('title', '')
+        price = item.get('price', 0)
+        
+        if price <= 0:
+            continue
+        
+        capacity_gb, capacity_tb = parse_capacity(title)
+        
+        if capacity_tb <= 0:
+            continue
+        
+        ssd = is_ssd(title)
+        cost_per_tb = price / capacity_tb
+        
+        products.append({
+            'platform': platform,
+            'title': title,
+            'url': item.get('url', ''),
+            'image_url': item.get('image_url', ''),
+            'price': price,
+            'original_price': item.get('original_price', price),
+            'capacity_gb': capacity_gb,
+            'capacity_tb': capacity_tb,
+            'is_ssd': ssd,
+            'cost_per_tb': cost_per_tb,
+            'rating': item.get('rating', 0),
+            'review_count': item.get('review_count', 0),
+            'seller': item.get('seller', ''),
+            'timestamp': datetime.now().isoformat(),
+        })
+    
+    return products
+
+# ─── Database Operations ───────────────────────────────────────
+
+def save_products(products: List[dict]):
+    conn = sqlite3.connect(DATABASE_URL)
+    c = conn.cursor()
+    
+    for p in products:
+        try:
+            c.execute('''
+                INSERT OR REPLACE INTO products 
+                (platform, title, url, image_url, price, original_price, capacity_gb, capacity_tb, is_ssd, cost_per_tb, rating, review_count, seller, timestamp)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ''', (p['platform'], p['title'], p['url'], p['image_url'], p['price'], p['original_price'],
+                  p['capacity_gb'], p['capacity_tb'], p['is_ssd'], p['cost_per_tb'], p['rating'],
+                  p['review_count'], p['seller'], p['timestamp']))
+            
+            c.execute('INSERT INTO price_history (url, price) VALUES (?, ?)', (p['url'], p['price']))
+        except sqlite3.IntegrityError:
+            pass
+    
+    conn.commit()
+    conn.close()
+
+def get_products(platform: Optional[str] = None, is_ssd: Optional[bool] = None, 
+                 limit: int = 100, sort_by: str = 'cost_per_tb') -> List[dict]:
+    conn = sqlite3.connect(DATABASE_URL)
+    c = conn.cursor()
+    
+    query = "SELECT * FROM products WHERE 1=1"
+    params = []
+    
+    if platform:
+        query += " AND platform = ?"
+        params.append(platform)
+    
+    if is_ssd is not None:
+        query += " AND is_ssd = ?"
+        params.append(is_ssd)
+    
+    if sort_by == 'cost_per_tb':
+        query += " ORDER BY cost_per_tb ASC"
+    elif sort_by == 'price':
+        query += " ORDER BY price ASC"
+    elif sort_by == 'capacity':
+        query += " ORDER BY capacity_tb DESC"
+    
+    query += " LIMIT ?"
+    params.append(limit)
+    
+    c.execute(query, params)
+    rows = c.fetchall()
+    
+    conn.close()
+    
+    return [{
+        'id': r[0], 'platform': r[1], 'title': r[2], 'url': r[3],
+        'image_url': r[4], 'price': r[5], 'original_price': r[6],
+        'capacity_gb': r[7], 'capacity_tb': r[8], 'is_ssd': bool(r[9]),
+        'cost_per_tb': r[10], 'rating': r[11], 'review_count': r[12],
+        'seller': r[13], 'timestamp': r[14]
+    } for r in rows]
+
+def get_stats() -> dict:
+    conn = sqlite3.connect(DATABASE_URL)
+    c = conn.cursor()
+    
+    c.execute("SELECT COUNT(*) FROM products")
+    total = c.fetchone()[0]
+    
+    c.execute("SELECT COUNT(*) FROM products WHERE is_ssd = 1")
+    ssd_count = c.fetchone()[0]
+    
+    c.execute("SELECT COUNT(*) FROM products WHERE is_ssd = 0")
+    hdd_count = c.fetchone()[0]
+    
+    conn.close()
+    
+    return {'total': total, 'ssd': ssd_count, 'hdd': hdd_count}
+
+# ─── FastAPI App ───────────────────────────────────────────────
+
+app = FastAPI(title="DiskPrices Singapore API")
 
 app.add_middleware(
     CORSMiddleware,
@@ -86,329 +372,72 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Scraper class
-class AmazonSGScraper:
-    def __init__(self):
-        self.browser: Optional[Browser] = None
-        self.playwright = None
-    
-    async def start(self):
-        self.playwright = await async_playwright().start()
-        self.browser = await self.playwright.chromium.launch(
-            headless=True,
-            args=['--no-sandbox', '--disable-blink-features=AutomationControlled']
-        )
-    
-    async def stop(self):
-        if self.browser:
-            await self.browser.close()
-        if self.playwright:
-            await self.playwright.stop()
-    
-    async def create_page(self) -> Page:
-        context = await self.browser.new_context(
-            user_agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-            viewport={'width': 1920, 'height': 1080}
-        )
-        page = await context.new_page()
-        
-        # Stealth mode
-        await page.add_init_script('''
-            Object.defineProperty(navigator, 'webdriver', {
-                get: () => undefined
-            });
-            window.chrome = { runtime: {} };
-        ''')
-        
-        return page
-    
-    async def scrape_product(self, asin: str) -> Optional[dict]:
-        """Scrape a single product page by ASIN"""
-        page = await self.create_page()
-        url = f"{AMAZON_SG_BASE}/dp/{asin}"
-        
-        try:
-            await page.goto(url, wait_until='networkidle', timeout=30000)
-            await page.wait_for_timeout(random.randint(2000, 4000))
-            
-            # Check for CAPTCHA
-            if await page.query_selector('form[action*="validateCaptcha"]'):
-                return None
-            
-            # Extract product data
-            title = await page.query_selector('#productTitle')
-            title_text = await title.inner_text() if title else None
-            
-            price_whole = await page.query_selector('.a-price .a-offscreen')
-            price_text = await price_whole.inner_text() if price_whole else None
-            current_price = float(price_text.replace('$', '').replace(',', '').strip()) if price_text else None
-            
-            original_price_elem = await page.query_selector('.a-price.a-text-price .a-offscreen')
-            original_price_text = await original_price_elem.inner_text() if original_price_elem else None
-            original_price = float(original_price_text.replace('$', '').replace(',', '').strip()) if original_price_text else None
-            
-            rating_elem = await page.query_selector('#acrPopover .a-icon-alt')
-            rating_text = await rating_elem.inner_text() if rating_elem else None
-            rating = float(rating_text.split(' ')[0]) if rating_text else None
-            
-            review_elem = await page.query_selector('#acrCustomerReviewText')
-            review_text = await review_elem.inner_text() if review_elem else None
-            review_count = int(review_text.replace(',', '').split(' ')[0]) if review_text else None
-            
-            image_elem = await page.query_selector('#landingImage')
-            image_url = await image_elem.get_attribute('src') if image_elem else None
-            
-            return {
-                'asin': asin,
-                'title': title_text.strip() if title_text else None,
-                'url': url,
-                'current_price': current_price,
-                'original_price': original_price,
-                'rating': rating,
-                'review_count': review_count,
-                'image_url': image_url,
-            }
-            
-        except Exception as e:
-            print(f"Error scraping {asin}: {e}")
-            return None
-        finally:
-            await page.close()
-    
-    async def scrape_search(self, query: str, max_pages: int = 3) -> List[str]:
-        """Scrape search results and return ASINs"""
-        page = await self.create_page()
-        asins = []
-        
-        for page_num in range(1, max_pages + 1):
-            url = f"{AMAZON_SG_BASE}/s?k={query.replace(' ', '+')}&page={page_num}"
-            
-            try:
-                await page.goto(url, wait_until='networkidle', timeout=30000)
-                await page.wait_for_timeout(random.randint(2000, 4000))
-                
-                # Check for CAPTCHA
-                if await page.query_selector('form[action*="validateCaptcha"]'):
-                    break
-                
-                # Extract ASINs
-                items = await page.query_selector_all('[data-asin]')
-                for item in items:
-                    asin = await item.get_attribute('data-asin')
-                    if asin:
-                        asins.append(asin)
-                
-                # Check for next page
-                next_btn = await page.query_selector('.s-pagination-next')
-                if not next_btn or await next_btn.get_attribute('aria-disabled') == 'true':
-                    break
-                    
-            except Exception as e:
-                print(f"Error on page {page_num}: {e}")
-                break
-        
-        await page.close()
-        return asins
-    
-    async def scrape_category(self, category_url: str) -> List[str]:
-        """Scrape a category page"""
-        return await self.scrape_search(category_url, max_pages=5)
+# ─── API Endpoints ─────────────────────────────────────────────
 
-# Database operations
-def save_product(product: dict):
-    conn = sqlite3.connect(DATABASE_URL)
-    c = conn.cursor()
-    c.execute('''
-        INSERT OR REPLACE INTO products (asin, title, category, image_url, url, current_price, original_price, rating, review_count, last_updated)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
-    ''', (
-        product['asin'],
-        product['title'],
-        product.get('category'),
-        product.get('image_url'),
-        product['url'],
-        product.get('current_price'),
-        product.get('original_price'),
-        product.get('rating'),
-        product.get('review_count'),
-    ))
-    
-    # Save price history
-    if product.get('current_price'):
-        c.execute('INSERT INTO price_history (asin, price) VALUES (?, ?)',
-                  (product['asin'], product['current_price']))
-    
-    conn.commit()
-    conn.close()
+@app.get("/api/diskprices")
+def list_diskprices(
+    platform: Optional[str] = None,
+    is_ssd: Optional[bool] = None,
+    limit: int = 100,
+    sort_by: str = 'cost_per_tb'
+):
+    """List all disk prices with optional filters."""
+    return get_products(platform, is_ssd, limit, sort_by)
 
-def get_product(asin: str) -> Optional[dict]:
-    conn = sqlite3.connect(DATABASE_URL)
-    c = conn.cursor()
-    c.execute('SELECT * FROM products WHERE asin = ?', (asin,))
-    row = c.fetchone()
-    conn.close()
-    
-    if row:
-        return {
-            'id': row[0], 'asin': row[1], 'title': row[2], 'category': row[3],
-            'image_url': row[4], 'url': row[5], 'current_price': row[6],
-            'original_price': row[7], 'rating': row[8], 'review_count': row[9],
-            'last_updated': row[10]
-        }
-    return None
+@app.get("/api/diskprices/stats")
+def get_diskprices_stats():
+    """Get statistics about stored products."""
+    return get_stats()
 
-def get_price_history(asin: str, days: int = 30) -> List[dict]:
-    conn = sqlite3.connect(DATABASE_URL)
-    c = conn.cursor()
-    c.execute('''
-        SELECT price, timestamp FROM price_history 
-        WHERE asin = ? AND timestamp >= datetime('now', ?)
-        ORDER BY timestamp ASC
-    ''', (asin, f'-{days} days'))
-    rows = c.fetchall()
-    conn.close()
-    
-    return [{'price': r[0], 'timestamp': r[1]} for r in rows]
-
-def get_products(category: Optional[str] = None, limit: int = 50, offset: int = 0) -> List[dict]:
-    conn = sqlite3.connect(DATABASE_URL)
-    c = conn.cursor()
-    
-    if category:
-        c.execute('''
-            SELECT * FROM products WHERE category = ?
-            ORDER BY last_updated DESC LIMIT ? OFFSET ?
-        ''', (category, limit, offset))
-    else:
-        c.execute('''
-            SELECT * FROM products ORDER BY last_updated DESC LIMIT ? OFFSET ?
-        ''', (limit, offset))
-    
-    rows = c.fetchall()
-    conn.close()
-    
-    return [{
-        'id': r[0], 'asin': r[1], 'title': r[2], 'category': r[3],
-        'image_url': r[4], 'url': r[5], 'current_price': r[6],
-        'original_price': r[7], 'rating': r[8], 'review_count': r[9],
-        'last_updated': r[10]
-    } for r in rows]
-
-def get_deals(min_discount: float = 20.0, limit: int = 50) -> List[dict]:
-    """Get products with price drops >= min_discount%"""
-    conn = sqlite3.connect(DATABASE_URL)
-    c = conn.cursor()
-    c.execute('''
-        SELECT p.*, 
-               (p.original_price - p.current_price) / p.original_price * 100 as discount
-        FROM products p
-        WHERE p.original_price IS NOT NULL 
-          AND p.current_price < p.original_price
-          AND (p.original_price - p.current_price) / p.original_price * 100 >= ?
-        ORDER BY discount DESC
-        LIMIT ?
-    ''', (min_discount, limit))
-    rows = c.fetchall()
-    conn.close()
-    
-    return [{
-        'id': r[0], 'asin': r[1], 'title': r[2], 'category': r[3],
-        'image_url': r[4], 'url': r[5], 'current_price': r[6],
-        'original_price': r[7], 'rating': r[8], 'review_count': r[9],
-        'last_updated': r[10], 'discount': r[11]
-    } for r in rows]
-
-def get_categories() -> List[str]:
-    conn = sqlite3.connect(DATABASE_URL)
-    c = conn.cursor()
-    c.execute('SELECT DISTINCT category FROM products WHERE category IS NOT NULL')
-    categories = [r[0] for r in c.fetchall()]
-    conn.close()
-    return categories
-
-# API Endpoints
-
-@app.get("/api/products")
-def list_products(category: Optional[str] = None, limit: int = 50, offset: int = 0):
-    return get_products(category, limit, offset)
-
-@app.get("/api/products/{asin}")
-def get_product_endpoint(asin: str):
-    product = get_product(asin)
-    if not product:
-        raise HTTPException(status_code=404, detail="Product not found")
-    return product
-
-@app.get("/api/products/{asin}/history")
-def get_product_history(asin: str, days: int = 30):
-    return get_price_history(asin, days)
-
-@app.get("/api/deals")
-def list_deals(min_discount: float = 20.0, limit: int = 50):
-    return get_deals(min_discount, limit)
-
-@app.get("/api/categories")
-def list_categories():
-    return get_categories()
-
-@app.get("/api/search")
-def search_products(q: str, background_tasks: BackgroundTasks):
-    """Search Amazon.sg and start scraping results in background"""
-    background_tasks.add_task(scrape_search_task, q)
+@app.get("/api/diskprices/search")
+def search_diskprices(q: str, background_tasks: BackgroundTasks):
+    """Search all platforms and start scraping in background."""
+    background_tasks.add_task(scrape_all_platforms, q)
     return {"message": "Search started", "query": q}
 
-@app.get("/api/scrape/{asin}")
-def scrape_product_endpoint(asin: str, background_tasks: BackgroundTasks):
-    """Start scraping a specific ASIN in background"""
-    background_tasks.add_task(scrape_product_task, asin)
-    return {"message": "Scraping started", "asin": asin}
+@app.post("/api/diskprices/scrape")
+def trigger_scrape(background_tasks: BackgroundTasks):
+    """Trigger a full scrape of all platforms."""
+    background_tasks.add_task(scrape_all_platforms_all_queries)
+    return {"message": "Full scrape started"}
 
-@app.get("/api/stats")
-def get_stats():
-    conn = sqlite3.connect(DATABASE_URL)
-    c = conn.cursor()
-    
-    c.execute('SELECT COUNT(*) FROM products')
-    total_products = c.fetchone()[0]
-    
-    c.execute('SELECT COUNT(*) FROM price_history')
-    total_price_points = c.fetchone()[0]
-    
-    c.execute('SELECT COUNT(DISTINCT asin) FROM price_history WHERE timestamp >= datetime("now", "-1 day")')
-    updated_today = c.fetchone()[0]
-    
-    conn.close()
-    
-    return {
-        'total_products': total_products,
-        'total_price_points': total_price_points,
-        'updated_today': updated_today
-    }
+# ─── Background Tasks ──────────────────────────────────────────
 
-# Background tasks
-async def scrape_product_task(asin: str):
-    scraper = AmazonSGScraper()
-    await scraper.start()
-    try:
-        product = await scraper.scrape_product(asin)
-        if product:
-            save_product(product)
-            print(f"Saved: {product['title']}")
-    finally:
-        await scraper.stop()
+def scrape_all_platforms(query: str):
+    """Scrape all platforms for a specific query."""
+    shopee = ShopeeScraper()
+    lazada = LazadaScraper()
+    amazon = AmazonSGScraper()
+    
+    all_products = []
+    
+    # Shopee
+    shopee_items = shopee.search(query, limit=30)
+    all_products.extend(process_storage_products(shopee_items, 'Shopee'))
+    
+    # Lazada
+    lazada_items = lazada.search(query, limit=30)
+    all_products.extend(process_storage_products(lazada_items, 'Lazada'))
+    
+    # Amazon
+    amazon_items = amazon.search(query, limit=30)
+    all_products.extend(process_storage_products(amazon_items, 'Amazon.sg'))
+    
+    save_products(all_products)
+    print(f"Scraped {len(all_products)} products for: {query}")
 
-async def scrape_search_task(query: str):
-    scraper = AmazonSGScraper()
-    await scraper.start()
-    try:
-        asins = await scraper.scrape_search(query, max_pages=2)
-        for asin in asins[:10]:  # Limit to first 10 results
-            product = await scraper.scrape_product(asin)
-            if product:
-                save_product(product)
-            await asyncio.sleep(random.uniform(2, 5))  # Be respectful
-    finally:
-        await scraper.stop()
+def scrape_all_platforms_all_queries():
+    """Scrape all platforms for all storage-related queries."""
+    queries = [
+        'ssd 1tb', 'ssd 2tb', 'ssd 4tb',
+        'hard disk 1tb', 'hard disk 2tb', 'hard disk 4tb', 'hard disk 8tb',
+        'external ssd', 'external hard disk',
+        'nvme ssd', 'sata ssd',
+    ]
+    
+    for query in queries:
+        scrape_all_platforms(query)
+        time.sleep(random.uniform(1, 2))
 
 if __name__ == "__main__":
     import uvicorn
