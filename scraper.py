@@ -60,19 +60,14 @@ init_db()
 
 def parse_capacity(title: str) -> tuple:
     title_lower = title.lower()
-    
-    # Look for TB patterns like "1TB", "2 TB", "4TB", "8TB" but not "TBW"
     tb_match = re.search(r'(\d+(?:\.\d+)?)\s*tb(?!w)', title_lower)
     if tb_match:
         tb = float(tb_match.group(1))
         return tb * 1000, tb
-    
-    # Look for GB patterns like "256GB", "512 GB" but not "GBW"
     gb_match = re.search(r'(\d+(?:\.\d+)?)\s*gb(?!w)', title_lower)
     if gb_match:
         gb = float(gb_match.group(1))
         return gb, gb / 1000
-    
     return 0, 0
 
 def is_ssd(title: str) -> bool:
@@ -95,115 +90,6 @@ HEADERS = {
     'Accept-Language': 'en-US,en;q=0.5',
 }
 
-def scrape_shopee(query: str) -> list:
-    """Scrape Shopee search results."""
-    items = []
-    url = f"https://shopee.sg/search?keyword={quote_plus(query)}"
-    
-    try:
-        resp = requests.get(url, headers=HEADERS, timeout=15)
-        resp.raise_for_status()
-        soup = BeautifulSoup(resp.text, 'html.parser')
-        
-        # Find product cards
-        products = soup.find_all('div', {'data-sqe': 'item'})
-        if not products:
-            # Try alternative selectors
-            products = soup.find_all('a', href=re.compile(r'/product/\d+/\d+'))
-        
-        for product in products[:30]:
-            try:
-                # Title
-                title_el = product.find('div', {'data-sqe': 'name'}) or product.find('div', class_=re.compile(r'.*name.*'))
-                title = title_el.get_text(strip=True) if title_el else ""
-                
-                # Price
-                price_el = product.find('div', {'data-sqe': 'price'}) or product.find('span', class_=re.compile(r'.*price.*'))
-                price_text = price_el.get_text(strip=True) if price_el else "0"
-                price = float(re.sub(r'[^\d.]', '', price_text))
-                
-                # URL
-                link = product.find('a', href=True)
-                href = link['href'] if link else ""
-                if href and not href.startswith('http'):
-                    href = f"https://shopee.sg{href}"
-                
-                # Image
-                img = product.find('img')
-                img_url = img.get('src', '') if img else ""
-                
-                if title and price > 0:
-                    items.append({
-                        'title': title,
-                        'url': href,
-                        'image_url': img_url,
-                        'price': price,
-                        'original_price': price,
-                        'rating': 0,
-                        'review_count': 0,
-                        'seller': '',
-                    })
-            except Exception as e:
-                continue
-    except Exception as e:
-        print(f"  Shopee error: {e}")
-    
-    return items
-
-def scrape_lazada(query: str) -> list:
-    """Scrape Lazada search results."""
-    items = []
-    url = f"https://www.lazada.sg/catalog/?q={quote_plus(query)}"
-    
-    try:
-        resp = requests.get(url, headers=HEADERS, timeout=15)
-        resp.raise_for_status()
-        soup = BeautifulSoup(resp.text, 'html.parser')
-        
-        # Find product cards
-        products = soup.find_all('div', {'data-tracking': 'product-card'})
-        if not products:
-            products = soup.find_all('div', class_=re.compile(r'.*pdp-mod-product-badge.*'))
-        
-        for product in products[:30]:
-            try:
-                # Title
-                title_el = product.find('div', class_=re.compile(r'.*pdp-mod-product-badge-title.*'))
-                title = title_el.get_text(strip=True) if title_el else ""
-                
-                # Price
-                price_el = product.find('span', class_=re.compile(r'.*pdp-price.*'))
-                price_text = price_el.get_text(strip=True) if price_el else "0"
-                price = float(re.sub(r'[^\d.]', '', price_text))
-                
-                # URL
-                link = product.find('a', href=True)
-                href = link['href'] if link else ""
-                if href and not href.startswith('http'):
-                    href = f"https://www.lazada.sg{href}"
-                
-                # Image
-                img = product.find('img')
-                img_url = img.get('src', '') if img else ""
-                
-                if title and price > 0:
-                    items.append({
-                        'title': title,
-                        'url': href,
-                        'image_url': img_url,
-                        'price': price,
-                        'original_price': price,
-                        'rating': 0,
-                        'review_count': 0,
-                        'seller': '',
-                    })
-            except Exception as e:
-                continue
-    except Exception as e:
-        print(f"  Lazada error: {e}")
-    
-    return items
-
 def scrape_amazon(query: str) -> list:
     """Scrape Amazon.sg search results."""
     items = []
@@ -214,7 +100,6 @@ def scrape_amazon(query: str) -> list:
         resp.raise_for_status()
         soup = BeautifulSoup(resp.text, 'html.parser')
         
-        # Find product cards
         products = soup.find_all('div', {'data-asin': True})
         
         for product in products[:30]:
@@ -223,16 +108,13 @@ def scrape_amazon(query: str) -> list:
                 if not asin:
                     continue
                 
-                # Title
                 title_el = product.find('h2')
                 title = title_el.get_text(strip=True) if title_el else ""
                 
-                # Price
                 price_el = product.find('span', class_='a-price-whole')
                 price_text = price_el.get_text(strip=True) if price_el else "0"
                 price = float(re.sub(r'[^\d.]', '', price_text))
                 
-                # Image
                 img = product.find('img', class_='s-image')
                 img_url = img.get('src', '') if img else ""
                 
@@ -321,19 +203,7 @@ def scrape_all():
     for query in queries:
         print(f"Scraping: {query}")
         
-        # Shopee
-        shopee_items = scrape_shopee(query)
-        shopee_products = process_storage_products(shopee_items, 'Shopee')
-        all_products.extend(shopee_products)
-        print(f"  Shopee: {len(shopee_products)} products")
-        
-        # Lazada
-        lazada_items = scrape_lazada(query)
-        lazada_products = process_storage_products(lazada_items, 'Lazada')
-        all_products.extend(lazada_products)
-        print(f"  Lazada: {len(lazada_products)} products")
-        
-        # Amazon
+        # Amazon only (Shopee/Lazada block simple scraping)
         amazon_items = scrape_amazon(query)
         amazon_products = process_storage_products(amazon_items, 'Amazon.sg')
         all_products.extend(amazon_products)
