@@ -1,15 +1,17 @@
 #!/usr/bin/env python3
 """
 DiskPrices Singapore - Multi-Platform HDD/SSD Price Comparison
-Uses Playwright for headless browser scraping to bypass anti-bot measures.
+Uses requests + BeautifulSoup for faster, more reliable scraping.
 """
 
 import re
 import time
 import random
 import sqlite3
+import requests
 from datetime import datetime
-from playwright.sync_api import sync_playwright, Page
+from bs4 import BeautifulSoup
+from urllib.parse import quote_plus
 
 DB_PATH = "./diskprices.db"
 
@@ -58,14 +60,19 @@ init_db()
 
 def parse_capacity(title: str) -> tuple:
     title_lower = title.lower()
-    tb_match = re.search(r'(\d+(?:\.\d+)?)\s*tb', title_lower)
+    
+    # Look for TB patterns like "1TB", "2 TB", "4TB", "8TB" but not "TBW"
+    tb_match = re.search(r'(\d+(?:\.\d+)?)\s*tb(?!w)', title_lower)
     if tb_match:
         tb = float(tb_match.group(1))
         return tb * 1000, tb
-    gb_match = re.search(r'(\d+(?:\.\d+)?)\s*gb', title_lower)
+    
+    # Look for GB patterns like "256GB", "512 GB" but not "GBW"
+    gb_match = re.search(r'(\d+(?:\.\d+)?)\s*gb(?!w)', title_lower)
     if gb_match:
         gb = float(gb_match.group(1))
         return gb, gb / 1000
+    
     return 0, 0
 
 def is_ssd(title: str) -> bool:
@@ -82,49 +89,60 @@ def is_ssd(title: str) -> bool:
 
 # ─── Scrapers ──────────────────────────────────────────────────
 
-def scrape_shopee(query: str, page: Page) -> list:
+HEADERS = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+    'Accept-Language': 'en-US,en;q=0.5',
+}
+
+def scrape_shopee(query: str) -> list:
     """Scrape Shopee search results."""
     items = []
-    url = f"https://shopee.sg/search?keyword={query.replace(' ', '%20')}"
+    url = f"https://shopee.sg/search?keyword={quote_plus(query)}"
     
     try:
-        page.goto(url, wait_until='networkidle', timeout=30000)
-        page.wait_for_timeout(random.randint(2000, 4000))
+        resp = requests.get(url, headers=HEADERS, timeout=15)
+        resp.raise_for_status()
+        soup = BeautifulSoup(resp.text, 'html.parser')
         
-        # Check for CAPTCHA
-        if page.query_selector('text=Verify'):
-            print("  Shopee CAPTCHA detected")
-            return items
+        # Find product cards
+        products = soup.find_all('div', {'data-sqe': 'item'})
+        if not products:
+            # Try alternative selectors
+            products = soup.find_all('a', href=re.compile(r'/product/\d+/\d+'))
         
-        # Extract product data
-        products = page.query_selector_all('[data-sqe="item"]')
         for product in products[:30]:
             try:
-                title_el = product.query_selector('[data-sqe="name"]')
-                title = title_el.inner_text() if title_el else ""
+                # Title
+                title_el = product.find('div', {'data-sqe': 'name'}) or product.find('div', class_=re.compile(r'.*name.*'))
+                title = title_el.get_text(strip=True) if title_el else ""
                 
-                price_el = product.query_selector('[data-sqe="price"]')
-                price_text = price_el.inner_text() if price_el else "0"
+                # Price
+                price_el = product.find('div', {'data-sqe': 'price'}) or product.find('span', class_=re.compile(r'.*price.*'))
+                price_text = price_el.get_text(strip=True) if price_el else "0"
                 price = float(re.sub(r'[^\d.]', '', price_text))
                 
-                link_el = product.query_selector('a')
-                href = link_el.get_attribute('href') if link_el else ""
+                # URL
+                link = product.find('a', href=True)
+                href = link['href'] if link else ""
                 if href and not href.startswith('http'):
                     href = f"https://shopee.sg{href}"
                 
-                img_el = product.query_selector('img')
-                img_url = img_el.get_attribute('src') if img_el else ""
+                # Image
+                img = product.find('img')
+                img_url = img.get('src', '') if img else ""
                 
-                items.append({
-                    'title': title,
-                    'url': href,
-                    'image_url': img_url,
-                    'price': price,
-                    'original_price': price,
-                    'rating': 0,
-                    'review_count': 0,
-                    'seller': '',
-                })
+                if title and price > 0:
+                    items.append({
+                        'title': title,
+                        'url': href,
+                        'image_url': img_url,
+                        'price': price,
+                        'original_price': price,
+                        'rating': 0,
+                        'review_count': 0,
+                        'seller': '',
+                    })
             except Exception as e:
                 continue
     except Exception as e:
@@ -132,49 +150,53 @@ def scrape_shopee(query: str, page: Page) -> list:
     
     return items
 
-def scrape_lazada(query: str, page: Page) -> list:
+def scrape_lazada(query: str) -> list:
     """Scrape Lazada search results."""
     items = []
-    url = f"https://www.lazada.sg/catalog/?q={query.replace(' ', '%20')}"
+    url = f"https://www.lazada.sg/catalog/?q={quote_plus(query)}"
     
     try:
-        page.goto(url, wait_until='networkidle', timeout=30000)
-        page.wait_for_timeout(random.randint(2000, 4000))
+        resp = requests.get(url, headers=HEADERS, timeout=15)
+        resp.raise_for_status()
+        soup = BeautifulSoup(resp.text, 'html.parser')
         
-        # Check for CAPTCHA
-        if page.query_selector('text=Verify'):
-            print("  Lazada CAPTCHA detected")
-            return items
+        # Find product cards
+        products = soup.find_all('div', {'data-tracking': 'product-card'})
+        if not products:
+            products = soup.find_all('div', class_=re.compile(r'.*pdp-mod-product-badge.*'))
         
-        # Extract product data
-        products = page.query_selector_all('[data-tracking="product-card"]')
         for product in products[:30]:
             try:
-                title_el = product.query_selector('.pdp-mod-product-badge-title')
-                title = title_el.inner_text() if title_el else ""
+                # Title
+                title_el = product.find('div', class_=re.compile(r'.*pdp-mod-product-badge-title.*'))
+                title = title_el.get_text(strip=True) if title_el else ""
                 
-                price_el = product.query_selector('.pdp-price')
-                price_text = price_el.inner_text() if price_el else "0"
+                # Price
+                price_el = product.find('span', class_=re.compile(r'.*pdp-price.*'))
+                price_text = price_el.get_text(strip=True) if price_el else "0"
                 price = float(re.sub(r'[^\d.]', '', price_text))
                 
-                link_el = product.query_selector('a')
-                href = link_el.get_attribute('href') if link_el else ""
+                # URL
+                link = product.find('a', href=True)
+                href = link['href'] if link else ""
                 if href and not href.startswith('http'):
                     href = f"https://www.lazada.sg{href}"
                 
-                img_el = product.query_selector('img')
-                img_url = img_el.get_attribute('src') if img_el else ""
+                # Image
+                img = product.find('img')
+                img_url = img.get('src', '') if img else ""
                 
-                items.append({
-                    'title': title,
-                    'url': href,
-                    'image_url': img_url,
-                    'price': price,
-                    'original_price': price,
-                    'rating': 0,
-                    'review_count': 0,
-                    'seller': '',
-                })
+                if title and price > 0:
+                    items.append({
+                        'title': title,
+                        'url': href,
+                        'image_url': img_url,
+                        'price': price,
+                        'original_price': price,
+                        'rating': 0,
+                        'review_count': 0,
+                        'seller': '',
+                    })
             except Exception as e:
                 continue
     except Exception as e:
@@ -182,48 +204,49 @@ def scrape_lazada(query: str, page: Page) -> list:
     
     return items
 
-def scrape_amazon(query: str, page: Page) -> list:
+def scrape_amazon(query: str) -> list:
     """Scrape Amazon.sg search results."""
     items = []
-    url = f"https://www.amazon.sg/s?k={query.replace(' ', '+')}"
+    url = f"https://www.amazon.sg/s?k={quote_plus(query)}"
     
     try:
-        page.goto(url, wait_until='networkidle', timeout=30000)
-        page.wait_for_timeout(random.randint(2000, 4000))
+        resp = requests.get(url, headers=HEADERS, timeout=15)
+        resp.raise_for_status()
+        soup = BeautifulSoup(resp.text, 'html.parser')
         
-        # Check for CAPTCHA
-        if page.query_selector('form[action*="validateCaptcha"]'):
-            print("  Amazon CAPTCHA detected")
-            return items
+        # Find product cards
+        products = soup.find_all('div', {'data-asin': True})
         
-        # Extract product data
-        products = page.query_selector_all('[data-asin]')
         for product in products[:30]:
             try:
-                asin = product.get_attribute('data-asin')
+                asin = product.get('data-asin')
                 if not asin:
                     continue
                 
-                title_el = product.query_selector('h2')
-                title = title_el.inner_text() if title_el else ""
+                # Title
+                title_el = product.find('h2')
+                title = title_el.get_text(strip=True) if title_el else ""
                 
-                price_el = product.query_selector('.a-price .a-offscreen')
-                price_text = price_el.inner_text() if price_el else "0"
+                # Price
+                price_el = product.find('span', class_='a-price-whole')
+                price_text = price_el.get_text(strip=True) if price_el else "0"
                 price = float(re.sub(r'[^\d.]', '', price_text))
                 
-                img_el = product.query_selector('.s-image')
-                img_url = img_el.get_attribute('src') if img_el else ""
+                # Image
+                img = product.find('img', class_='s-image')
+                img_url = img.get('src', '') if img else ""
                 
-                items.append({
-                    'title': title,
-                    'url': f"https://www.amazon.sg/dp/{asin}",
-                    'image_url': img_url,
-                    'price': price,
-                    'original_price': price,
-                    'rating': 0,
-                    'review_count': 0,
-                    'seller': 'Amazon.sg',
-                })
+                if title and price > 0:
+                    items.append({
+                        'title': title,
+                        'url': f"https://www.amazon.sg/dp/{asin}",
+                        'image_url': img_url,
+                        'price': price,
+                        'original_price': price,
+                        'rating': 0,
+                        'review_count': 0,
+                        'seller': 'Amazon.sg',
+                    })
             except Exception as e:
                 continue
     except Exception as e:
@@ -293,40 +316,30 @@ def scrape_all():
         'nvme ssd', 'sata ssd',
     ]
     
-    with sync_playwright() as p:
-        browser = p.chromium.launch(headless=True)
-        context = browser.new_context(
-            user_agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-            viewport={'width': 1920, 'height': 1080}
-        )
-        page = context.new_page()
+    all_products = []
+    
+    for query in queries:
+        print(f"Scraping: {query}")
         
-        all_products = []
+        # Shopee
+        shopee_items = scrape_shopee(query)
+        shopee_products = process_storage_products(shopee_items, 'Shopee')
+        all_products.extend(shopee_products)
+        print(f"  Shopee: {len(shopee_products)} products")
         
-        for query in queries:
-            print(f"Scraping: {query}")
-            
-            # Shopee
-            shopee_items = scrape_shopee(query, page)
-            shopee_products = process_storage_products(shopee_items, 'Shopee')
-            all_products.extend(shopee_products)
-            print(f"  Shopee: {len(shopee_products)} products")
-            
-            # Lazada
-            lazada_items = scrape_lazada(query, page)
-            lazada_products = process_storage_products(lazada_items, 'Lazada')
-            all_products.extend(lazada_products)
-            print(f"  Lazada: {len(lazada_products)} products")
-            
-            # Amazon
-            amazon_items = scrape_amazon(query, page)
-            amazon_products = process_storage_products(amazon_items, 'Amazon.sg')
-            all_products.extend(amazon_products)
-            print(f"  Amazon: {len(amazon_products)} products")
-            
-            time.sleep(random.uniform(1, 2))
+        # Lazada
+        lazada_items = scrape_lazada(query)
+        lazada_products = process_storage_products(lazada_items, 'Lazada')
+        all_products.extend(lazada_products)
+        print(f"  Lazada: {len(lazada_products)} products")
         
-        browser.close()
+        # Amazon
+        amazon_items = scrape_amazon(query)
+        amazon_products = process_storage_products(amazon_items, 'Amazon.sg')
+        all_products.extend(amazon_products)
+        print(f"  Amazon: {len(amazon_products)} products")
+        
+        time.sleep(random.uniform(0.5, 1.5))
     
     save_products(all_products)
     print(f"\nTotal products saved: {len(all_products)}")
