@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+const DATA_URL = 'https://raw.githubusercontent.com/Kytosyn/amazon-sg-price-tracker/master/data/products.json'
 
 function DiskPriceCard({ product }) {
   const platformColors = {
@@ -22,6 +22,7 @@ function DiskPriceCard({ product }) {
             src={product.image_url}
             alt={product.title}
             className="w-16 h-16 object-cover rounded-lg"
+            loading="lazy"
           />
         )}
         <div className="flex-1 min-w-0">
@@ -58,56 +59,49 @@ function DiskPriceCard({ product }) {
 export default function DiskPrices() {
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)
-  const [stats, setStats] = useState({ total: 0, ssd: 0, hdd: 0 })
+  const [lastUpdated, setLastUpdated] = useState(null)
   const [filter, setFilter] = useState('all')
   const [platform, setPlatform] = useState('all')
   const [sortBy, setSortBy] = useState('cost_per_tb')
-  const [scraping, setScraping] = useState(false)
 
   useEffect(() => {
     fetchProducts()
-    fetchStats()
-  }, [filter, platform, sortBy])
+  }, [])
 
   const fetchProducts = async () => {
     setLoading(true)
     try {
-      const params = new URLSearchParams({ limit: '100' })
-      if (filter === 'ssd') params.set('is_ssd', '1')
-      if (filter === 'hdd') params.set('is_ssd', '0')
-      if (platform !== 'all') params.set('platform', platform)
-      params.set('sort_by', sortBy)
-
-      const res = await fetch(`${API_URL}/api/diskprices?${params}`)
-      if (res.ok) setProducts(await res.json())
+      const res = await fetch(DATA_URL)
+      if (res.ok) {
+        const data = await res.json()
+        setProducts(data.products || [])
+        setLastUpdated(data.lastUpdated || null)
+      }
     } catch (err) {
       console.error('Failed to fetch:', err)
     }
     setLoading(false)
   }
 
-  const fetchStats = async () => {
-    try {
-      const res = await fetch(`${API_URL}/api/diskprices/stats`)
-      if (res.ok) setStats(await res.json())
-    } catch (err) {
-      console.error('Failed to fetch stats:', err)
-    }
+  // Filter products
+  let filteredProducts = products
+  if (filter === 'ssd') filteredProducts = filteredProducts.filter(p => p.is_ssd)
+  if (filter === 'hdd') filteredProducts = filteredProducts.filter(p => !p.is_ssd)
+  if (platform !== 'all') filteredProducts = filteredProducts.filter(p => p.platform === platform)
+
+  // Sort products
+  if (sortBy === 'cost_per_tb') {
+    filteredProducts.sort((a, b) => a.cost_per_tb - b.cost_per_tb)
+  } else if (sortBy === 'price') {
+    filteredProducts.sort((a, b) => a.price - b.price)
+  } else if (sortBy === 'capacity') {
+    filteredProducts.sort((a, b) => b.capacity_tb - a.capacity_tb)
   }
 
-  const handleScrape = async () => {
-    setScraping(true)
-    try {
-      await fetch(`${API_URL}/api/diskprices/scrape`, { method: 'POST' })
-      setTimeout(() => {
-        fetchProducts()
-        fetchStats()
-        setScraping(false)
-      }, 5000)
-    } catch (err) {
-      console.error('Scrape failed:', err)
-      setScraping(false)
-    }
+  const stats = {
+    total: products.length,
+    ssd: products.filter(p => p.is_ssd).length,
+    hdd: products.filter(p => !p.is_ssd).length,
   }
 
   return (
@@ -120,13 +114,10 @@ export default function DiskPrices() {
               <span className="text-xl font-bold">DiskPrices Singapore</span>
             </div>
             <button
-              onClick={handleScrape}
-              disabled={scraping}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                scraping ? 'bg-gray-600 cursor-not-allowed' : 'bg-[#ff9900] text-black hover:bg-[#ffb84d]'
-              }`}
+              onClick={fetchProducts}
+              className="px-4 py-2 rounded-lg text-sm font-medium bg-[#ff9900] text-black hover:bg-[#ffb84d] transition-colors"
             >
-              {scraping ? 'Scraping...' : 'Refresh Prices'}
+              Refresh
             </button>
           </div>
         </div>
@@ -196,15 +187,23 @@ export default function DiskPrices() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-            {products.map((product) => (
+            {filteredProducts.map((product) => (
               <DiskPriceCard key={product.id} product={product} />
             ))}
           </div>
         )}
 
-        {!loading && products.length === 0 && (
+        {!loading && filteredProducts.length === 0 && (
           <div className="text-center py-20 text-slate-400">
-            No products found. Click "Refresh Prices" to start scraping.
+            <p>No products found.</p>
+            <p className="text-sm mt-2">GitHub Actions scrapes daily at 9 AM SGT.</p>
+            <p className="text-sm">Check back soon or click Refresh.</p>
+          </div>
+        )}
+
+        {lastUpdated && (
+          <div className="mt-8 text-center text-xs text-slate-500">
+            Last updated: {new Date(lastUpdated).toLocaleString()}
           </div>
         )}
       </main>
