@@ -3,10 +3,14 @@
 
 import sqlite3
 import json
+import os
 from datetime import datetime
 
 DB_PATH = "./diskprices.db"
 JSON_PATH = "./data/products.json"
+
+# Ensure data directory exists
+os.makedirs(os.path.dirname(JSON_PATH), exist_ok=True)
 
 def export_to_json():
     conn = sqlite3.connect(DB_PATH)
