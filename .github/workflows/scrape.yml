@@ -3,7 +3,7 @@ name: Daily DiskPrices SG Scrape
 on:
   schedule:
     - cron: '0 9 * * *'  # 9 AM SGT daily
-  workflow_dispatch:  # Allow manual trigger
+  workflow_dispatch:
 
 jobs:
   scrape:
@@ -17,21 +17,47 @@ jobs:
         with:
           python-version: '3.11'
       
-      - name: Install dependencies
+      - name: Install system dependencies
         run: |
-          pip install playwright
-          playwright install chromium
+          sudo apt-get update
+          sudo apt-get install -y libnss3 libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 libxfixes3 libxrandr2 libgbm1 libpango-1.0-0 libcairo2 libasound2 libatspi2.0-0
+      
+      - name: Install Python dependencies
+        run: |
+          pip install playwright requests
+          playwright install chromium --with-deps
       
       - name: Run scraper
-        run: python scraper.py
+        id: scrape
+        continue-on-error: true
+        run: |
+          echo "Starting scraper..."
+          python scraper.py 2>&1 | tee scraper_output.log
+          echo "exit_code=$?" >> $GITHUB_OUTPUT
+      
+      - name: Show scraper output
+        if: always()
+        run: |
+          echo "=== Scraper Output ==="
+          cat scraper_output.log || echo "No log file found"
       
       - name: Export to JSON
+        if: steps.scrape.outputs.exit_code == '0'
         run: python export_json.py
       
       - name: Commit and push database
+        if: steps.scrape.outputs.exit_code == '0'
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
           git add diskprices.db data/products.json
           git diff --quiet && git diff --staged --quiet || git commit -m "Update price data: $(date +%Y-%m-%d)"
           git push
+      
+      - name: Upload logs as artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: scraper-logs
+          path: scraper_output.log
+          retention-days: 7
