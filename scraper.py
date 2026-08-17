@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 DiskPrices Singapore - Multi-Platform HDD/SSD Price Comparison
-Uses requests + BeautifulSoup with pagination for maximum coverage.
+Uses requests + BeautifulSoup with retry logic and proper headers.
 """
 
 import re
@@ -14,7 +14,6 @@ from bs4 import BeautifulSoup
 from urllib.parse import quote_plus
 
 DB_PATH = "./diskprices.db"
-SESSION = requests.Session()
 
 # ─── Database ──────────────────────────────────────────────────
 
@@ -85,7 +84,7 @@ def is_ssd(title: str) -> bool:
 
 # ─── Amazon Scraper ────────────────────────────────────────────
 
-def scrape_amazon_page(query: str, page: int = 1) -> list:
+def scrape_amazon_page(query: str, page: int = 1, retries: int = 3) -> list:
     items = []
     url = f"https://www.amazon.sg/s?k={quote_plus(query)}&page={page}"
     
@@ -93,45 +92,69 @@ def scrape_amazon_page(query: str, page: int = 1) -> list:
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
         'Accept-Language': 'en-US,en;q=0.5',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'Connection': 'keep-alive',
+        'Upgrade-Insecure-Requests': '1',
+        'Sec-Fetch-Dest': 'document',
+        'Sec-Fetch-Mode': 'navigate',
+        'Sec-Fetch-Site': 'none',
+        'Sec-Fetch-User': '?1',
+        'Cache-Control': 'max-age=0',
     }
     
-    try:
-        resp = SESSION.get(url, headers=headers, timeout=15)
-        resp.raise_for_status()
-        soup = BeautifulSoup(resp.text, 'html.parser')
-        products = soup.find_all('div', {'data-asin': True})
-        
-        for product in products:
-            try:
-                asin = product.get('data-asin')
-                if not asin:
-                    continue
-                
-                title_el = product.find('h2')
-                title = title_el.get_text(strip=True) if title_el else ""
-                
-                price_el = product.find('span', class_='a-price-whole')
-                price_text = price_el.get_text(strip=True) if price_el else "0"
-                price = float(re.sub(r'[^\d.]', '', price_text))
-                
-                img = product.find('img', class_='s-image')
-                img_url = img.get('src', '') if img else ""
-                
-                if title and price > 0:
-                    items.append({
-                        'title': title,
-                        'url': f"https://www.amazon.sg/dp/{asin}",
-                        'image_url': img_url,
-                        'price': price,
-                        'original_price': price,
-                        'rating': 0,
-                        'review_count': 0,
-                        'seller': 'Amazon.sg',
-                    })
-            except:
+    for attempt in range(retries):
+        try:
+            resp = requests.get(url, headers=headers, timeout=20)
+            
+            if resp.status_code == 503:
+                wait_time = (attempt + 1) * 5
+                print(f"  503 error, retrying in {wait_time}s...")
+                time.sleep(wait_time)
                 continue
-    except Exception as e:
-        print(f"  Page {page} error: {e}")
+            
+            resp.raise_for_status()
+            soup = BeautifulSoup(resp.text, 'html.parser')
+            products = soup.find_all('div', {'data-asin': True})
+            
+            for product in products:
+                try:
+                    asin = product.get('data-asin')
+                    if not asin:
+                        continue
+                    
+                    title_el = product.find('h2')
+                    title = title_el.get_text(strip=True) if title_el else ""
+                    
+                    price_el = product.find('span', class_='a-price-whole')
+                    price_text = price_el.get_text(strip=True) if price_el else "0"
+                    price = float(re.sub(r'[^\d.]', '', price_text))
+                    
+                    img = product.find('img', class_='s-image')
+                    img_url = img.get('src', '') if img else ""
+                    
+                    if title and price > 0:
+                        items.append({
+                            'title': title,
+                            'url': f"https://www.amazon.sg/dp/{asin}",
+                            'image_url': img_url,
+                            'price': price,
+                            'original_price': price,
+                            'rating': 0,
+                            'review_count': 0,
+                            'seller': 'Amazon.sg',
+                        })
+                except:
+                    continue
+            
+            return items
+            
+        except requests.exceptions.RequestException as e:
+            if attempt < retries - 1:
+                wait_time = (attempt + 1) * 3
+                print(f"  Request error, retrying in {wait_time}s: {e}")
+                time.sleep(wait_time)
+            else:
+                print(f"  Failed after {retries} attempts: {e}")
     
     return items
 
@@ -141,7 +164,7 @@ def scrape_amazon(query: str, max_pages: int = 2) -> list:
         items = scrape_amazon_page(query, page)
         all_items.extend(items)
         print(f"  Page {page}: {len(items)} items")
-        time.sleep(random.uniform(0.5, 1))
+        time.sleep(random.uniform(1, 2))
     return all_items
 
 # ─── Price Processor ───────────────────────────────────────────
@@ -214,7 +237,7 @@ def scrape_all():
         products = process_storage_products(items, 'Amazon.sg')
         all_products.extend(products)
         print(f"  Total: {len(products)}\n")
-        time.sleep(random.uniform(0.5, 1))
+        time.sleep(random.uniform(1, 2))
     
     save_products(all_products)
     print(f"=== Grand total: {len(all_products)} ===")
