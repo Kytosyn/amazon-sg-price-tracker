@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 DiskPrices Singapore - Multi-Platform HDD/SSD Price Comparison
-Uses requests + BeautifulSoup for faster, more reliable scraping.
+Uses requests + BeautifulSoup with pagination for maximum coverage.
 """
 
 import re
@@ -14,6 +14,7 @@ from bs4 import BeautifulSoup
 from urllib.parse import quote_plus
 
 DB_PATH = "./diskprices.db"
+SESSION = requests.Session()
 
 # ─── Database ──────────────────────────────────────────────────
 
@@ -82,27 +83,25 @@ def is_ssd(title: str) -> bool:
             return False
     return False
 
-# ─── Scrapers ──────────────────────────────────────────────────
+# ─── Amazon Scraper ────────────────────────────────────────────
 
-HEADERS = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-    'Accept-Language': 'en-US,en;q=0.5',
-}
-
-def scrape_amazon(query: str) -> list:
-    """Scrape Amazon.sg search results."""
+def scrape_amazon_page(query: str, page: int = 1) -> list:
     items = []
-    url = f"https://www.amazon.sg/s?k={quote_plus(query)}"
+    url = f"https://www.amazon.sg/s?k={quote_plus(query)}&page={page}"
+    
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'Accept-Language': 'en-US,en;q=0.5',
+    }
     
     try:
-        resp = requests.get(url, headers=HEADERS, timeout=15)
+        resp = SESSION.get(url, headers=headers, timeout=15)
         resp.raise_for_status()
         soup = BeautifulSoup(resp.text, 'html.parser')
-        
         products = soup.find_all('div', {'data-asin': True})
         
-        for product in products[:30]:
+        for product in products:
             try:
                 asin = product.get('data-asin')
                 if not asin:
@@ -129,90 +128,96 @@ def scrape_amazon(query: str) -> list:
                         'review_count': 0,
                         'seller': 'Amazon.sg',
                     })
-            except Exception as e:
+            except:
                 continue
     except Exception as e:
-        print(f"  Amazon error: {e}")
+        print(f"  Page {page} error: {e}")
     
     return items
+
+def scrape_amazon(query: str, max_pages: int = 2) -> list:
+    all_items = []
+    for page in range(1, max_pages + 1):
+        items = scrape_amazon_page(query, page)
+        all_items.extend(items)
+        print(f"  Page {page}: {len(items)} items")
+        time.sleep(random.uniform(0.5, 1))
+    return all_items
 
 # ─── Price Processor ───────────────────────────────────────────
 
 def process_storage_products(items: list, platform: str) -> list:
     products = []
+    seen = set()
     for item in items:
         title = item.get('title', '')
         price = item.get('price', 0)
-        if price <= 0:
+        url = item.get('url', '')
+        if price <= 0 or url in seen:
             continue
         capacity_gb, capacity_tb = parse_capacity(title)
         if capacity_tb <= 0:
             continue
-        ssd = is_ssd(title)
+        seen.add(url)
         cost_per_tb = price / capacity_tb
         products.append({
             'platform': platform,
             'title': title,
-            'url': item.get('url', ''),
+            'url': url,
             'image_url': item.get('image_url', ''),
             'price': price,
             'original_price': item.get('original_price', price),
             'capacity_gb': capacity_gb,
             'capacity_tb': capacity_tb,
-            'is_ssd': ssd,
+            'is_ssd': is_ssd(title),
             'cost_per_tb': cost_per_tb,
-            'rating': item.get('rating', 0),
-            'review_count': item.get('review_count', 0),
+            'rating': 0,
+            'review_count': 0,
             'seller': item.get('seller', ''),
             'timestamp': datetime.now().isoformat(),
         })
     return products
 
-# ─── Database Operations ───────────────────────────────────────
+# ─── Database ──────────────────────────────────────────────────
 
 def save_products(products: list):
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
     for p in products:
         try:
-            c.execute('''
-                INSERT OR REPLACE INTO products 
+            c.execute('''INSERT OR REPLACE INTO products 
                 (platform, title, url, image_url, price, original_price, capacity_gb, capacity_tb, is_ssd, cost_per_tb, rating, review_count, seller, timestamp)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            ''', (p['platform'], p['title'], p['url'], p['image_url'], p['price'], p['original_price'],
-                  p['capacity_gb'], p['capacity_tb'], p['is_ssd'], p['cost_per_tb'], p['rating'],
-                  p['review_count'], p['seller'], p['timestamp']))
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
+                (p['platform'], p['title'], p['url'], p['image_url'], p['price'], p['original_price'],
+                 p['capacity_gb'], p['capacity_tb'], p['is_ssd'], p['cost_per_tb'], p['rating'],
+                 p['review_count'], p['seller'], p['timestamp']))
             c.execute('INSERT INTO price_history (url, price) VALUES (?, ?)', (p['url'], p['price']))
         except sqlite3.IntegrityError:
             pass
     conn.commit()
     conn.close()
 
-# ─── Main Scraper ──────────────────────────────────────────────
+# ─── Main ──────────────────────────────────────────────────────
 
 def scrape_all():
     queries = [
         'ssd 1tb', 'ssd 2tb', 'ssd 4tb',
-        'hard disk 1tb', 'hard disk 2tb', 'hard disk 4tb', 'hard disk 8tb',
+        'hard disk 1tb', 'hard disk 2tb', 'hard disk 4tb',
         'external ssd', 'external hard disk',
         'nvme ssd', 'sata ssd',
     ]
     
     all_products = []
-    
     for query in queries:
         print(f"Scraping: {query}")
-        
-        # Amazon only (Shopee/Lazada block simple scraping)
-        amazon_items = scrape_amazon(query)
-        amazon_products = process_storage_products(amazon_items, 'Amazon.sg')
-        all_products.extend(amazon_products)
-        print(f"  Amazon: {len(amazon_products)} products")
-        
-        time.sleep(random.uniform(0.5, 1.5))
+        items = scrape_amazon(query, max_pages=2)
+        products = process_storage_products(items, 'Amazon.sg')
+        all_products.extend(products)
+        print(f"  Total: {len(products)}\n")
+        time.sleep(random.uniform(0.5, 1))
     
     save_products(all_products)
-    print(f"\nTotal products saved: {len(all_products)}")
+    print(f"=== Grand total: {len(all_products)} ===")
     return all_products
 
 if __name__ == '__main__':
