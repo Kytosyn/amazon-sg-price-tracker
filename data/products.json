@@ -34,6 +34,22 @@
     },
     {
       "platform": "Amazon.sg",
+      "title": "Kurojin Shikou SSD/HDD Stand, Supports 2.5 & 3.5 types, Copy entire SSD and HDD ! Error Skip/Clone Function, Supports up to 16TB KURO-DACHI CLONE/CRU3",
+      "url": "https://www.amazon.sg/dp/B09NN1MMDY",
+      "image_url": "https://m.media-amazon.com/images/I/61G4vqBxTsL._AC_UL320_.jpg",
+      "price": 27.0,
+      "original_price": 27.0,
+      "capacity_gb": 16000.0,
+      "capacity_tb": 16.0,
+      "is_ssd": true,
+      "cost_per_tb": 1.6875,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T15:59:39.755464"
+    },
+    {
+      "platform": "Amazon.sg",
       "title": "MAIWO Hard Drive Enclosure for 2.5 3.5 inch SATA HDD SSD Aluminum, USB3.1 Gen2x1 10Gbps 3xUSB Ports Extension 24TB Capacity, External Hard Disk Reader HDD to USB-C Adapter",
       "url": "https://www.amazon.sg/dp/B0BJV2Q8JD",
       "image_url": "https://m.media-amazon.com/images/I/61eAd9JinzL._AC_UL320_.jpg",
@@ -126,7 +142,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T15:00:14.588835"
+      "timestamp": "2026-08-18T15:36:41.916720"
     },
     {
       "platform": "Amazon.sg",
@@ -142,7 +158,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T15:12:53.262490"
+      "timestamp": "2026-08-18T15:59:39.754928"
     },
     {
       "platform": "Amazon.sg",
@@ -158,7 +174,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T15:00:37.338101"
+      "timestamp": "2026-08-18T15:35:31.899123"
     },
     {
       "platform": "Amazon.sg",
@@ -190,7 +206,23 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T15:02:34.670916"
+      "timestamp": "2026-08-18T15:36:41.916770"
+    },
+    {
+      "platform": "Amazon.sg",
+      "title": "Seagate EXOS X24 24TB Internal Hard Drive 3.5 inches SATA 3 Gbit/s 512 MB, ST24000NM000C (Refurbished)",
+      "url": "https://www.amazon.sg/dp/B0DFCTBDRQ",
+      "image_url": "https://m.media-amazon.com/images/I/61JqMS7rwvL._AC_UL320_.jpg",
+      "price": 1100.0,
+      "original_price": 1100.0,
+      "capacity_gb": 24000.0,
+      "capacity_tb": 24.0,
+      "is_ssd": false,
+      "cost_per_tb": 45.833333333333336,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T15:36:30.837427"
     },
     {
       "platform": "Amazon.sg",
@@ -206,23 +238,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T15:02:34.670710"
-    },
-    {
-      "platform": "Amazon.sg",
-      "title": "Seagate EXOS X24 24TB Internal Hard Drive 3.5 inches SATA 3 Gbit/s 512 MB, ST24000NM000C (Refurbished)",
-      "url": "https://www.amazon.sg/dp/B0DFCTBDRQ",
-      "image_url": "https://m.media-amazon.com/images/I/61JqMS7rwvL._AC_UL320_.jpg",
-      "price": 1104.0,
-      "original_price": 1104.0,
-      "capacity_gb": 24000.0,
-      "capacity_tb": 24.0,
-      "is_ssd": false,
-      "cost_per_tb": 46.0,
-      "rating": 0.0,
-      "review_count": 0,
-      "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T15:02:34.670952"
+      "timestamp": "2026-08-18T15:36:41.916575"
     },
     {
       "platform": "Amazon.sg",
@@ -238,7 +254,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T14:59:51.477628"
+      "timestamp": "2026-08-18T15:58:31.429873"
     },
     {
       "platform": "Amazon.sg",
@@ -254,7 +270,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T14:59:51.477527"
+      "timestamp": "2026-08-18T15:58:31.429841"
     },
     {
       "platform": "Amazon.sg",
@@ -270,7 +286,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T14:59:51.477548"
+      "timestamp": "2026-08-18T15:58:31.429860"
     },
     {
       "platform": "Amazon.sg",
@@ -286,7 +302,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T14:59:51.477614"
+      "timestamp": "2026-08-18T15:35:09.590153"
     },
     {
       "platform": "Amazon.sg",
@@ -302,7 +318,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T15:17:17.737272"
+      "timestamp": "2026-08-18T15:58:13.910652"
     },
     {
       "platform": "Amazon.sg",
@@ -350,7 +366,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T15:11:14.045715"
+      "timestamp": "2026-08-18T15:46:39.735967"
     },
     {
       "platform": "Amazon.sg",
@@ -382,7 +398,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T15:02:34.670694"
+      "timestamp": "2026-08-18T15:36:41.916695"
     },
     {
       "platform": "Amazon.sg",
@@ -430,23 +446,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T15:00:37.337997"
-    },
-    {
-      "platform": "Amazon.sg",
-      "title": "Western Digital 12TB WD Red Plus NAS Internal Hard Drive HDD - 7200 RPM, SATA 6 GB/s, CMR, 512 MB Cache, 3.5\" - WD120EFGX",
-      "url": "https://www.amazon.sg/dp/B0F4R6SNJG",
-      "image_url": "https://m.media-amazon.com/images/I/71LBFWdyUTL._AC_UL320_.jpg",
-      "price": 703.0,
-      "original_price": 703.0,
-      "capacity_gb": 12000.0,
-      "capacity_tb": 12.0,
-      "is_ssd": false,
-      "cost_per_tb": 58.583333333333336,
-      "rating": 0.0,
-      "review_count": 0,
-      "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T15:00:25.846002"
+      "timestamp": "2026-08-18T15:35:31.898825"
     },
     {
       "platform": "Amazon.sg",
@@ -462,7 +462,23 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T15:01:53.454928"
+      "timestamp": "2026-08-18T15:35:31.898747"
+    },
+    {
+      "platform": "Amazon.sg",
+      "title": "Western Digital 12TB WD Red Plus NAS Internal Hard Drive HDD - 7200 RPM, SATA 6 GB/s, CMR, 512 MB Cache, 3.5\" - WD120EFGX",
+      "url": "https://www.amazon.sg/dp/B0F4R6SNJG",
+      "image_url": "https://m.media-amazon.com/images/I/71LBFWdyUTL._AC_UL320_.jpg",
+      "price": 703.0,
+      "original_price": 703.0,
+      "capacity_gb": 12000.0,
+      "capacity_tb": 12.0,
+      "is_ssd": false,
+      "cost_per_tb": 58.583333333333336,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T15:35:31.898778"
     },
     {
       "platform": "Amazon.sg",
@@ -478,7 +494,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T14:59:51.477826"
+      "timestamp": "2026-08-18T15:35:09.590385"
     },
     {
       "platform": "Amazon.sg",
@@ -526,7 +542,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T15:00:03.405496"
+      "timestamp": "2026-08-18T15:58:31.429811"
     },
     {
       "platform": "Amazon.sg",
@@ -542,7 +558,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T15:00:25.846098"
+      "timestamp": "2026-08-18T15:58:31.429710"
     },
     {
       "platform": "Amazon.sg",
@@ -558,7 +574,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T15:01:53.454665"
+      "timestamp": "2026-08-18T15:59:39.755018"
     },
     {
       "platform": "Amazon.sg",
@@ -590,7 +606,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T15:21:43.494469"
+      "timestamp": "2026-08-18T15:59:39.755251"
     },
     {
       "platform": "Amazon.sg",
@@ -638,7 +654,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T15:09:47.170433"
+      "timestamp": "2026-08-18T15:59:39.755033"
     },
     {
       "platform": "Amazon.sg",
@@ -750,7 +766,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T15:01:53.455083"
+      "timestamp": "2026-08-18T15:36:30.837451"
     },
     {
       "platform": "Amazon.sg",
@@ -782,7 +798,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T15:00:25.846111"
+      "timestamp": "2026-08-18T15:59:39.754967"
     },
     {
       "platform": "Amazon.sg",
@@ -814,7 +830,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T15:00:25.846389"
+      "timestamp": "2026-08-18T15:59:39.754985"
     },
     {
       "platform": "Amazon.sg",
@@ -830,7 +846,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T15:17:23.258432"
+      "timestamp": "2026-08-18T15:59:39.755223"
     },
     {
       "platform": "Amazon.sg",
@@ -878,7 +894,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T14:29:10.496028"
+      "timestamp": "2026-08-18T15:41:34.406666"
     },
     {
       "platform": "Amazon.sg",
@@ -894,7 +910,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T15:02:34.670812"
+      "timestamp": "2026-08-18T15:59:39.755210"
     },
     {
       "platform": "Amazon.sg",
@@ -926,7 +942,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T14:59:51.478056"
+      "timestamp": "2026-08-18T15:35:09.590596"
     },
     {
       "platform": "Amazon.sg",
@@ -942,7 +958,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T14:59:51.477712"
+      "timestamp": "2026-08-18T15:58:31.429798"
     },
     {
       "platform": "Amazon.sg",
@@ -974,7 +990,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T15:01:53.454895"
+      "timestamp": "2026-08-18T15:59:39.755319"
     },
     {
       "platform": "Amazon.sg",
@@ -1038,7 +1054,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T15:00:03.405678"
+      "timestamp": "2026-08-18T15:58:31.429968"
     },
     {
       "platform": "Amazon.sg",
@@ -1166,7 +1182,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T15:00:37.338049"
+      "timestamp": "2026-08-18T15:35:31.898874"
     },
     {
       "platform": "Amazon.sg",
@@ -1182,7 +1198,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T15:09:47.170477"
+      "timestamp": "2026-08-18T15:38:25.698397"
     },
     {
       "platform": "Amazon.sg",
@@ -1198,7 +1214,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T15:09:47.170376"
+      "timestamp": "2026-08-18T15:54:57.672677"
     },
     {
       "platform": "Amazon.sg",
@@ -1230,7 +1246,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T14:59:51.477796"
+      "timestamp": "2026-08-18T15:58:31.430084"
     },
     {
       "platform": "Amazon.sg",
@@ -1262,7 +1278,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T15:01:53.454781"
+      "timestamp": "2026-08-18T15:37:23.135028"
     },
     {
       "platform": "Amazon.sg",
@@ -1278,7 +1294,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T15:00:37.337903"
+      "timestamp": "2026-08-18T15:36:41.916614"
     },
     {
       "platform": "Amazon.sg",
@@ -1342,7 +1358,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T15:00:03.405461"
+      "timestamp": "2026-08-18T15:49:22.358974"
     },
     {
       "platform": "Amazon.sg",
@@ -1518,7 +1534,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T15:01:53.454851"
+      "timestamp": "2026-08-18T15:59:39.755270"
     },
     {
       "platform": "Amazon.sg",
@@ -1886,7 +1902,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T15:00:03.405485"
+      "timestamp": "2026-08-18T15:35:31.899090"
     },
     {
       "platform": "Amazon.sg",
@@ -2258,6 +2274,22 @@
     },
     {
       "platform": "Amazon.sg",
+      "title": "Drobo SATA HDD 10TB Model DR-5NS10T",
+      "url": "https://www.amazon.sg/dp/B00AQR9BK2",
+      "image_url": "https://m.media-amazon.com/images/I/31GlPXd9FSL._AC_UL320_.jpg",
+      "price": 1412.0,
+      "original_price": 1412.0,
+      "capacity_gb": 10000.0,
+      "capacity_tb": 10.0,
+      "is_ssd": false,
+      "cost_per_tb": 141.2,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T15:58:31.430096"
+    },
+    {
+      "platform": "Amazon.sg",
       "title": "MOVE SPEED 2TB Solid State Drives with Dual Ports & Push-Pull Design 560MB/s Read Speed, Type C + USB 3.2 Drive Portable ssd for iPhone 15/16/Android/Mac",
       "url": "https://www.amazon.sg/dp/B0F5Q4S1L2",
       "image_url": "https://m.media-amazon.com/images/I/71XlrGvZA-L._AC_UL320_.jpg",
@@ -2606,7 +2638,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T15:02:34.670983"
+      "timestamp": "2026-08-18T15:37:23.135228"
     },
     {
       "platform": "Amazon.sg",
@@ -3362,6 +3394,22 @@
     },
     {
       "platform": "Amazon.sg",
+      "title": "Lenovo DCG 3. 5\" 10TB 7. 2K SATA 6GB HDD FD",
+      "url": "https://www.amazon.sg/dp/B0764VQ6XR",
+      "image_url": "https://m.media-amazon.com/images/I/51drROKr-bL._AC_UL320_.jpg",
+      "price": 2038.0,
+      "original_price": 2038.0,
+      "capacity_gb": 10000.0,
+      "capacity_tb": 10.0,
+      "is_ssd": false,
+      "cost_per_tb": 203.8,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T15:58:31.430231"
+    },
+    {
+      "platform": "Amazon.sg",
       "title": "SSK 1TB External SSD USB Flash Drive up to 1000MB/s USB C+A 3.2 Stick | Support OTG,4K60Hz ProRes HDR,2 in 1 Dual Head,Fast External SSD for iPhone 15/16/17/Android Phone,Zinc Alloy",
       "url": "https://www.amazon.sg/dp/B0CP9DS1YL",
       "image_url": "https://m.media-amazon.com/images/I/61CSeHjRPHL._AC_UL320_.jpg",
@@ -3406,7 +3454,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T15:01:53.455095"
+      "timestamp": "2026-08-18T15:59:39.755006"
     },
     {
       "platform": "Amazon.sg",
@@ -6193,6 +6241,6 @@
       "timestamp": "2026-08-18T09:28:16.728959"
     }
   ],
-  "lastUpdated": "2026-08-18T15:25:55.259001",
-  "exportedAt": "2026-08-18T15:25:57.093929"
+  "lastUpdated": "2026-08-18T15:59:39.755464",
+  "exportedAt": "2026-08-18T16:00:15.991268"
 }
