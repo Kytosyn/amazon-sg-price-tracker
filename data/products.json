@@ -2,6 +2,22 @@
   "products": [
     {
       "platform": "Amazon.sg",
+      "title": "20PCS Capacity Sticker Label for Hard Drive Tray Caddy DXD9H 0DXD9H X7K8W 0X7K8W, Compatible for Dell PowerEdge 16th-14th Gen r740 r640 r440 r340 r750 r650 r550 r760 r660 r6625, 18TB, SATA, 6GB, 7.2K",
+      "url": "https://www.amazon.sg/dp/B0F594GGD9",
+      "image_url": "https://m.media-amazon.com/images/I/61naL9loaJL._AC_UL320_.jpg",
+      "price": 15.0,
+      "original_price": 15.0,
+      "capacity_gb": 18000.0,
+      "capacity_tb": 18.0,
+      "is_ssd": false,
+      "cost_per_tb": 0.8333333333333334,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T15:00:37.338349"
+    },
+    {
+      "platform": "Amazon.sg",
       "title": "MAIWO External Hard Drive Enclosure for 2.5 3.5 Inch SATA SSD HDD with SD Card Storage and CD Box Reader, 24TB Capacity, 5Gbps Speed",
       "url": "https://www.amazon.sg/dp/B0BV5V4TVS",
       "image_url": "https://m.media-amazon.com/images/I/51pD3UZOVBL._AC_UL320_.jpg",
@@ -110,7 +126,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T14:25:11.304785"
+      "timestamp": "2026-08-18T15:00:14.588835"
     },
     {
       "platform": "Amazon.sg",
@@ -126,7 +142,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T14:41:36.815360"
+      "timestamp": "2026-08-18T15:12:53.262490"
     },
     {
       "platform": "Amazon.sg",
@@ -142,7 +158,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T13:45:05.601789"
+      "timestamp": "2026-08-18T15:00:37.338101"
     },
     {
       "platform": "Amazon.sg",
@@ -174,7 +190,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T14:26:04.596711"
+      "timestamp": "2026-08-18T15:02:34.670916"
     },
     {
       "platform": "Amazon.sg",
@@ -190,23 +206,23 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T14:29:10.495895"
+      "timestamp": "2026-08-18T15:02:34.670710"
     },
     {
       "platform": "Amazon.sg",
       "title": "Seagate EXOS X24 24TB Internal Hard Drive 3.5 inches SATA 3 Gbit/s 512 MB, ST24000NM000C (Refurbished)",
       "url": "https://www.amazon.sg/dp/B0DFCTBDRQ",
       "image_url": "https://m.media-amazon.com/images/I/61JqMS7rwvL._AC_UL320_.jpg",
-      "price": 1110.0,
-      "original_price": 1110.0,
+      "price": 1104.0,
+      "original_price": 1104.0,
       "capacity_gb": 24000.0,
       "capacity_tb": 24.0,
       "is_ssd": false,
-      "cost_per_tb": 46.25,
+      "cost_per_tb": 46.0,
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T14:29:10.496010"
+      "timestamp": "2026-08-18T15:02:34.670952"
     },
     {
       "platform": "Amazon.sg",
@@ -222,7 +238,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T14:23:49.699694"
+      "timestamp": "2026-08-18T14:59:51.477628"
     },
     {
       "platform": "Amazon.sg",
@@ -238,7 +254,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T14:23:49.699611"
+      "timestamp": "2026-08-18T14:59:51.477527"
     },
     {
       "platform": "Amazon.sg",
@@ -254,7 +270,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T14:23:49.699631"
+      "timestamp": "2026-08-18T14:59:51.477548"
     },
     {
       "platform": "Amazon.sg",
@@ -270,7 +286,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T14:23:49.699680"
+      "timestamp": "2026-08-18T14:59:51.477614"
     },
     {
       "platform": "Amazon.sg",
@@ -286,7 +302,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T14:04:39.299282"
+      "timestamp": "2026-08-18T15:17:17.737272"
     },
     {
       "platform": "Amazon.sg",
@@ -334,7 +350,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T14:26:04.596586"
+      "timestamp": "2026-08-18T15:11:14.045715"
     },
     {
       "platform": "Amazon.sg",
@@ -350,7 +366,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T14:26:04.596607"
+      "timestamp": "2026-08-18T15:00:37.337825"
     },
     {
       "platform": "Amazon.sg",
@@ -366,7 +382,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T14:29:10.495878"
+      "timestamp": "2026-08-18T15:02:34.670694"
     },
     {
       "platform": "Amazon.sg",
@@ -414,23 +430,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T14:26:04.596824"
-    },
-    {
-      "platform": "Amazon.sg",
-      "title": "Seagate IronWolf Pro 12TB Enterprise NAS Internal HDD Hard Drive \u2013 CMR 3.5 Inch SATA 6Gb/s 7200 RPM 256MB Cache for RAID Network Attached Storage, Rescue Services - FFP (ST12000NTZ01) | CMR technology with 7200 RPM and SATA III for RAID, NAS and servers",
-      "url": "https://www.amazon.sg/dp/B0B94KSFTH",
-      "image_url": "https://m.media-amazon.com/images/I/61UYjpzVj+L._AC_UL320_.jpg",
-      "price": 703.0,
-      "original_price": 703.0,
-      "capacity_gb": 12000.0,
-      "capacity_tb": 12.0,
-      "is_ssd": false,
-      "cost_per_tb": 58.583333333333336,
-      "rating": 0.0,
-      "review_count": 0,
-      "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T14:26:29.750147"
+      "timestamp": "2026-08-18T15:00:37.337997"
     },
     {
       "platform": "Amazon.sg",
@@ -446,7 +446,23 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T14:26:29.750194"
+      "timestamp": "2026-08-18T15:00:25.846002"
+    },
+    {
+      "platform": "Amazon.sg",
+      "title": "Seagate IronWolf Pro 12TB Enterprise NAS Internal HDD Hard Drive \u2013 CMR 3.5 Inch SATA 6Gb/s 7200 RPM 256MB Cache for RAID Network Attached Storage, Rescue Services - FFP (ST12000NTZ01) | CMR technology with 7200 RPM and SATA III for RAID, NAS and servers",
+      "url": "https://www.amazon.sg/dp/B0B94KSFTH",
+      "image_url": "https://m.media-amazon.com/images/I/61UYjpzVj+L._AC_UL320_.jpg",
+      "price": 703.0,
+      "original_price": 703.0,
+      "capacity_gb": 12000.0,
+      "capacity_tb": 12.0,
+      "is_ssd": false,
+      "cost_per_tb": 58.583333333333336,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T15:01:53.454928"
     },
     {
       "platform": "Amazon.sg",
@@ -462,7 +478,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T14:23:49.699891"
+      "timestamp": "2026-08-18T14:59:51.477826"
     },
     {
       "platform": "Amazon.sg",
@@ -478,7 +494,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T13:47:33.221572"
+      "timestamp": "2026-08-18T15:01:53.454968"
     },
     {
       "platform": "Amazon.sg",
@@ -510,7 +526,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T14:23:49.699764"
+      "timestamp": "2026-08-18T15:00:03.405496"
     },
     {
       "platform": "Amazon.sg",
@@ -526,7 +542,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T14:26:29.750278"
+      "timestamp": "2026-08-18T15:00:25.846098"
     },
     {
       "platform": "Amazon.sg",
@@ -542,7 +558,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T14:25:27.943841"
+      "timestamp": "2026-08-18T15:01:53.454665"
     },
     {
       "platform": "Amazon.sg",
@@ -574,7 +590,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T14:42:54.119427"
+      "timestamp": "2026-08-18T15:21:43.494469"
     },
     {
       "platform": "Amazon.sg",
@@ -590,7 +606,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T14:26:29.750405"
+      "timestamp": "2026-08-18T15:09:47.170453"
     },
     {
       "platform": "Amazon.sg",
@@ -622,7 +638,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T14:41:36.815414"
+      "timestamp": "2026-08-18T15:09:47.170433"
     },
     {
       "platform": "Amazon.sg",
@@ -670,7 +686,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T14:26:29.750339"
+      "timestamp": "2026-08-18T15:00:37.338114"
     },
     {
       "platform": "Amazon.sg",
@@ -734,7 +750,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T14:25:27.944032"
+      "timestamp": "2026-08-18T15:01:53.455083"
     },
     {
       "platform": "Amazon.sg",
@@ -766,7 +782,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T14:26:04.596852"
+      "timestamp": "2026-08-18T15:00:25.846111"
     },
     {
       "platform": "Amazon.sg",
@@ -798,7 +814,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T14:26:29.750386"
+      "timestamp": "2026-08-18T15:00:25.846389"
     },
     {
       "platform": "Amazon.sg",
@@ -814,7 +830,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T14:41:36.815472"
+      "timestamp": "2026-08-18T15:17:23.258432"
     },
     {
       "platform": "Amazon.sg",
@@ -830,7 +846,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T14:26:04.596685"
+      "timestamp": "2026-08-18T15:00:37.337891"
     },
     {
       "platform": "Amazon.sg",
@@ -878,7 +894,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T14:25:27.944015"
+      "timestamp": "2026-08-18T15:02:34.670812"
     },
     {
       "platform": "Amazon.sg",
@@ -910,7 +926,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T14:23:49.700088"
+      "timestamp": "2026-08-18T14:59:51.478056"
     },
     {
       "platform": "Amazon.sg",
@@ -926,7 +942,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T14:23:49.699777"
+      "timestamp": "2026-08-18T14:59:51.477712"
     },
     {
       "platform": "Amazon.sg",
@@ -958,7 +974,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T14:25:27.944206"
+      "timestamp": "2026-08-18T15:01:53.454895"
     },
     {
       "platform": "Amazon.sg",
@@ -990,7 +1006,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T13:47:33.221658"
+      "timestamp": "2026-08-18T15:02:34.670969"
     },
     {
       "platform": "Amazon.sg",
@@ -1022,7 +1038,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T14:23:49.699835"
+      "timestamp": "2026-08-18T15:00:03.405678"
     },
     {
       "platform": "Amazon.sg",
@@ -1054,7 +1070,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T14:05:57.061234"
+      "timestamp": "2026-08-18T15:25:55.259001"
     },
     {
       "platform": "Amazon.sg",
@@ -1150,7 +1166,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T14:26:29.750328"
+      "timestamp": "2026-08-18T15:00:37.338049"
     },
     {
       "platform": "Amazon.sg",
@@ -1166,7 +1182,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T14:29:49.587107"
+      "timestamp": "2026-08-18T15:09:47.170477"
     },
     {
       "platform": "Amazon.sg",
@@ -1182,7 +1198,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T14:26:29.750213"
+      "timestamp": "2026-08-18T15:09:47.170376"
     },
     {
       "platform": "Amazon.sg",
@@ -1198,7 +1214,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T14:29:10.495927"
+      "timestamp": "2026-08-18T15:02:34.670752"
     },
     {
       "platform": "Amazon.sg",
@@ -1214,7 +1230,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T14:23:49.699847"
+      "timestamp": "2026-08-18T14:59:51.477796"
     },
     {
       "platform": "Amazon.sg",
@@ -1246,7 +1262,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T14:25:27.943961"
+      "timestamp": "2026-08-18T15:01:53.454781"
     },
     {
       "platform": "Amazon.sg",
@@ -1262,7 +1278,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T14:26:04.596730"
+      "timestamp": "2026-08-18T15:00:37.337903"
     },
     {
       "platform": "Amazon.sg",
@@ -1326,7 +1342,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T13:41:07.598120"
+      "timestamp": "2026-08-18T15:00:03.405461"
     },
     {
       "platform": "Amazon.sg",
@@ -1502,7 +1518,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T14:25:27.944258"
+      "timestamp": "2026-08-18T15:01:53.454851"
     },
     {
       "platform": "Amazon.sg",
@@ -1518,7 +1534,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T14:25:11.304994"
+      "timestamp": "2026-08-18T15:00:14.589043"
     },
     {
       "platform": "Amazon.sg",
@@ -1582,7 +1598,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T13:45:05.601767"
+      "timestamp": "2026-08-18T15:00:37.338181"
     },
     {
       "platform": "Amazon.sg",
@@ -1870,7 +1886,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T13:46:06.331771"
+      "timestamp": "2026-08-18T15:00:03.405485"
     },
     {
       "platform": "Amazon.sg",
@@ -2366,7 +2382,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T13:47:33.221759"
+      "timestamp": "2026-08-18T15:01:53.455058"
     },
     {
       "platform": "Amazon.sg",
@@ -2590,7 +2606,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T14:29:10.496117"
+      "timestamp": "2026-08-18T15:02:34.670983"
     },
     {
       "platform": "Amazon.sg",
@@ -3390,7 +3406,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T14:27:23.460363"
+      "timestamp": "2026-08-18T15:01:53.455095"
     },
     {
       "platform": "Amazon.sg",
@@ -6177,6 +6193,6 @@
       "timestamp": "2026-08-18T09:28:16.728959"
     }
   ],
-  "lastUpdated": "2026-08-18T14:42:54.119427",
-  "exportedAt": "2026-08-18T14:43:38.234994"
+  "lastUpdated": "2026-08-18T15:25:55.259001",
+  "exportedAt": "2026-08-18T15:25:57.093929"
 }
