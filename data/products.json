@@ -62,7 +62,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T09:02:56.192172"
+      "timestamp": "2026-08-18T09:28:16.729039"
     },
     {
       "platform": "Amazon.sg",
@@ -94,7 +94,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T09:02:56.192154"
+      "timestamp": "2026-08-18T09:28:16.729036"
     },
     {
       "platform": "Amazon.sg",
@@ -114,6 +114,22 @@
     },
     {
       "platform": "Amazon.sg",
+      "title": "Intenso 5 TB External Hard Drive 2.5 Inch - Portable HDD USB 3.2 - Black | Mobile storage including protective case for PC and Mac, SuperSpeed USB-A port, 5400 rpm for backups and data backup",
+      "url": "https://www.amazon.sg/dp/B0B6JF2WS9",
+      "image_url": "https://m.media-amazon.com/images/I/61RecfL2tgL._AC_UL320_.jpg",
+      "price": 249.0,
+      "original_price": 249.0,
+      "capacity_gb": 5000.0,
+      "capacity_tb": 5.0,
+      "is_ssd": false,
+      "cost_per_tb": 49.8,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T09:29:08.108322"
+    },
+    {
+      "platform": "Amazon.sg",
       "title": "Buffalo HD-ACD4U3 CMR HDD External Hard Drive, 4TB TV Recording, PC/PS4/4K Compatible, Buffalo Nasne\u2122 Compatible, Quiet & Compact, Made in Japan, Fault Prediction, Mimamori Signal",
       "url": "https://www.amazon.sg/dp/B0BMKBHDJX",
       "image_url": "https://m.media-amazon.com/images/I/61YhicJvbmL._AC_UL320_.jpg",
@@ -126,7 +142,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T09:03:32.131909"
+      "timestamp": "2026-08-18T09:27:50.722159"
     },
     {
       "platform": "Amazon.sg",
@@ -158,7 +174,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T09:03:32.131988"
+      "timestamp": "2026-08-18T09:28:16.729012"
     },
     {
       "platform": "Amazon.sg",
@@ -175,6 +191,22 @@
       "review_count": 0,
       "seller": "Amazon.sg",
       "timestamp": "2026-08-18T09:03:32.131933"
+    },
+    {
+      "platform": "Amazon.sg",
+      "title": "Western Digital 10TB WD Red Plus NAS Internal Hard Drive HDD - 7200 RPM, SATA 6 GB/s, CMR, 512 MB Cache, 3.5\" - WD100EFGX | 7200 RPM, SATA 6 GB/s, 512 MB Cache, 3.5, 6 GB/s",
+      "url": "https://www.amazon.sg/dp/B0F4R3YCL6",
+      "image_url": "https://m.media-amazon.com/images/I/71gMJPeIFwL._AC_UL320_.jpg",
+      "price": 619.0,
+      "original_price": 619.0,
+      "capacity_gb": 10000.0,
+      "capacity_tb": 10.0,
+      "is_ssd": false,
+      "cost_per_tb": 61.9,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T09:29:08.108305"
     },
     {
       "platform": "Amazon.sg",
@@ -206,7 +238,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T09:03:32.131871"
+      "timestamp": "2026-08-18T09:28:16.728868"
     },
     {
       "platform": "Amazon.sg",
@@ -223,6 +255,22 @@
       "review_count": 0,
       "seller": "Amazon.sg",
       "timestamp": "2026-08-18T09:03:32.132113"
+    },
+    {
+      "platform": "Amazon.sg",
+      "title": "Western Digital 12 TB My Book USB 3.0 Desktop Hard Drive with Password Protection and Auto Backup Software, Black",
+      "url": "https://www.amazon.sg/dp/B07W7YBB9H",
+      "image_url": "https://m.media-amazon.com/images/I/61k+4mo5bNL._AC_UL320_.jpg",
+      "price": 774.0,
+      "original_price": 774.0,
+      "capacity_gb": 12000.0,
+      "capacity_tb": 12.0,
+      "is_ssd": false,
+      "cost_per_tb": 64.5,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T09:27:50.722265"
     },
     {
       "platform": "Amazon.sg",
@@ -286,7 +334,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T09:03:32.131952"
+      "timestamp": "2026-08-18T09:27:50.722199"
     },
     {
       "platform": "Amazon.sg",
@@ -303,6 +351,22 @@
       "review_count": 0,
       "seller": "Amazon.sg",
       "timestamp": "2026-08-18T09:03:32.131842"
+    },
+    {
+      "platform": "Amazon.sg",
+      "title": "Verbatim 2TB Portable Hard Drive, Store'n'Go - USB 3.0 - Compatible with USB 2.0 - PC/Mac - Diamond Black",
+      "url": "https://www.amazon.sg/dp/B00K2JC8NQ",
+      "image_url": "https://m.media-amazon.com/images/I/61WboV9OJ3L._AC_UL320_.jpg",
+      "price": 140.0,
+      "original_price": 140.0,
+      "capacity_gb": 2000.0,
+      "capacity_tb": 2.0,
+      "is_ssd": false,
+      "cost_per_tb": 70.0,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T09:28:16.728796"
     },
     {
       "platform": "Amazon.sg",
@@ -338,6 +402,22 @@
     },
     {
       "platform": "Amazon.sg",
+      "title": "Intenso Memory Drive - 2, 5\" External Hard Drive 2 TB",
+      "url": "https://www.amazon.sg/dp/B073P9L81C",
+      "image_url": "https://m.media-amazon.com/images/I/61RecfL2tgL._AC_UL320_.jpg",
+      "price": 145.0,
+      "original_price": 145.0,
+      "capacity_gb": 2000.0,
+      "capacity_tb": 2.0,
+      "is_ssd": false,
+      "cost_per_tb": 72.5,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T09:28:16.728792"
+    },
+    {
+      "platform": "Amazon.sg",
       "title": "LaCie 3657819 Rugged USB-C 3.1 Portable External Hard Drive, 4TB, New Packaging,Orange | Outdoor portable HDD, drop, pressure & rain proof, bus-powered. Adobe CC Trial 3 year warranty + rescue",
       "url": "https://www.amazon.sg/dp/B01MSSJ32J",
       "image_url": "https://m.media-amazon.com/images/I/91bati0rB3L._AC_UL320_.jpg",
@@ -351,6 +431,22 @@
       "review_count": 0,
       "seller": "Amazon.sg",
       "timestamp": "2026-08-18T09:03:32.131980"
+    },
+    {
+      "platform": "Amazon.sg",
+      "title": "Seagate STKY2000404 One Touch External HDD with Password Protection, 2TB, Gray | Premium HDD with password, customizable backup, Windows & macOS. Adobe CC Trial. 2 Year Warranty + Rescue",
+      "url": "https://www.amazon.sg/dp/B094QZMM69",
+      "image_url": "https://m.media-amazon.com/images/I/71U5CNhRzdL._AC_UL320_.jpg",
+      "price": 149.0,
+      "original_price": 149.0,
+      "capacity_gb": 2000.0,
+      "capacity_tb": 2.0,
+      "is_ssd": false,
+      "cost_per_tb": 74.5,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T09:28:16.728732"
     },
     {
       "platform": "Amazon.sg",
@@ -370,6 +466,22 @@
     },
     {
       "platform": "Amazon.sg",
+      "title": "Intenso 6021480 Memory Play Portable Hard Drive 2TB Portable External TV Hard Drive - 2.5 Inch 5400 rpm 8MB Cache USB 3 with TV Mount Black",
+      "url": "https://www.amazon.sg/dp/B089XDNLTZ",
+      "image_url": "https://m.media-amazon.com/images/I/61r5EJvpuzL._AC_UL320_.jpg",
+      "price": 155.0,
+      "original_price": 155.0,
+      "capacity_gb": 2000.0,
+      "capacity_tb": 2.0,
+      "is_ssd": false,
+      "cost_per_tb": 77.5,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T09:28:16.728854"
+    },
+    {
+      "platform": "Amazon.sg",
       "title": "Toshiba Canvio Partner 2TB Portable 2.5\u2019\u2019 External Hard Drive, USB 3.2, Mac | Reliable everyday storage for Windows and Mac; fast USB 3.2; compact and lightweight; ideal for documents, photos and backups",
       "url": "https://www.amazon.sg/dp/B0BGXZRKQN",
       "image_url": "https://m.media-amazon.com/images/I/817eP8ZuvrL._AC_UL320_.jpg",
@@ -382,7 +494,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T09:04:23.950635"
+      "timestamp": "2026-08-18T09:28:16.728762"
     },
     {
       "platform": "Amazon.sg",
@@ -398,7 +510,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T09:03:32.132064"
+      "timestamp": "2026-08-18T09:28:16.728703"
     },
     {
       "platform": "Amazon.sg",
@@ -418,6 +530,22 @@
     },
     {
       "platform": "Amazon.sg",
+      "title": "iOdata HDPL-UTA2K/E IODATA External Hard Drive, 2 TB, For TV Recording, Quiet & Compact, Terrestrial Digital Up to 251 Hours, Made in Japan",
+      "url": "https://www.amazon.sg/dp/B0BZ875QLS",
+      "image_url": "https://m.media-amazon.com/images/I/715O6n4X2rL._AC_UL320_.jpg",
+      "price": 166.0,
+      "original_price": 166.0,
+      "capacity_gb": 2000.0,
+      "capacity_tb": 2.0,
+      "is_ssd": false,
+      "cost_per_tb": 83.0,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T09:28:16.728801"
+    },
+    {
+      "platform": "Amazon.sg",
       "title": "Avolusion M3 Series 1TB USB 3.0 Portable External Hard Drive - Black (for Windows, Mac OS, Xbox, PS)",
       "url": "https://www.amazon.sg/dp/B0G565283W",
       "image_url": "https://m.media-amazon.com/images/I/51TKXUgWylL._AC_UL320_.jpg",
@@ -434,6 +562,22 @@
     },
     {
       "platform": "Amazon.sg",
+      "title": "Western Digital WDBYVG0020BRD-WESN My Passport Portable External Hard Drive, 2TB, Red",
+      "url": "https://www.amazon.sg/dp/B07VTW2LQ5",
+      "image_url": "https://m.media-amazon.com/images/I/51+bbH2T7AL._AC_UL320_.jpg",
+      "price": 171.0,
+      "original_price": 171.0,
+      "capacity_gb": 2000.0,
+      "capacity_tb": 2.0,
+      "is_ssd": false,
+      "cost_per_tb": 85.5,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T09:28:16.728806"
+    },
+    {
+      "platform": "Amazon.sg",
       "title": "WD Purple 4TB Surveillance 3.5\" Internal Hard Drive, AllFrame Technology, SATA 6 Gbit/s, 180TB/yr, 128MB Cache",
       "url": "https://www.amazon.sg/dp/B0G6BSNYZ8",
       "image_url": "https://m.media-amazon.com/images/I/71Od7Xf5SwL._AC_UL320_.jpg",
@@ -446,7 +590,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T09:03:32.132044"
+      "timestamp": "2026-08-18T09:28:16.728993"
     },
     {
       "platform": "Amazon.sg",
@@ -478,7 +622,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T09:04:23.950799"
+      "timestamp": "2026-08-18T09:28:16.728769"
     },
     {
       "platform": "Amazon.sg",
@@ -514,6 +658,22 @@
     },
     {
       "platform": "Amazon.sg",
+      "title": "WD 2TB My Passport Portable Hard Drive, Works with USB-C and USB-A, Windows PC, Mac, Chromebook, Gaming Consoles, and Mobile Devices, Backup Software and Password Protection - WDBRMD0020BGY-WESN",
+      "url": "https://www.amazon.sg/dp/B0CLPCBZKK",
+      "image_url": "https://m.media-amazon.com/images/I/710w2MVDiVL._AC_UL320_.jpg",
+      "price": 178.0,
+      "original_price": 178.0,
+      "capacity_gb": 2000.0,
+      "capacity_tb": 2.0,
+      "is_ssd": false,
+      "cost_per_tb": 89.0,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T09:28:16.728774"
+    },
+    {
+      "platform": "Amazon.sg",
       "title": "Seagate STKM2000400 Expansion Portable USB 3.0 External Hard Drive, 2TB,Black",
       "url": "https://www.amazon.sg/dp/B08ZJG6TVT",
       "image_url": "https://m.media-amazon.com/images/I/814SDu24dnL._AC_UL320_.jpg",
@@ -526,7 +686,23 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T09:02:04.533486"
+      "timestamp": "2026-08-18T09:28:16.728782"
+    },
+    {
+      "platform": "Amazon.sg",
+      "title": "Western Digital WDBA2D0020BBL-WESN My Passport for Mac Portable External Hard Drive, 2TB, Blue",
+      "url": "https://www.amazon.sg/dp/B07VSPL8FJ",
+      "image_url": "https://m.media-amazon.com/images/I/618VbHZAaOL._AC_UL320_.jpg",
+      "price": 178.0,
+      "original_price": 178.0,
+      "capacity_gb": 2000.0,
+      "capacity_tb": 2.0,
+      "is_ssd": false,
+      "cost_per_tb": 89.0,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T09:28:16.728788"
     },
     {
       "platform": "Amazon.sg",
@@ -542,7 +718,55 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T09:02:04.533285"
+      "timestamp": "2026-08-18T09:28:16.728910"
+    },
+    {
+      "platform": "Amazon.sg",
+      "title": "Western Digital WD Blue Internal Hard Drive 2TB CMR 3.5 Inch SATA 5400 rpm Cache 64 MB PC",
+      "url": "https://www.amazon.sg/dp/B0CKLCFR1Q",
+      "image_url": "https://m.media-amazon.com/images/I/71eGvNxnL-L._AC_UL320_.jpg",
+      "price": 189.0,
+      "original_price": 189.0,
+      "capacity_gb": 2000.0,
+      "capacity_tb": 2.0,
+      "is_ssd": false,
+      "cost_per_tb": 94.5,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T09:28:16.728834"
+    },
+    {
+      "platform": "Amazon.sg",
+      "title": "Lenovo - 4XB0X01142 4 TB Hard Drive - 3.5 Internal - SATA (SATA/600) - Silver - Workstation Device Supported - 7200rpm - 128 MB Buffer",
+      "url": "https://www.amazon.sg/dp/B083GY13XS",
+      "image_url": "https://m.media-amazon.com/images/I/61wftXquySL._AC_UL320_.jpg",
+      "price": 379.0,
+      "original_price": 379.0,
+      "capacity_gb": 4000.0,
+      "capacity_tb": 4.0,
+      "is_ssd": false,
+      "cost_per_tb": 94.75,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T09:29:08.108317"
+    },
+    {
+      "platform": "Amazon.sg",
+      "title": "SEAGATE 2TB HDD SATA 5400rpm 6.4 cm 2.5 Inch 7 mm Height 128 Mb Cache BLK",
+      "url": "https://www.amazon.sg/dp/B01BVS75MK",
+      "image_url": "https://m.media-amazon.com/images/I/51Uq2OhD-tL._AC_UL320_.jpg",
+      "price": 190.0,
+      "original_price": 190.0,
+      "capacity_gb": 2000.0,
+      "capacity_tb": 2.0,
+      "is_ssd": false,
+      "cost_per_tb": 95.0,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T09:28:16.728826"
     },
     {
       "platform": "Amazon.sg",
@@ -642,22 +866,6 @@
     },
     {
       "platform": "Amazon.sg",
-      "title": "Toshiba Canvio Basics 1TB Portable External Hard Drive USB 3.0, Black - HDTB510XK3AA",
-      "url": "https://www.amazon.sg/dp/B0BQX6DVWY",
-      "image_url": "https://m.media-amazon.com/images/I/91e-WNUpH0L._AC_UL320_.jpg",
-      "price": 99.0,
-      "original_price": 99.0,
-      "capacity_gb": 1000.0,
-      "capacity_tb": 1.0,
-      "is_ssd": false,
-      "cost_per_tb": 99.0,
-      "rating": 0.0,
-      "review_count": 0,
-      "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T09:02:04.533243"
-    },
-    {
-      "platform": "Amazon.sg",
       "title": "WD_BLACK P10 2 TB, Portable External Hard Drive, Mobile and High Performance, Works with Playstation, Xbox, PC, Console and Mac, Store 125 Games, One Month Subscription to Discord NITRO, PINK | 2TB external hard drive with 130MB/s speed and USB 3.2 Gen 1 for gaming, storage and portability",
       "url": "https://www.amazon.sg/dp/B0DD5VDBF8",
       "image_url": "https://m.media-amazon.com/images/I/719IUHcun7L._AC_UL320_.jpg",
@@ -670,7 +878,39 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T09:03:32.132163"
+      "timestamp": "2026-08-18T09:28:16.728811"
+    },
+    {
+      "platform": "Amazon.sg",
+      "title": "Toshiba Canvio Basics 1TB Portable External Hard Drive USB 3.0, Black - HDTB510XK3AA",
+      "url": "https://www.amazon.sg/dp/B0BQX6DVWY",
+      "image_url": "https://m.media-amazon.com/images/I/91e-WNUpH0L._AC_UL320_.jpg",
+      "price": 99.0,
+      "original_price": 99.0,
+      "capacity_gb": 1000.0,
+      "capacity_tb": 1.0,
+      "is_ssd": false,
+      "cost_per_tb": 99.0,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T09:28:16.728830"
+    },
+    {
+      "platform": "Amazon.sg",
+      "title": "Seagate Game Drive for Xbox 2TB External Hard Drive Portable HDD - USB 3.2 Gen 1, Black with built-in green LED bar, Xbox Certified, 3 year Rescue Services (STKX2000400)",
+      "url": "https://www.amazon.sg/dp/B08Y1Q2KSZ",
+      "image_url": "https://m.media-amazon.com/images/I/416kbEX-pVL._AC_UL320_.jpg",
+      "price": 201.0,
+      "original_price": 201.0,
+      "capacity_gb": 2000.0,
+      "capacity_tb": 2.0,
+      "is_ssd": false,
+      "cost_per_tb": 100.5,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T09:29:08.108206"
     },
     {
       "platform": "Amazon.sg",
@@ -738,6 +978,54 @@
     },
     {
       "platform": "Amazon.sg",
+      "title": "Seagate IronWolf, 2TB, Enterprise Internal NAS HDD \u2013 CMR 3.5 Inch, SATA 6GB/s, 5900 RPM, 256 MB Cache for RAID NAS - Frustration Free Packaging (ST2000NTZ03) | 5400 RPM. 24/7 NAS-optimized HDD AgileArray All-CMR RV Sensors for Multi-Bay 180TB/Year 3 year warranty + rescue",
+      "url": "https://www.amazon.sg/dp/B0BM4VW8NF",
+      "image_url": "https://m.media-amazon.com/images/I/71D-hMOMG4L._AC_UL320_.jpg",
+      "price": 208.0,
+      "original_price": 208.0,
+      "capacity_gb": 2000.0,
+      "capacity_tb": 2.0,
+      "is_ssd": false,
+      "cost_per_tb": 104.0,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T09:28:16.728844"
+    },
+    {
+      "platform": "Amazon.sg",
+      "title": "LaCie Mobile Drive 2TB External Hard Drive Portable HDD - Moon Silver, USB-C 3.2, for PC and Mac, Post-Consumer Recycled, with Adobe All Apps Plan and Rescue Services (STLP2000400) | Portable HDD with 25% recycled materials, save one click. Adobe CC trial. 3-year warranty + Rescue",
+      "url": "https://www.amazon.sg/dp/B09ZLTV28B",
+      "image_url": "https://m.media-amazon.com/images/I/81o2ypXqkPL._AC_UL320_.jpg",
+      "price": 210.0,
+      "original_price": 210.0,
+      "capacity_gb": 2000.0,
+      "capacity_tb": 2.0,
+      "is_ssd": false,
+      "cost_per_tb": 105.0,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T09:28:16.728822"
+    },
+    {
+      "platform": "Amazon.sg",
+      "title": "WD_BLACK 2TB P10 Game Drive, Portable External Hard Drive, Works with PlayStation, Xbox, & PC - WDBA2W0020BBK-WES1",
+      "url": "https://www.amazon.sg/dp/B0CGVZDLDP",
+      "image_url": "https://m.media-amazon.com/images/I/61LoKFsOnVL._AC_UL320_.jpg",
+      "price": 210.0,
+      "original_price": 210.0,
+      "capacity_gb": 2000.0,
+      "capacity_tb": 2.0,
+      "is_ssd": false,
+      "cost_per_tb": 105.0,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T09:28:16.728863"
+    },
+    {
+      "platform": "Amazon.sg",
       "title": "ModusTech Facet 1TB External Hard Drive Portable USB-C/USB 3.1 Plug & Play Ultra- Slim HDD Hard Drive for Backup, Gaming, PC, Mac, Laptop, PS4, Xbox, Smart TV (Black)",
       "url": "https://www.amazon.sg/dp/B0FDF3WZH3",
       "image_url": "https://m.media-amazon.com/images/I/719051AnlsL._AC_UL320_.jpg",
@@ -751,6 +1039,54 @@
       "review_count": 0,
       "seller": "Amazon.sg",
       "timestamp": "2026-08-18T09:02:04.533392"
+    },
+    {
+      "platform": "Amazon.sg",
+      "title": "Transcend Military Drop Tested 2 TB USB 3.0 H3 External Hard Drive (TS2TSJ25H3B),Blue",
+      "url": "https://www.amazon.sg/dp/B00JE8G88M",
+      "image_url": "https://m.media-amazon.com/images/I/61ABEF-tpLL._AC_UL320_.jpg",
+      "price": 220.0,
+      "original_price": 220.0,
+      "capacity_gb": 2000.0,
+      "capacity_tb": 2.0,
+      "is_ssd": false,
+      "cost_per_tb": 110.0,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T09:28:16.728879"
+    },
+    {
+      "platform": "Amazon.sg",
+      "title": "ADATA HD710 Pro External Hard Drive, 2TB, Yellow",
+      "url": "https://www.amazon.sg/dp/B0744NY1Y8",
+      "image_url": "https://m.media-amazon.com/images/I/71I+ADBVOvL._AC_UL320_.jpg",
+      "price": 224.0,
+      "original_price": 224.0,
+      "capacity_gb": 2000.0,
+      "capacity_tb": 2.0,
+      "is_ssd": false,
+      "cost_per_tb": 112.0,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T09:28:16.728892"
+    },
+    {
+      "platform": "Amazon.sg",
+      "title": "iDiskk 4TB MFi Approved iPhone External Hard Drive for iPhone iPad Android | 4TB External iPhone storage,Plug & Play for iPhone17/16/15/14/iPad/Mac/PC,One-Click Auto Backup data,Metallic",
+      "url": "https://www.amazon.sg/dp/B0H29C6K9T",
+      "image_url": "https://m.media-amazon.com/images/I/517r7JvamDL._AC_UL320_.jpg",
+      "price": 449.0,
+      "original_price": 449.0,
+      "capacity_gb": 4000.0,
+      "capacity_tb": 4.0,
+      "is_ssd": false,
+      "cost_per_tb": 112.25,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T09:29:08.108237"
     },
     {
       "platform": "Amazon.sg",
@@ -782,7 +1118,23 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T09:03:32.132148"
+      "timestamp": "2026-08-18T09:28:16.728817"
+    },
+    {
+      "platform": "Amazon.sg",
+      "title": "KingSpec OneBoom 4TB SSD 2.5\" SATA III Internal Solid State Drive, 550MB/s Read Speed, 3D NAND Flash, SATA3 6Gb/s for PC, Laptop and PS4 Upgrade",
+      "url": "https://www.amazon.sg/dp/B0FDG8BKCT",
+      "image_url": "https://m.media-amazon.com/images/I/71P+y4GfUTL._AC_UL320_.jpg",
+      "price": 488.0,
+      "original_price": 488.0,
+      "capacity_gb": 4000.0,
+      "capacity_tb": 4.0,
+      "is_ssd": true,
+      "cost_per_tb": 122.0,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T09:29:08.108241"
     },
     {
       "platform": "Amazon.sg",
@@ -798,7 +1150,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T09:03:32.132106"
+      "timestamp": "2026-08-18T09:25:34.671445"
     },
     {
       "platform": "Amazon.sg",
@@ -821,16 +1173,32 @@
       "title": "iDiskk 2TB App-le Certified External Hard Drive for iPhone 17 & iPad Android Mobile 2TB iPhone Hard Disk,MacBook and PC, Photo Stick to Backup Photos/Videos,Files for iPhone17/16/15/14",
       "url": "https://www.amazon.sg/dp/B0B9MXQGMT",
       "image_url": "https://m.media-amazon.com/images/I/61Ujauxsp8L._AC_UL320_.jpg",
-      "price": 256.0,
-      "original_price": 256.0,
+      "price": 254.0,
+      "original_price": 254.0,
       "capacity_gb": 2000.0,
       "capacity_tb": 2.0,
       "is_ssd": false,
+      "cost_per_tb": 127.0,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T09:28:16.728938"
+    },
+    {
+      "platform": "Amazon.sg",
+      "title": "M.2 2242 SSD 1TB Ngff Internal Solid State Drive High-Performance Hard Drive for Desktop Laptop SATA III 6Gb/s Includes SSD(1TB, M.2 2242)",
+      "url": "https://www.amazon.sg/dp/B08J3PTXNF",
+      "image_url": "https://m.media-amazon.com/images/I/811lCgdaDiL._AC_UL320_.jpg",
+      "price": 128.0,
+      "original_price": 128.0,
+      "capacity_gb": 1000.0,
+      "capacity_tb": 1.0,
+      "is_ssd": true,
       "cost_per_tb": 128.0,
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T09:02:56.191917"
+      "timestamp": "2026-08-18T09:27:50.722203"
     },
     {
       "platform": "Amazon.sg",
@@ -850,6 +1218,22 @@
     },
     {
       "platform": "Amazon.sg",
+      "title": "iDiskk MFi Certified 2TB External Hard Drive for iPhone,iPad,MacBook,PC,Photo Storage Phone Drive for Android Mobile to Backup Photos | Video | Files (auto Backup) for iPhone 17/16/ 15/14/13/12",
+      "url": "https://www.amazon.sg/dp/B0B9MRHDRP",
+      "image_url": "https://m.media-amazon.com/images/I/61LeQjpJs5L._AC_UL320_.jpg",
+      "price": 258.0,
+      "original_price": 258.0,
+      "capacity_gb": 2000.0,
+      "capacity_tb": 2.0,
+      "is_ssd": false,
+      "cost_per_tb": 129.0,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T09:28:16.728899"
+    },
+    {
+      "platform": "Amazon.sg",
       "title": "iDiskk 2TB App-le Certified Portable External Hard Drive for iPhone Android | iPhone External Storage,Plug & Play for iPad/Mac/PC, Free iDiskk App Required for iPhone iPad, One-Click Auto Backup data",
       "url": "https://www.amazon.sg/dp/B0BFWL3JCH",
       "image_url": "https://m.media-amazon.com/images/I/71sz5RSQaXL._AC_UL320_.jpg",
@@ -862,7 +1246,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T09:02:56.192050"
+      "timestamp": "2026-08-18T09:28:16.728972"
     },
     {
       "platform": "Amazon.sg",
@@ -898,6 +1282,22 @@
     },
     {
       "platform": "Amazon.sg",
+      "title": "SanDisk Professional G-Drive 4TB Enterprise Class Desktop External Hard Drive, HDD up to 250 MB/s, USB-C (5Gbps), USB-C (USB 3.2 Gen 2), 7200 RPM Ultrastar, Fast Backup, Premium, Industrial Enclosure",
+      "url": "https://www.amazon.sg/dp/B0B8JQ62B5",
+      "image_url": "https://m.media-amazon.com/images/I/61BDZNncZML._AC_UL320_.jpg",
+      "price": 538.0,
+      "original_price": 538.0,
+      "capacity_gb": 4000.0,
+      "capacity_tb": 4.0,
+      "is_ssd": false,
+      "cost_per_tb": 134.5,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T09:29:08.108262"
+    },
+    {
+      "platform": "Amazon.sg",
       "title": "Seagate STKY1000400 One Touch External HDD with Password Protection, 1TB, Black",
       "url": "https://www.amazon.sg/dp/B094R1T4GS",
       "image_url": "https://m.media-amazon.com/images/I/61AgIo5QrdL._AC_UL320_.jpg",
@@ -910,7 +1310,23 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T09:03:32.132135"
+      "timestamp": "2026-08-18T09:28:16.728885"
+    },
+    {
+      "platform": "Amazon.sg",
+      "title": "Intenso Memory Case 6021530 500 GB External Hard Drive 6.35 cm (2.5 Inch) 5400 rpm 8 MB Cache USB 3.0 Black",
+      "url": "https://www.amazon.sg/dp/B0056ZOLXQ",
+      "image_url": "https://m.media-amazon.com/images/I/61mseloOPuL._AC_UL320_.jpg",
+      "price": 68.0,
+      "original_price": 68.0,
+      "capacity_gb": 500.0,
+      "capacity_tb": 0.5,
+      "is_ssd": false,
+      "cost_per_tb": 136.0,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T09:29:08.108293"
     },
     {
       "platform": "Amazon.sg",
@@ -930,6 +1346,38 @@
     },
     {
       "platform": "Amazon.sg",
+      "title": "Kingspec SSD 2TB 2.5\" SATA III, TLC 3D NAND Flash Internal Hard Drive, Read Up to 570MB/s, for Desktops/Laptops/All-in-One",
+      "url": "https://www.amazon.sg/dp/B0B2K3B537",
+      "image_url": "https://m.media-amazon.com/images/I/61Id42FVKIL._AC_UL320_.jpg",
+      "price": 282.0,
+      "original_price": 282.0,
+      "capacity_gb": 2000.0,
+      "capacity_tb": 2.0,
+      "is_ssd": true,
+      "cost_per_tb": 141.0,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T09:28:16.728902"
+    },
+    {
+      "platform": "Amazon.sg",
+      "title": "MOVE SPEED 2TB Solid State Drives with Dual Ports & Push-Pull Design 560MB/s Read Speed, Type C + USB 3.2 Drive Portable ssd for iPhone 15/16/Android/Mac",
+      "url": "https://www.amazon.sg/dp/B0F5Q4S1L2",
+      "image_url": "https://m.media-amazon.com/images/I/71XlrGvZA-L._AC_UL320_.jpg",
+      "price": 284.0,
+      "original_price": 284.0,
+      "capacity_gb": 2000.0,
+      "capacity_tb": 2.0,
+      "is_ssd": true,
+      "cost_per_tb": 142.0,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T09:28:16.728924"
+    },
+    {
+      "platform": "Amazon.sg",
       "title": "KingSpec 2TB 2 5 Inch SATA SSD, 2.5 Inch SATA III 6Gb/s Internal Solid State Hard Drive - 3D NAND Flash, Compatible with PS4/Desktop/Laptop",
       "url": "https://www.amazon.sg/dp/B0BWDD8143",
       "image_url": "https://m.media-amazon.com/images/I/61+bK3CvVHL._AC_UL320_.jpg",
@@ -942,7 +1390,23 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T09:06:31.538352"
+      "timestamp": "2026-08-18T09:28:16.728921"
+    },
+    {
+      "platform": "Amazon.sg",
+      "title": "Verbatim 2TB Vx500 Portable SSD External Hard Drive USB 3.1 Gen 2 \u2013 Space Gray",
+      "url": "https://www.amazon.sg/dp/B0CQ8MXZPQ",
+      "image_url": "https://m.media-amazon.com/images/I/61vr3aWglWL._AC_UL320_.jpg",
+      "price": 291.0,
+      "original_price": 291.0,
+      "capacity_gb": 2000.0,
+      "capacity_tb": 2.0,
+      "is_ssd": true,
+      "cost_per_tb": 145.5,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T09:29:08.108341"
     },
     {
       "platform": "Amazon.sg",
@@ -962,22 +1426,6 @@
     },
     {
       "platform": "Amazon.sg",
-      "title": "Western Digital WDBUZG0010BBK-WESN Elements Portable External Hard Drive USB 3.0, Black, 1TB",
-      "url": "https://www.amazon.sg/dp/B06VVS7S94",
-      "image_url": "https://m.media-amazon.com/images/I/61EunJBqIkL._AC_UL320_.jpg",
-      "price": 148.0,
-      "original_price": 148.0,
-      "capacity_gb": 1000.0,
-      "capacity_tb": 1.0,
-      "is_ssd": false,
-      "cost_per_tb": 148.0,
-      "rating": 0.0,
-      "review_count": 0,
-      "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T09:02:04.533313"
-    },
-    {
-      "platform": "Amazon.sg",
       "title": "Corsair MP600 CORE Mini 2TB M.2 NVMe PCIe x4 Gen4 2 SSD \u2013 M.2 2230 \u2013 Up to 5,000MB/sec Sequential Read \u2013 High-Density QLC NAND \u2013 Great for Steam Deck, ASUS ROG Ally, Microsoft Surface Pro \u2013 Black",
       "url": "https://www.amazon.sg/dp/B0CKXXY791",
       "image_url": "https://m.media-amazon.com/images/I/71nhUcjJZ4L._AC_UL320_.jpg",
@@ -994,6 +1442,22 @@
     },
     {
       "platform": "Amazon.sg",
+      "title": "Western Digital WDBUZG0010BBK-WESN Elements Portable External Hard Drive USB 3.0, Black, 1TB",
+      "url": "https://www.amazon.sg/dp/B06VVS7S94",
+      "image_url": "https://m.media-amazon.com/images/I/61EunJBqIkL._AC_UL320_.jpg",
+      "price": 149.0,
+      "original_price": 149.0,
+      "capacity_gb": 1000.0,
+      "capacity_tb": 1.0,
+      "is_ssd": false,
+      "cost_per_tb": 149.0,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T09:28:16.728929"
+    },
+    {
+      "platform": "Amazon.sg",
       "title": "Crucial X10 6TB Portable External SSD, up to 2100MB/s, USB-C 3.2 Gen2, IP65 Water and Dust Resistance Rating, External Solid Hard Drive SSD, Matte Blue - CT6000X10SSD9-02",
       "url": "https://www.amazon.sg/dp/B0F3368QFL",
       "image_url": "https://m.media-amazon.com/images/I/41rI1J9FcZL._AC_UL320_.jpg",
@@ -1006,7 +1470,23 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T09:01:23.201657"
+      "timestamp": "2026-08-18T09:29:08.108359"
+    },
+    {
+      "platform": "Amazon.sg",
+      "title": "Apricorn 4TB Aegis Fortress L3- FIPS Level 3 Validated USB 3.0 Hardware Encrypted Portable Drive (AFL3-4TB)",
+      "url": "https://www.amazon.sg/dp/B07M945FMF",
+      "image_url": "https://m.media-amazon.com/images/I/51NzOC98-DS._AC_UL320_.jpg",
+      "price": 611.0,
+      "original_price": 611.0,
+      "capacity_gb": 4000.0,
+      "capacity_tb": 4.0,
+      "is_ssd": false,
+      "cost_per_tb": 152.75,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T09:29:08.108270"
     },
     {
       "platform": "Amazon.sg",
@@ -1070,23 +1550,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T09:02:56.191943"
-    },
-    {
-      "platform": "Amazon.sg",
-      "title": "Bestoss 2.5 Inch 2TB SSD SATA III 6Gb/s Internal Hard Drive for Pc or Laptop, Internal State Drive, Up to 550MB/s, Computer Storage Upgrade for Office, Students, Home Entertainment",
-      "url": "https://www.amazon.sg/dp/B0F47NQ8HX",
-      "image_url": "https://m.media-amazon.com/images/I/71JFtccKGZL._AC_UL320_.jpg",
-      "price": 310.0,
-      "original_price": 310.0,
-      "capacity_gb": 2000.0,
-      "capacity_tb": 2.0,
-      "is_ssd": true,
-      "cost_per_tb": 155.0,
-      "rating": 0.0,
-      "review_count": 0,
-      "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T09:02:56.192056"
+      "timestamp": "2026-08-18T09:28:16.728941"
     },
     {
       "platform": "Amazon.sg",
@@ -1103,6 +1567,38 @@
       "review_count": 0,
       "seller": "Amazon.sg",
       "timestamp": "2026-08-18T09:06:31.538262"
+    },
+    {
+      "platform": "Amazon.sg",
+      "title": "Bestoss 2.5 Inch 2TB SSD SATA III 6Gb/s Internal Hard Drive for Pc or Laptop, Internal State Drive, Up to 550MB/s, Computer Storage Upgrade for Office, Students, Home Entertainment",
+      "url": "https://www.amazon.sg/dp/B0F47NQ8HX",
+      "image_url": "https://m.media-amazon.com/images/I/71JFtccKGZL._AC_UL320_.jpg",
+      "price": 310.0,
+      "original_price": 310.0,
+      "capacity_gb": 2000.0,
+      "capacity_tb": 2.0,
+      "is_ssd": true,
+      "cost_per_tb": 155.0,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T09:28:16.728979"
+    },
+    {
+      "platform": "Amazon.sg",
+      "title": "Synology BeeStation Plus 4TB Personal Cloud Storage Device (BST151-4T)",
+      "url": "https://www.amazon.sg/dp/B0GX2YVY3M",
+      "image_url": "https://m.media-amazon.com/images/I/51eHCpe1mvL._AC_UL320_.jpg",
+      "price": 625.0,
+      "original_price": 625.0,
+      "capacity_gb": 4000.0,
+      "capacity_tb": 4.0,
+      "is_ssd": false,
+      "cost_per_tb": 156.25,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T09:29:08.108225"
     },
     {
       "platform": "Amazon.sg",
@@ -1134,7 +1630,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T09:02:56.192042"
+      "timestamp": "2026-08-18T09:28:16.728968"
     },
     {
       "platform": "Amazon.sg",
@@ -1170,6 +1666,22 @@
     },
     {
       "platform": "Amazon.sg",
+      "title": "SSK Portable SSD 4TB External Solid State Hard Drive USB C Up to 1050MB/s | USB3.2 Gen2 A&C Cable, SMART & TRIM, 4KHDR ProRes, LED Light, OTG, iPhone 15/16/17Pro Compatible, Aluminum",
+      "url": "https://www.amazon.sg/dp/B0FJLKWXPK",
+      "image_url": "https://m.media-amazon.com/images/I/61oxDPWwvxL._AC_UL320_.jpg",
+      "price": 642.0,
+      "original_price": 642.0,
+      "capacity_gb": 4000.0,
+      "capacity_tb": 4.0,
+      "is_ssd": true,
+      "cost_per_tb": 160.5,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T09:29:08.108281"
+    },
+    {
+      "platform": "Amazon.sg",
       "title": "SanDisk 8TB Extreme Portable SSD - Up to 1050MB/s, USB-C, USB 3.2 Gen 2, IP65 Water and Dust Resistance, Updated Firmware - External Solid State Drive - SDSSDE61-8T00-G25",
       "url": "https://www.amazon.sg/dp/B0DLK38TR9",
       "image_url": "https://m.media-amazon.com/images/I/61zuR3UMnWL._AC_UL320_.jpg",
@@ -1198,7 +1710,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T09:06:31.538223"
+      "timestamp": "2026-08-18T09:27:50.722134"
     },
     {
       "platform": "Amazon.sg",
@@ -1218,6 +1730,38 @@
     },
     {
       "platform": "Amazon.sg",
+      "title": "SSK 4TB Portable SSD External Solid State Hard Drive USB3.2 Gen2x2 20Gbps | 2000MB/s USB3.2 Gen 2X2 External SSD, SMART & TRIM, 4KHDR ProRes, LED Light, OTG, iphone 15/16/17 Pro Compatible, Zinc Alloy",
+      "url": "https://www.amazon.sg/dp/B0F43HHZCG",
+      "image_url": "https://m.media-amazon.com/images/I/51otzrSOm2L._AC_UL320_.jpg",
+      "price": 657.0,
+      "original_price": 657.0,
+      "capacity_gb": 4000.0,
+      "capacity_tb": 4.0,
+      "is_ssd": true,
+      "cost_per_tb": 164.25,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T09:29:08.108327"
+    },
+    {
+      "platform": "Amazon.sg",
+      "title": "Bestoss 4TB SATA SSD - 2.5\" Internal Solid State Hard Drive, 550MB/s, 6Gb/s | TLC 3D NAND Chip; Compatible with PC, Laptop, NAS, Servers; Massive Storage for Studios, Gaming",
+      "url": "https://www.amazon.sg/dp/B0F47WCY14",
+      "image_url": "https://m.media-amazon.com/images/I/71JFtccKGZL._AC_UL320_.jpg",
+      "price": 667.0,
+      "original_price": 667.0,
+      "capacity_gb": 4000.0,
+      "capacity_tb": 4.0,
+      "is_ssd": true,
+      "cost_per_tb": 166.75,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T09:29:08.108348"
+    },
+    {
+      "platform": "Amazon.sg",
       "title": "TEAMGROUP AX2 2TB 2.5 Inch SATA III Internal Solid State Drive SSD (Read Speed up to 550 MB/s) T253A3002T0C101",
       "url": "https://www.amazon.sg/dp/B08GCKFZXS",
       "image_url": "https://m.media-amazon.com/images/I/51P5WGxMzeL._AC_UL320_.jpg",
@@ -1234,22 +1778,6 @@
     },
     {
       "platform": "Amazon.sg",
-      "title": "Verbatim Snapback SSD 2TB, Magsafe, External SSD, supports Apple ProRes 4K, USB 3.2 Gen 2x2, up to 2050MB/s, external hard drive with 2 USB-C cables, for iPhone 17, Android, PC and Mac",
-      "url": "https://www.amazon.sg/dp/B0FYQ3SP8S",
-      "image_url": "https://m.media-amazon.com/images/I/61s4tDZpNwL._AC_UL320_.jpg",
-      "price": 337.0,
-      "original_price": 337.0,
-      "capacity_gb": 2000.0,
-      "capacity_tb": 2.0,
-      "is_ssd": true,
-      "cost_per_tb": 168.5,
-      "rating": 0.0,
-      "review_count": 0,
-      "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T09:04:23.950552"
-    },
-    {
-      "platform": "Amazon.sg",
       "title": "Western Digital WDBAYN0020BBK-WESN Elements SE SSD Portable Storage, 2TB",
       "url": "https://www.amazon.sg/dp/B097TSN41S",
       "image_url": "https://m.media-amazon.com/images/I/81I5nSUaGcL._AC_UL320_.jpg",
@@ -1262,7 +1790,23 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T09:04:23.950560"
+      "timestamp": "2026-08-18T09:28:16.728872"
+    },
+    {
+      "platform": "Amazon.sg",
+      "title": "Verbatim Snapback SSD 2TB, Magsafe, External SSD, supports Apple ProRes 4K, USB 3.2 Gen 2x2, up to 2050MB/s, external hard drive with 2 USB-C cables, for iPhone 17, Android, PC and Mac",
+      "url": "https://www.amazon.sg/dp/B0FYQ3SP8S",
+      "image_url": "https://m.media-amazon.com/images/I/61s4tDZpNwL._AC_UL320_.jpg",
+      "price": 337.0,
+      "original_price": 337.0,
+      "capacity_gb": 2000.0,
+      "capacity_tb": 2.0,
+      "is_ssd": true,
+      "cost_per_tb": 168.5,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T09:29:08.108265"
     },
     {
       "platform": "Amazon.sg",
@@ -1294,7 +1838,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T00:54:08.008422"
+      "timestamp": "2026-08-18T09:25:34.671513"
     },
     {
       "platform": "Amazon.sg",
@@ -1310,7 +1854,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T09:04:23.950686"
+      "timestamp": "2026-08-18T09:25:34.671321"
     },
     {
       "platform": "Amazon.sg",
@@ -1326,7 +1870,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T09:06:04.854720"
+      "timestamp": "2026-08-18T09:28:16.729015"
     },
     {
       "platform": "Amazon.sg",
@@ -1342,7 +1886,39 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T09:02:56.192102"
+      "timestamp": "2026-08-18T09:28:16.729007"
+    },
+    {
+      "platform": "Amazon.sg",
+      "title": "Western Digital WD5000LPLX Black Notebook HDD, 500GB Hard Drive",
+      "url": "https://www.amazon.sg/dp/B00QFXOL5G",
+      "image_url": "https://m.media-amazon.com/images/I/712lRK6zUqL._AC_UL320_.jpg",
+      "price": 86.0,
+      "original_price": 86.0,
+      "capacity_gb": 500.0,
+      "capacity_tb": 0.5,
+      "is_ssd": false,
+      "cost_per_tb": 172.0,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T09:29:08.108301"
+    },
+    {
+      "platform": "Amazon.sg",
+      "title": "Samsung Portable SSD T5 EVO, 4 TB, USB 3.2 Gen. 1, 460 MB/s Read, 460 MB/s Write, External Hard Drive for Mac, PC, Android, Smart TVs and Game Consoles, Incl. USB-C Cable, MU-PH4T0S/EU",
+      "url": "https://www.amazon.sg/dp/B0CKL94GKB",
+      "image_url": "https://m.media-amazon.com/images/I/41k-HXKIGWL._AC_UL320_.jpg",
+      "price": 697.0,
+      "original_price": 697.0,
+      "capacity_gb": 4000.0,
+      "capacity_tb": 4.0,
+      "is_ssd": true,
+      "cost_per_tb": 174.25,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T09:29:08.108310"
     },
     {
       "platform": "Amazon.sg",
@@ -1374,39 +1950,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T09:06:04.854631"
-    },
-    {
-      "platform": "Amazon.sg",
-      "title": "1TB Magnetic Portable External Solid State Drive, Aluminum Alloy, 4K ProRes HDR Record and Store, PD100W Charging Up to 1000MB/s USB 3.2, Compatible with iPhone 16/17, Laptops (White)",
-      "url": "https://www.amazon.sg/dp/B0D8TRS8WH",
-      "image_url": "https://m.media-amazon.com/images/I/51KJvNC8XVL._AC_UL320_.jpg",
-      "price": 175.0,
-      "original_price": 175.0,
-      "capacity_gb": 1000.0,
-      "capacity_tb": 1.0,
-      "is_ssd": true,
-      "cost_per_tb": 175.0,
-      "rating": 0.0,
-      "review_count": 0,
-      "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T00:54:08.008377"
-    },
-    {
-      "platform": "Amazon.sg",
-      "title": "KingSpec 1TB 2 5 Inch SATA SSD, 2.5 Inch SATA III 6Gb/s Internal Solid State Hard Drive - 3D NAND Flash, Compatible with PS4/Desktop/Laptop",
-      "url": "https://www.amazon.sg/dp/B0BWDDYRF3",
-      "image_url": "https://m.media-amazon.com/images/I/61+bK3CvVHL._AC_UL320_.jpg",
-      "price": 175.0,
-      "original_price": 175.0,
-      "capacity_gb": 1000.0,
-      "capacity_tb": 1.0,
-      "is_ssd": true,
-      "cost_per_tb": 175.0,
-      "rating": 0.0,
-      "review_count": 0,
-      "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T09:06:31.538327"
+      "timestamp": "2026-08-18T09:28:16.728875"
     },
     {
       "platform": "Amazon.sg",
@@ -1426,6 +1970,54 @@
     },
     {
       "platform": "Amazon.sg",
+      "title": "1TB Magnetic Portable External Solid State Drive, Aluminum Alloy, 4K ProRes HDR Record and Store, PD100W Charging Up to 1000MB/s USB 3.2, Compatible with iPhone 16/17, Laptops (White)",
+      "url": "https://www.amazon.sg/dp/B0D8TRS8WH",
+      "image_url": "https://m.media-amazon.com/images/I/51KJvNC8XVL._AC_UL320_.jpg",
+      "price": 175.0,
+      "original_price": 175.0,
+      "capacity_gb": 1000.0,
+      "capacity_tb": 1.0,
+      "is_ssd": true,
+      "cost_per_tb": 175.0,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T09:25:34.671483"
+    },
+    {
+      "platform": "Amazon.sg",
+      "title": "KingSpec 1TB 2 5 Inch SATA SSD, 2.5 Inch SATA III 6Gb/s Internal Solid State Hard Drive - 3D NAND Flash, Compatible with PS4/Desktop/Laptop",
+      "url": "https://www.amazon.sg/dp/B0BWDDYRF3",
+      "image_url": "https://m.media-amazon.com/images/I/61+bK3CvVHL._AC_UL320_.jpg",
+      "price": 175.0,
+      "original_price": 175.0,
+      "capacity_gb": 1000.0,
+      "capacity_tb": 1.0,
+      "is_ssd": true,
+      "cost_per_tb": 175.0,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T09:27:50.722220"
+    },
+    {
+      "platform": "Amazon.sg",
+      "title": "Lexar 2TB Professional Go Portable SSD, Supports Apple ProRes, Up to 1050MB/s Read & 1000MB/s Write, USB 3.2 Gen 2, Rugged, Compatible with iPhone 15 Series, Smartphones, PC & Mac (LSL400X002T-RNSNU)",
+      "url": "https://www.amazon.sg/dp/B0DG16HCWB",
+      "image_url": "https://m.media-amazon.com/images/I/81E4zwc2W+L._AC_UL320_.jpg",
+      "price": 350.0,
+      "original_price": 350.0,
+      "capacity_gb": 2000.0,
+      "capacity_tb": 2.0,
+      "is_ssd": true,
+      "cost_per_tb": 175.0,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T09:28:16.728888"
+    },
+    {
+      "platform": "Amazon.sg",
       "title": "Western Digital 2TB WD Green SN350 NVMe Internal SSD Solid State Drive - Gen3 PCIe, M.2 2280, Up to 3,200 MB/s - WDS200T3G0C",
       "url": "https://www.amazon.sg/dp/B09DVRBNWV",
       "image_url": "https://m.media-amazon.com/images/I/515DHD4PQuL._AC_UL320_.jpg",
@@ -1438,7 +2030,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T09:02:56.191972"
+      "timestamp": "2026-08-18T09:28:16.728945"
     },
     {
       "platform": "Amazon.sg",
@@ -1470,7 +2062,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T09:04:23.950792"
+      "timestamp": "2026-08-18T09:25:34.671464"
     },
     {
       "platform": "Amazon.sg",
@@ -1490,22 +2082,6 @@
     },
     {
       "platform": "Amazon.sg",
-      "title": "SSK 2TB Portable SSD External Solid State Hard Drive USB3.2 Gen2x2 20Gbps | 2000MB/s USB3.2 Gen 2X2 External SSD, SMART & TRIM, 4KHDR ProRes, LED Light, OTG, iphone 15/16/17 Pro Compatible, Zinc Alloy",
-      "url": "https://www.amazon.sg/dp/B0F43F46VG",
-      "image_url": "https://m.media-amazon.com/images/I/51otzrSOm2L._AC_UL320_.jpg",
-      "price": 368.0,
-      "original_price": 368.0,
-      "capacity_gb": 2000.0,
-      "capacity_tb": 2.0,
-      "is_ssd": true,
-      "cost_per_tb": 184.0,
-      "rating": 0.0,
-      "review_count": 0,
-      "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T09:02:56.191978"
-    },
-    {
-      "platform": "Amazon.sg",
       "title": "Lexar NQ100 1TB SSD SATA III (6Gb/s), 2.5\" Internal SSD up to 550MB/s, Internal Solid State Drive for PC, Laptop and Desktop (LNQ100X001T-RNNNG)",
       "url": "https://www.amazon.sg/dp/B0FBWCLZY7",
       "image_url": "https://m.media-amazon.com/images/I/71YDNsn98eL._AC_UL320_.jpg",
@@ -1522,6 +2098,22 @@
     },
     {
       "platform": "Amazon.sg",
+      "title": "SSK 2TB Portable SSD External Solid State Hard Drive USB3.2 Gen2x2 20Gbps | 2000MB/s USB3.2 Gen 2X2 External SSD, SMART & TRIM, 4KHDR ProRes, LED Light, OTG, iphone 15/16/17 Pro Compatible, Zinc Alloy",
+      "url": "https://www.amazon.sg/dp/B0F43F46VG",
+      "image_url": "https://m.media-amazon.com/images/I/51otzrSOm2L._AC_UL320_.jpg",
+      "price": 368.0,
+      "original_price": 368.0,
+      "capacity_gb": 2000.0,
+      "capacity_tb": 2.0,
+      "is_ssd": true,
+      "cost_per_tb": 184.0,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T09:28:16.728952"
+    },
+    {
+      "platform": "Amazon.sg",
       "title": "LaCie 3596643 Rugged Thunderbolt USB-C Portable External Hard Drive, 2TB",
       "url": "https://www.amazon.sg/dp/B071NFVXBH",
       "image_url": "https://m.media-amazon.com/images/I/71sZ1KkZefL._AC_UL320_.jpg",
@@ -1534,7 +2126,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T09:02:56.192031"
+      "timestamp": "2026-08-18T09:28:16.728964"
     },
     {
       "platform": "Amazon.sg",
@@ -1602,6 +2194,22 @@
     },
     {
       "platform": "Amazon.sg",
+      "title": "Bestoss SSD 1TB - 2.5\" SATA III 6Gb/s Internal Hard Drive, Up to 550MB/s | TLC 3D NAND for Durability; Compatible with Windows/Linux; Ample Storage for Creators and Gamers",
+      "url": "https://www.amazon.sg/dp/B0F481WGTZ",
+      "image_url": "https://m.media-amazon.com/images/I/71JFtccKGZL._AC_UL320_.jpg",
+      "price": 189.0,
+      "original_price": 189.0,
+      "capacity_gb": 1000.0,
+      "capacity_tb": 1.0,
+      "is_ssd": true,
+      "cost_per_tb": 189.0,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T09:27:50.722217"
+    },
+    {
+      "platform": "Amazon.sg",
       "title": "SSK Portable External SSD 2TB Dual USB 3.2 Gen 2 Solid State Drive up to 550MB/s Read, USB A + Type C 2 in 1 Adapter 2TB SSD Hard Drive for Laptop, Tablet and More",
       "url": "https://www.amazon.sg/dp/B0C9J4ZXN9",
       "image_url": "https://m.media-amazon.com/images/I/616iLUQwATL._AC_UL320_.jpg",
@@ -1614,7 +2222,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T09:02:56.191951"
+      "timestamp": "2026-08-18T09:28:16.728949"
     },
     {
       "platform": "Amazon.sg",
@@ -1662,7 +2270,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T09:06:31.538601"
+      "timestamp": "2026-08-18T09:29:08.108231"
     },
     {
       "platform": "Amazon.sg",
@@ -1678,7 +2286,23 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T09:04:23.950697"
+      "timestamp": "2026-08-18T09:25:34.671294"
+    },
+    {
+      "platform": "Amazon.sg",
+      "title": "Transcend TS1TSJ25M3S Information 1 TB StoreJet M3 USB 3.0 Slim External Hard Drive, Grey",
+      "url": "https://www.amazon.sg/dp/B07B4CJ4KS",
+      "image_url": "https://m.media-amazon.com/images/I/71ANWItmjuL._AC_UL320_.jpg",
+      "price": 195.0,
+      "original_price": 195.0,
+      "capacity_gb": 1000.0,
+      "capacity_tb": 1.0,
+      "is_ssd": false,
+      "cost_per_tb": 195.0,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T09:27:50.722140"
     },
     {
       "platform": "Amazon.sg",
@@ -1778,6 +2402,22 @@
     },
     {
       "platform": "Amazon.sg",
+      "title": "iDiskk 1TB External Hard Drive for iPhone 15/16, iPad, MacBook & PC - MFi Certified, Data Backup & Transfer, Portable Storage Device",
+      "url": "https://www.amazon.sg/dp/B0BBTF2JYD",
+      "image_url": "https://m.media-amazon.com/images/I/61BB7I3DMxL._AC_UL320_.jpg",
+      "price": 203.0,
+      "original_price": 203.0,
+      "capacity_gb": 1000.0,
+      "capacity_tb": 1.0,
+      "is_ssd": false,
+      "cost_per_tb": 203.0,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T09:27:50.722145"
+    },
+    {
+      "platform": "Amazon.sg",
       "title": "Crucial X10 Pro 4TB Portable SSD - Up to 2100MB/s Read, 2000MB/s Write - Water and dust Resistant, PC and Mac, with Mylio Photos+ Offer - USB 3.2 External Solid State Drive - CT4000X10PROSSD902,Black",
       "url": "https://www.amazon.sg/dp/B0C9WJQ9GP",
       "image_url": "https://m.media-amazon.com/images/I/41zMnGQk9WL._AC_UL320_.jpg",
@@ -1791,6 +2431,22 @@
       "review_count": 0,
       "seller": "Amazon.sg",
       "timestamp": "2026-08-18T09:04:23.950763"
+    },
+    {
+      "platform": "Amazon.sg",
+      "title": "SSK 1TB External SSD USB Flash Drive up to 1000MB/s USB C+A 3.2 Stick | Support OTG,4K60Hz ProRes HDR,2 in 1 Dual Head,Fast External SSD for iPhone 15/16/17/Android Phone,Zinc Alloy",
+      "url": "https://www.amazon.sg/dp/B0CP9DS1YL",
+      "image_url": "https://m.media-amazon.com/images/I/61CSeHjRPHL._AC_UL320_.jpg",
+      "price": 204.0,
+      "original_price": 204.0,
+      "capacity_gb": 1000.0,
+      "capacity_tb": 1.0,
+      "is_ssd": true,
+      "cost_per_tb": 204.0,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T09:27:50.722125"
     },
     {
       "platform": "Amazon.sg",
@@ -1854,23 +2510,23 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T09:02:56.192107"
+      "timestamp": "2026-08-18T09:28:16.729001"
     },
     {
       "platform": "Amazon.sg",
       "title": "Western Digital 1TB WD Green SN350 NVMe Internal SSD Solid State Drive - Gen3 PCIe, QLC, M.2 2280, Up to 3,200 MB/s - WDS100T3G0C",
       "url": "https://www.amazon.sg/dp/B09DVQQL9G",
       "image_url": "https://m.media-amazon.com/images/I/618VzJBuz0L._AC_UL320_.jpg",
-      "price": 218.0,
-      "original_price": 218.0,
+      "price": 215.0,
+      "original_price": 215.0,
       "capacity_gb": 1000.0,
       "capacity_tb": 1.0,
       "is_ssd": true,
-      "cost_per_tb": 218.0,
+      "cost_per_tb": 215.0,
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T00:54:08.008268"
+      "timestamp": "2026-08-18T09:27:50.722225"
     },
     {
       "platform": "Amazon.sg",
@@ -1903,6 +2559,38 @@
       "review_count": 0,
       "seller": "Amazon.sg",
       "timestamp": "2026-08-18T09:06:31.538150"
+    },
+    {
+      "platform": "Amazon.sg",
+      "title": "TEAMGROUP PD1000 1TB Aluminum Portable External Solid State Drive SSD, Read up to 1000MB/s, USB-C, USB A 3.2 Gen 2, Waterproof, Dustproof (IP68), Shockproof, Pressure Resistant (T8FED6001T0C108)",
+      "url": "https://www.amazon.sg/dp/B087R7CFCP",
+      "image_url": "https://m.media-amazon.com/images/I/61vYNIiEc4L._AC_UL320_.jpg",
+      "price": 221.0,
+      "original_price": 221.0,
+      "capacity_gb": 1000.0,
+      "capacity_tb": 1.0,
+      "is_ssd": true,
+      "cost_per_tb": 221.0,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T09:25:34.671550"
+    },
+    {
+      "platform": "Amazon.sg",
+      "title": "SSK 1TB Portable SSD External Solid State Hard Drive USB3.2 Gen2x2 20Gbps | 2000MB/s USB3.2 Gen 2X2 External SSD, SMART & TRIM, 4KHDR ProRes, LED Light, OTG, iphone 15/16/17 Pro Compatible, Zinc Alloy",
+      "url": "https://www.amazon.sg/dp/B0F43DFBT1",
+      "image_url": "https://m.media-amazon.com/images/I/51otzrSOm2L._AC_UL320_.jpg",
+      "price": 221.0,
+      "original_price": 221.0,
+      "capacity_gb": 1000.0,
+      "capacity_tb": 1.0,
+      "is_ssd": true,
+      "cost_per_tb": 221.0,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T09:27:50.722193"
     },
     {
       "platform": "Amazon.sg",
@@ -2034,6 +2722,22 @@
     },
     {
       "platform": "Amazon.sg",
+      "title": "WD_BLACK 4TB SN850P NVMe M.2 SSD Officially Licensed Storage Expansion for PS5 Consoles, up to 7,300MB/s, with heatsink - WDBBYV0040BNC-WRSN",
+      "url": "https://www.amazon.sg/dp/B0C48HN4Z9",
+      "image_url": "https://m.media-amazon.com/images/I/71rRpbp5d6L._AC_UL320_.jpg",
+      "price": 907.0,
+      "original_price": 907.0,
+      "capacity_gb": 4000.0,
+      "capacity_tb": 4.0,
+      "is_ssd": true,
+      "cost_per_tb": 226.75,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T09:29:08.108274"
+    },
+    {
+      "platform": "Amazon.sg",
       "title": "SANDISK SSD Plus 2TB Internal Solid State Drive - SATA III 6 Gb/s, 2.5\"/7mm, Read/Write Speeds of up to 545MB/s / 515MB/s - SDSSDA-2T00-G28",
       "url": "https://www.amazon.sg/dp/B0F4Y3DH17",
       "image_url": "https://m.media-amazon.com/images/I/61RE7kJmMxL._AC_UL320_.jpg",
@@ -2050,6 +2754,22 @@
     },
     {
       "platform": "Amazon.sg",
+      "title": "Bestoss 1TB M.2 SSD NVMe PCIe4.0 2280 Internal Hard Drive, Up to 5000 MB/s | PCIe4.0 M.2 2280 SSD, 3D NAND SLC Cache, SSD for Gaming PC Storage, Business Laptop, Home Entertainment, Creative Workflow",
+      "url": "https://www.amazon.sg/dp/B0F3XL469M",
+      "image_url": "https://m.media-amazon.com/images/I/71e34USY0dL._AC_UL320_.jpg",
+      "price": 229.0,
+      "original_price": 229.0,
+      "capacity_gb": 1000.0,
+      "capacity_tb": 1.0,
+      "is_ssd": true,
+      "cost_per_tb": 229.0,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T09:27:50.722233"
+    },
+    {
+      "platform": "Amazon.sg",
       "title": "SanDisk 2TB Portable SSD - Up to 800MB/s, USB-C, USB 3.2 Gen 2, Updated Firmware - External Solid State Drive - SDSSDE30-2T00-G26",
       "url": "https://www.amazon.sg/dp/B0C5JNWF58",
       "image_url": "https://m.media-amazon.com/images/I/71bBCTIvIIL._AC_UL320_.jpg",
@@ -2062,23 +2782,23 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T09:04:23.950736"
+      "timestamp": "2026-08-18T09:28:16.728895"
     },
     {
       "platform": "Amazon.sg",
-      "title": "Bestoss 1TB M.2 SSD NVMe PCIe4.0 2280 Internal Hard Drive, Up to 5000 MB/s | PCIe4.0 M.2 2280 SSD, 3D NAND SLC Cache, SSD for Gaming PC Storage, Business Laptop, Home Entertainment, Creative Workflow",
-      "url": "https://www.amazon.sg/dp/B0F3XL469M",
-      "image_url": "https://m.media-amazon.com/images/I/71e34USY0dL._AC_UL320_.jpg",
-      "price": 231.0,
-      "original_price": 231.0,
-      "capacity_gb": 1000.0,
-      "capacity_tb": 1.0,
+      "title": "CHGRNLF Mac mini M4 Pro SSD 4TB Hard Disk for Mac mini M4 Pro (M4 Pro-4TB)",
+      "url": "https://www.amazon.sg/dp/B0GG8TVMTW",
+      "image_url": "https://m.media-amazon.com/images/I/7101UyLMjCL._AC_UL320_.jpg",
+      "price": 922.0,
+      "original_price": 922.0,
+      "capacity_gb": 4000.0,
+      "capacity_tb": 4.0,
       "is_ssd": true,
-      "cost_per_tb": 231.0,
+      "cost_per_tb": 230.5,
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T00:54:08.008366"
+      "timestamp": "2026-08-18T09:29:08.108373"
     },
     {
       "platform": "Amazon.sg",
@@ -2126,7 +2846,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T09:02:56.191984"
+      "timestamp": "2026-08-18T09:28:16.728975"
     },
     {
       "platform": "Amazon.sg",
@@ -2158,23 +2878,23 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T09:02:56.192139"
+      "timestamp": "2026-08-18T09:28:16.729023"
     },
     {
       "platform": "Amazon.sg",
       "title": "SanDisk Professional 1TB PRO-Blade SSD Mag - Portable & Modular NVMe SSD Mag, Ultra-Durable - SDPM1NS-001T-GBAND",
       "url": "https://www.amazon.sg/dp/B0B3RNY6Z8",
       "image_url": "https://m.media-amazon.com/images/I/71WCvLEFApL._AC_UL320_.jpg",
-      "price": 241.0,
-      "original_price": 241.0,
+      "price": 238.0,
+      "original_price": 238.0,
       "capacity_gb": 1000.0,
       "capacity_tb": 1.0,
       "is_ssd": true,
-      "cost_per_tb": 241.0,
+      "cost_per_tb": 238.0,
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T00:54:08.008323"
+      "timestamp": "2026-08-18T09:25:34.671281"
     },
     {
       "platform": "Amazon.sg",
@@ -2286,7 +3006,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T09:02:56.192090"
+      "timestamp": "2026-08-18T09:28:16.728989"
     },
     {
       "platform": "Amazon.sg",
@@ -2302,7 +3022,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T09:06:31.538560"
+      "timestamp": "2026-08-18T09:25:34.671304"
     },
     {
       "platform": "Amazon.sg",
@@ -2318,7 +3038,23 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T09:04:23.950602"
+      "timestamp": "2026-08-18T09:25:34.671259"
+    },
+    {
+      "platform": "Amazon.sg",
+      "title": "SanDisk 4TB Extreme PRO Portable SSD - Up to 2000MB/s - USB-C, USB 3.2 Gen 2x2 - External Solid State Drive - SDSSDE81-4T00-G25 | 2000MB/s NVMe performance with IP65 rating and AES encryption for storage, photography and travel",
+      "url": "https://www.amazon.sg/dp/B08RX3343D",
+      "image_url": "https://m.media-amazon.com/images/I/71z2lEHwfNL._AC_UL320_.jpg",
+      "price": 994.0,
+      "original_price": 994.0,
+      "capacity_gb": 4000.0,
+      "capacity_tb": 4.0,
+      "is_ssd": true,
+      "cost_per_tb": 248.5,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T09:29:08.108184"
     },
     {
       "platform": "Amazon.sg",
@@ -2354,6 +3090,22 @@
     },
     {
       "platform": "Amazon.sg",
+      "title": "SHARKSPEED mSATA SSD 1TB Mini SATA 3 (6Gb/s) TLC 3D NAND SSD Hard Drive Internal Solid State Drive for Notebooks, Desktop PC (1TB, mSATA)",
+      "url": "https://www.amazon.sg/dp/B0BW2LTLGY",
+      "image_url": "https://m.media-amazon.com/images/I/71McTqM9L7L._AC_UL320_.jpg",
+      "price": 250.0,
+      "original_price": 250.0,
+      "capacity_gb": 1000.0,
+      "capacity_tb": 1.0,
+      "is_ssd": true,
+      "cost_per_tb": 250.0,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T09:27:50.722236"
+    },
+    {
+      "platform": "Amazon.sg",
       "title": "Verbatim Snapback SSD 1TB, External SSD, USB 3.2 Gen 2x2, up to 2000MB/s Read & 1600MB/s Write, Portable External Hard Drive with 20 cm USB-C Cable, for iPhone, Android, PC & Mac, Mocha Metallic | Supports Apple ProRes 4K, 2000MB/s Reading & Writing, External Hard Drive with 2 USB-C Cables, for iPhone, Android, PC & Mac",
       "url": "https://www.amazon.sg/dp/B0FSLL1NWV",
       "image_url": "https://m.media-amazon.com/images/I/61PQWaVvNeL._AC_UL320_.jpg",
@@ -2366,7 +3118,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T00:54:08.008392"
+      "timestamp": "2026-08-18T09:27:50.722118"
     },
     {
       "platform": "Amazon.sg",
@@ -2382,7 +3134,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T09:06:04.854613"
+      "timestamp": "2026-08-18T09:27:50.722209"
     },
     {
       "platform": "Amazon.sg",
@@ -2526,7 +3278,23 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T00:54:08.008357"
+      "timestamp": "2026-08-18T09:25:34.671310"
+    },
+    {
+      "platform": "Amazon.sg",
+      "title": "Samsung 4TB T7 Portable External SSD - Titanium Grey, MU-PC4T0T/WW, Read/Write Speed up to 1050MB/s, Password Security",
+      "url": "https://www.amazon.sg/dp/B0CX5C3LBQ",
+      "image_url": "https://m.media-amazon.com/images/I/811QyxplxrL._AC_UL320_.jpg",
+      "price": 1054.0,
+      "original_price": 1054.0,
+      "capacity_gb": 4000.0,
+      "capacity_tb": 4.0,
+      "is_ssd": true,
+      "cost_per_tb": 263.5,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T09:29:08.108278"
     },
     {
       "platform": "Amazon.sg",
@@ -2578,22 +3346,6 @@
     },
     {
       "platform": "Amazon.sg",
-      "title": "Verbatim Snapback SSD 1TB, Magsafe, External SSD, supports Apple ProRes 4K, USB 3.2 Gen 2x2, up to 2050MB/s, external hard drive with 2 USB-C cables, for iPhone 17, Android, PC, and Mac",
-      "url": "https://www.amazon.sg/dp/B0FYQ6BC25",
-      "image_url": "https://m.media-amazon.com/images/I/61s4tDZpNwL._AC_UL320_.jpg",
-      "price": 268.0,
-      "original_price": 268.0,
-      "capacity_gb": 1000.0,
-      "capacity_tb": 1.0,
-      "is_ssd": true,
-      "cost_per_tb": 268.0,
-      "rating": 0.0,
-      "review_count": 0,
-      "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T00:54:08.008441"
-    },
-    {
-      "platform": "Amazon.sg",
       "title": "Crucial X10 Pro 2TB Portable SSD - Up to 2100MB/s Read, 2000MB/s Write - Water and dust Resistant, PC and Mac, with Mylio Photos+ Offer - USB 3.2 External Solid State Drive - CT2000X10PROSSD902",
       "url": "https://www.amazon.sg/dp/B0C9WGS6MC",
       "image_url": "https://m.media-amazon.com/images/I/41zMnGQk9WL._AC_UL320_.jpg",
@@ -2626,6 +3378,22 @@
     },
     {
       "platform": "Amazon.sg",
+      "title": "Verbatim Snapback SSD 1TB, Magsafe, External SSD, supports Apple ProRes 4K, USB 3.2 Gen 2x2, up to 2050MB/s, external hard drive with 2 USB-C cables, for iPhone 17, Android, PC, and Mac",
+      "url": "https://www.amazon.sg/dp/B0FYQ6BC25",
+      "image_url": "https://m.media-amazon.com/images/I/61s4tDZpNwL._AC_UL320_.jpg",
+      "price": 268.0,
+      "original_price": 268.0,
+      "capacity_gb": 1000.0,
+      "capacity_tb": 1.0,
+      "is_ssd": true,
+      "cost_per_tb": 268.0,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T09:25:34.671540"
+    },
+    {
+      "platform": "Amazon.sg",
       "title": "BIWIN Black Opal X570 PRO 1TB SSD Gen5\u00d74 Read Speed up to 14000MB/s, NVMe M.2 2280 PCIe Internal Gaming Solid State Drive with 6nm Controller for Laptop & Desktop",
       "url": "https://www.amazon.sg/dp/B0DSVXSXQ8",
       "image_url": "https://m.media-amazon.com/images/I/61n777kHvcL._AC_UL320_.jpg",
@@ -2638,7 +3406,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T00:54:08.008373"
+      "timestamp": "2026-08-18T09:25:34.671477"
     },
     {
       "platform": "Amazon.sg",
@@ -2654,7 +3422,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T09:02:56.192080"
+      "timestamp": "2026-08-18T09:28:16.728986"
     },
     {
       "platform": "Amazon.sg",
@@ -2766,7 +3534,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T09:06:31.538477"
+      "timestamp": "2026-08-18T09:25:34.671543"
     },
     {
       "platform": "Amazon.sg",
@@ -2798,7 +3566,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T09:04:23.950645"
+      "timestamp": "2026-08-18T09:25:34.671452"
     },
     {
       "platform": "Amazon.sg",
@@ -2898,6 +3666,22 @@
     },
     {
       "platform": "Amazon.sg",
+      "title": "Toshiba Canvio Advance 1TB Portable External Hard Drive USB 3.0, Black (HDTC910XK3AA)",
+      "url": "https://www.amazon.sg/dp/B079HF8BKY",
+      "image_url": "https://m.media-amazon.com/images/I/316qETdnSwL._AC_UL320_.jpg",
+      "price": 287.0,
+      "original_price": 287.0,
+      "capacity_gb": 1000.0,
+      "capacity_tb": 1.0,
+      "is_ssd": false,
+      "cost_per_tb": 287.0,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T09:27:50.722213"
+    },
+    {
+      "platform": "Amazon.sg",
       "title": "SanDisk 1TB Fortnite Portable SSD, Peely Edition - Up to 800MB/s, USB-C, USB 3.2 Gen 2, Drop Protection - SDSSDE30-1T00-G25F",
       "url": "https://www.amazon.sg/dp/B0DR356XFF",
       "image_url": "https://m.media-amazon.com/images/I/612zRY6M7jL._AC_UL320_.jpg",
@@ -2910,7 +3694,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T09:04:23.950707"
+      "timestamp": "2026-08-18T09:27:50.722129"
     },
     {
       "platform": "Amazon.sg",
@@ -2927,6 +3711,22 @@
       "review_count": 0,
       "seller": "Amazon.sg",
       "timestamp": "2026-08-18T09:01:23.201537"
+    },
+    {
+      "platform": "Amazon.sg",
+      "title": "acer Predator GM9000 Heatsink Gen5 Gaming SSD 1TB - up to 14000 MB/s Read - M.2 2280 NVMe PCIe 5.0 with DRAM Cache, Internal Solid State Drive for Laptop & Desktop PC - PS5 Compatible",
+      "url": "https://www.amazon.sg/dp/B0FT6QSRHZ",
+      "image_url": "https://m.media-amazon.com/images/I/61xno3-180L._AC_UL320_.jpg",
+      "price": 292.0,
+      "original_price": 292.0,
+      "capacity_gb": 1000.0,
+      "capacity_tb": 1.0,
+      "is_ssd": true,
+      "cost_per_tb": 292.0,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T09:25:34.671554"
     },
     {
       "platform": "Amazon.sg",
@@ -3006,7 +3806,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T09:06:04.854762"
+      "timestamp": "2026-08-18T09:25:34.671288"
     },
     {
       "platform": "Amazon.sg",
@@ -3026,22 +3826,6 @@
     },
     {
       "platform": "Amazon.sg",
-      "title": "SAMSUNG 9100 PRO 2 TB SSD Gen5 NVMe\u1d40\u1d39 M.2 | NVMe Internal Solid State Hard Drive best for AI Computing, Gaming, and Heavy Duty Workstations (MZ VAP2T0B/AM)",
-      "url": "https://www.amazon.sg/dp/B0DX2DPJZ5",
-      "image_url": "https://m.media-amazon.com/images/I/71qygJIcKnL._AC_UL320_.jpg",
-      "price": 612.0,
-      "original_price": 612.0,
-      "capacity_gb": 2000.0,
-      "capacity_tb": 2.0,
-      "is_ssd": true,
-      "cost_per_tb": 306.0,
-      "rating": 0.0,
-      "review_count": 0,
-      "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T09:06:04.854604"
-    },
-    {
-      "platform": "Amazon.sg",
       "title": "Western Digital 4TB WD Red SA500 NAS 3D NAND Internal SSD Solid State Drive - SATA III 6 Gb/s, 2.5\"/7mm, Up to 560 MB/s - WDS400T2R0A",
       "url": "https://www.amazon.sg/dp/B0CVN88YVG",
       "image_url": "https://m.media-amazon.com/images/I/61I2jwNN-sL._AC_UL320_.jpg",
@@ -3055,6 +3839,22 @@
       "review_count": 0,
       "seller": "Amazon.sg",
       "timestamp": "2026-08-18T09:06:31.538472"
+    },
+    {
+      "platform": "Amazon.sg",
+      "title": "SAMSUNG 9100 PRO 2 TB SSD Gen5 NVMe\u1d40\u1d39 M.2 | NVMe Internal Solid State Hard Drive best for AI Computing, Gaming, and Heavy Duty Workstations (MZ VAP2T0B/AM)",
+      "url": "https://www.amazon.sg/dp/B0DX2DPJZ5",
+      "image_url": "https://m.media-amazon.com/images/I/71qygJIcKnL._AC_UL320_.jpg",
+      "price": 612.0,
+      "original_price": 612.0,
+      "capacity_gb": 2000.0,
+      "capacity_tb": 2.0,
+      "is_ssd": true,
+      "cost_per_tb": 306.0,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T09:28:16.728918"
     },
     {
       "platform": "Amazon.sg",
@@ -3086,7 +3886,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T00:54:08.008402"
+      "timestamp": "2026-08-18T09:25:34.671456"
     },
     {
       "platform": "Amazon.sg",
@@ -3150,7 +3950,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T00:54:08.008426"
+      "timestamp": "2026-08-18T09:25:34.671510"
     },
     {
       "platform": "Amazon.sg",
@@ -3166,23 +3966,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T00:54:08.008448"
-    },
-    {
-      "platform": "Amazon.sg",
-      "title": "Crucial T710 SSD 2TB M.2 NVMe PCIe 5.0 x4 Gen5 with Heatsink, up to 14,500 MB/s Read, 13,800 MB/s Write, for Desktop PC & PS5, TLC NAND, Internal Hard Drive - CT2000T710SSD5-01",
-      "url": "https://www.amazon.sg/dp/B0F9XN6MZW",
-      "image_url": "https://m.media-amazon.com/images/I/51v3BjyBITL._AC_UL320_.jpg",
-      "price": 633.0,
-      "original_price": 633.0,
-      "capacity_gb": 2000.0,
-      "capacity_tb": 2.0,
-      "is_ssd": true,
-      "cost_per_tb": 316.5,
-      "rating": 0.0,
-      "review_count": 0,
-      "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T09:02:56.192124"
+      "timestamp": "2026-08-18T09:25:34.671517"
     },
     {
       "platform": "Amazon.sg",
@@ -3198,7 +3982,23 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T09:04:23.950713"
+      "timestamp": "2026-08-18T09:28:16.728906"
+    },
+    {
+      "platform": "Amazon.sg",
+      "title": "Crucial T710 SSD 2TB M.2 NVMe PCIe 5.0 x4 Gen5 with Heatsink, up to 14,500 MB/s Read, 13,800 MB/s Write, for Desktop PC & PS5, TLC NAND, Internal Hard Drive - CT2000T710SSD5-01",
+      "url": "https://www.amazon.sg/dp/B0F9XN6MZW",
+      "image_url": "https://m.media-amazon.com/images/I/51v3BjyBITL._AC_UL320_.jpg",
+      "price": 633.0,
+      "original_price": 633.0,
+      "capacity_gb": 2000.0,
+      "capacity_tb": 2.0,
+      "is_ssd": true,
+      "cost_per_tb": 316.5,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T09:28:16.729019"
     },
     {
       "platform": "Amazon.sg",
@@ -3214,7 +4014,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T00:54:08.008418"
+      "timestamp": "2026-08-18T09:25:34.671502"
     },
     {
       "platform": "Amazon.sg",
@@ -3262,7 +4062,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T00:54:08.008480"
+      "timestamp": "2026-08-18T09:27:50.722171"
     },
     {
       "platform": "Amazon.sg",
@@ -3279,6 +4079,22 @@
       "review_count": 0,
       "seller": "Amazon.sg",
       "timestamp": "2026-08-18T09:06:04.854595"
+    },
+    {
+      "platform": "Amazon.sg",
+      "title": "SANDISK 1TB Optimus GX 7100 NVMe SSD - PCIe Gen 4, M.2 2280, Up to 7,250 MB/s Read Speed - SDSP71100TAN",
+      "url": "https://www.amazon.sg/dp/B0GK1M1N4V",
+      "image_url": "https://m.media-amazon.com/images/I/618YkCq6uzL._AC_UL320_.jpg",
+      "price": 322.0,
+      "original_price": 322.0,
+      "capacity_gb": 1000.0,
+      "capacity_tb": 1.0,
+      "is_ssd": true,
+      "cost_per_tb": 322.0,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T09:25:34.671448"
     },
     {
       "platform": "Amazon.sg",
@@ -3326,7 +4142,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T00:54:08.008452"
+      "timestamp": "2026-08-18T09:25:34.671524"
     },
     {
       "platform": "Amazon.sg",
@@ -3346,35 +4162,19 @@
     },
     {
       "platform": "Amazon.sg",
-      "title": "SANDISK 1TB Optimus GX 7100 NVMe SSD - PCIe Gen 4, M.2 2280, Up to 7,250 MB/s Read Speed - SDSP71100TAN",
-      "url": "https://www.amazon.sg/dp/B0GK1M1N4V",
-      "image_url": "https://m.media-amazon.com/images/I/618YkCq6uzL._AC_UL320_.jpg",
-      "price": 326.0,
-      "original_price": 326.0,
-      "capacity_gb": 1000.0,
-      "capacity_tb": 1.0,
-      "is_ssd": true,
-      "cost_per_tb": 326.0,
-      "rating": 0.0,
-      "review_count": 0,
-      "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T00:54:08.008388"
-    },
-    {
-      "platform": "Amazon.sg",
       "title": "SanDisk Professional 4TB PRO-G40 SSD - Up to 3000MB/s, Thunderbolt 3 (40Gbps), USB-C (10Gbps), IP68 dust/Water Resistance, External Solid State Drive - SDPS31H-004T-GBCND | Up to 3000MB/s, Thunderbolt 3 (40Gbps), USB-C (10Gbps), IP68 dust/Water Resistance, SDPS31H-004T-GBCND",
       "url": "https://www.amazon.sg/dp/B0BW6715SV",
       "image_url": "https://m.media-amazon.com/images/I/713UKhxDZSL._AC_UL320_.jpg",
-      "price": 1316.0,
-      "original_price": 1316.0,
+      "price": 1317.0,
+      "original_price": 1317.0,
       "capacity_gb": 4000.0,
       "capacity_tb": 4.0,
       "is_ssd": true,
-      "cost_per_tb": 329.0,
+      "cost_per_tb": 329.25,
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T09:01:23.201555"
+      "timestamp": "2026-08-18T09:29:08.108345"
     },
     {
       "platform": "Amazon.sg",
@@ -3406,7 +4206,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T09:06:31.538596"
+      "timestamp": "2026-08-18T09:25:34.671299"
     },
     {
       "platform": "Amazon.sg",
@@ -3474,22 +4274,6 @@
     },
     {
       "platform": "Amazon.sg",
-      "title": "Crucial T710 SSD 1TB M.2 NVMe PCIe 5.0 x4 Gen5, up to 14,900 MB/s read, 13,700 MB/s write, for laptop and desktop PC, TLC NAND, internal hard drive - CT1000T710SSD8-01",
-      "url": "https://www.amazon.sg/dp/B0F9XN4DCC",
-      "image_url": "https://m.media-amazon.com/images/I/51WMvihHRvL._AC_UL320_.jpg",
-      "price": 336.0,
-      "original_price": 336.0,
-      "capacity_gb": 1000.0,
-      "capacity_tb": 1.0,
-      "is_ssd": true,
-      "cost_per_tb": 336.0,
-      "rating": 0.0,
-      "review_count": 0,
-      "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T00:54:08.008430"
-    },
-    {
-      "platform": "Amazon.sg",
       "title": "SAMSUNG 990 PRO SSD 1TB PCIe 4.0 M.2 2280 Internal Solid State Hard Drive, Seq. Read Speeds Up to 7,450 MB/s for High End Computing, Gaming, and Heavy Duty Workstations, MZ-V9P1T0B/AM",
       "url": "https://www.amazon.sg/dp/B0BHJF2VRN",
       "image_url": "https://m.media-amazon.com/images/I/61ZL9Qpo1-L._AC_UL320_.jpg",
@@ -3502,7 +4286,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T09:06:31.538518"
+      "timestamp": "2026-08-18T09:27:50.722093"
     },
     {
       "platform": "Amazon.sg",
@@ -3519,6 +4303,38 @@
       "review_count": 0,
       "seller": "Amazon.sg",
       "timestamp": "2026-08-18T09:06:04.854789"
+    },
+    {
+      "platform": "Amazon.sg",
+      "title": "Amazon Limited Kioxia Internal SSD 1TB NVMe PCIe5x4 M.2 2280 10,000 MB/s Read, SSD-CK1.0N5G3/R",
+      "url": "https://www.amazon.sg/dp/B0GVXQ6L7P",
+      "image_url": "https://m.media-amazon.com/images/I/613HSjp9xVL._AC_UL320_.jpg",
+      "price": 337.0,
+      "original_price": 337.0,
+      "capacity_gb": 1000.0,
+      "capacity_tb": 1.0,
+      "is_ssd": true,
+      "cost_per_tb": 337.0,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T09:25:34.671546"
+    },
+    {
+      "platform": "Amazon.sg",
+      "title": "Samsung MU-PG4T0B/EU Portable SSD T9, 4TB, 2000MB/s Read, 2000MB/s Write, USB 3.2 Gen.2x2, External Hard Drive for Professional Users, Compatible with Mac, PC, Smartphone and 12K Cameras",
+      "url": "https://www.amazon.sg/dp/B0CGQ4FJSV",
+      "image_url": "https://m.media-amazon.com/images/I/71b3g5BzJQL._AC_UL320_.jpg",
+      "price": 1353.0,
+      "original_price": 1353.0,
+      "capacity_gb": 4000.0,
+      "capacity_tb": 4.0,
+      "is_ssd": true,
+      "cost_per_tb": 338.25,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T09:29:08.108356"
     },
     {
       "platform": "Amazon.sg",
@@ -3550,7 +4366,23 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T00:54:08.008500"
+      "timestamp": "2026-08-18T09:25:34.671573"
+    },
+    {
+      "platform": "Amazon.sg",
+      "title": "SANDISK 4TB Extreme Portable SSD (New Model) - up to 2000MB/s Transfer speeds - USB Type-C connectivity, Reliable Durability - Black - SDSSDE70-4T00-G25",
+      "url": "https://www.amazon.sg/dp/B0GMX1JSGL",
+      "image_url": "https://m.media-amazon.com/images/I/71u6LfJqm-L._AC_UL320_.jpg",
+      "price": 1377.0,
+      "original_price": 1377.0,
+      "capacity_gb": 4000.0,
+      "capacity_tb": 4.0,
+      "is_ssd": true,
+      "cost_per_tb": 344.25,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T09:29:08.108330"
     },
     {
       "platform": "Amazon.sg",
@@ -3566,7 +4398,23 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T09:02:56.192149"
+      "timestamp": "2026-08-18T09:28:16.729032"
+    },
+    {
+      "platform": "Amazon.sg",
+      "title": "SAMSUNG T9 4TB, Portable SSD, up to 2000MB/s, USB 3.2 Gen 2x2 (20Gbps) NVMe, Rugged, for Photographers, Content Creators and Gaming, External Solid State Drive (MU-PG4T0B/AM) | | External Solid State Drive for Gaming, Students and Professionals, MU-PG4T0B/AM, Black",
+      "url": "https://www.amazon.sg/dp/B0CHFSZX9W",
+      "image_url": "https://m.media-amazon.com/images/I/71EESd1deTL._AC_UL320_.jpg",
+      "price": 1392.0,
+      "original_price": 1392.0,
+      "capacity_gb": 4000.0,
+      "capacity_tb": 4.0,
+      "is_ssd": true,
+      "cost_per_tb": 348.0,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T09:29:08.108352"
     },
     {
       "platform": "Amazon.sg",
@@ -3586,22 +4434,6 @@
     },
     {
       "platform": "Amazon.sg",
-      "title": "SAMSUNG 9100 PRO 1 TB SSD Gen5 NVMe\u1d40\u1d39 M.2 | NVMe Internal Solid State Hard Drive best for AI Computing, Gaming, and Heavy Duty Workstations (MZ VAP1T0B/AM)",
-      "url": "https://www.amazon.sg/dp/B0DX2G349M",
-      "image_url": "https://m.media-amazon.com/images/I/71qygJIcKnL._AC_UL320_.jpg",
-      "price": 350.0,
-      "original_price": 350.0,
-      "capacity_gb": 1000.0,
-      "capacity_tb": 1.0,
-      "is_ssd": true,
-      "cost_per_tb": 350.0,
-      "rating": 0.0,
-      "review_count": 0,
-      "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T09:06:04.854809"
-    },
-    {
-      "platform": "Amazon.sg",
       "title": "Kingston SA400S37/480G A400 Solid State Drive, 480GB Black",
       "url": "https://www.amazon.sg/dp/B01N0TQPQB",
       "image_url": "https://m.media-amazon.com/images/I/81+9rUcRVTL._AC_UL320_.jpg",
@@ -3615,6 +4447,22 @@
       "review_count": 0,
       "seller": "Amazon.sg",
       "timestamp": "2026-08-18T09:06:31.538276"
+    },
+    {
+      "platform": "Amazon.sg",
+      "title": "SAMSUNG 9100 PRO 1 TB SSD Gen5 NVMe\u1d40\u1d39 M.2 | NVMe Internal Solid State Hard Drive best for AI Computing, Gaming, and Heavy Duty Workstations (MZ VAP1T0B/AM)",
+      "url": "https://www.amazon.sg/dp/B0DX2G349M",
+      "image_url": "https://m.media-amazon.com/images/I/71qygJIcKnL._AC_UL320_.jpg",
+      "price": 350.0,
+      "original_price": 350.0,
+      "capacity_gb": 1000.0,
+      "capacity_tb": 1.0,
+      "is_ssd": true,
+      "cost_per_tb": 350.0,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T09:25:34.671440"
     },
     {
       "platform": "Amazon.sg",
@@ -3634,22 +4482,6 @@
     },
     {
       "platform": "Amazon.sg",
-      "title": "Samsung Memory MZ-VAP1T0CW 9100 PRO Internal SSD with 1TB Heatsink, PCIe 5.0 x4, NVMe 2.0, SSD Designed for Professionals and Gamers, Compatible with PC and Playstation 5",
-      "url": "https://www.amazon.sg/dp/B0DWT6PN9N",
-      "image_url": "https://m.media-amazon.com/images/I/61DFFtp2-aL._AC_UL320_.jpg",
-      "price": 353.0,
-      "original_price": 353.0,
-      "capacity_gb": 1000.0,
-      "capacity_tb": 1.0,
-      "is_ssd": true,
-      "cost_per_tb": 353.0,
-      "rating": 0.0,
-      "review_count": 0,
-      "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T00:54:08.008466"
-    },
-    {
-      "platform": "Amazon.sg",
       "title": "Samsung MZ-V9S4T0B-IT/EC 990 EVO Plus Internal SSD, 4TB, PCIe Gen 4.0, x4, NVMe, M.2 (2280), TLC NAND, Maximum 7,250 MB/s",
       "url": "https://www.amazon.sg/dp/B0DM4JSB4J",
       "image_url": "https://m.media-amazon.com/images/I/61OVR5JEQFL._AC_UL320_.jpg",
@@ -3663,6 +4495,38 @@
       "review_count": 0,
       "seller": "Amazon.sg",
       "timestamp": "2026-08-18T09:01:23.201584"
+    },
+    {
+      "platform": "Amazon.sg",
+      "title": "SAMSUNG T7 1TB, Portable SSD, up to 1050MB/s, USB 3.2 Gen2, Gaming, Students & Professionals, External Solid State Drive (MU-PC1T0H/AM), Blue",
+      "url": "https://www.amazon.sg/dp/B0874YJP92",
+      "image_url": "https://m.media-amazon.com/images/I/91eUq8LtTDL._AC_UL320_.jpg",
+      "price": 353.0,
+      "original_price": 353.0,
+      "capacity_gb": 1000.0,
+      "capacity_tb": 1.0,
+      "is_ssd": true,
+      "cost_per_tb": 353.0,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T09:25:34.671326"
+    },
+    {
+      "platform": "Amazon.sg",
+      "title": "Samsung Memory MZ-VAP1T0CW 9100 PRO Internal SSD with 1TB Heatsink, PCIe 5.0 x4, NVMe 2.0, SSD Designed for Professionals and Gamers, Compatible with PC and Playstation 5",
+      "url": "https://www.amazon.sg/dp/B0DWT6PN9N",
+      "image_url": "https://m.media-amazon.com/images/I/61DFFtp2-aL._AC_UL320_.jpg",
+      "price": 353.0,
+      "original_price": 353.0,
+      "capacity_gb": 1000.0,
+      "capacity_tb": 1.0,
+      "is_ssd": true,
+      "cost_per_tb": 353.0,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T09:25:34.671561"
     },
     {
       "platform": "Amazon.sg",
@@ -3694,7 +4558,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T09:06:31.538453"
+      "timestamp": "2026-08-18T09:25:34.671471"
     },
     {
       "platform": "Amazon.sg",
@@ -3714,35 +4578,35 @@
     },
     {
       "platform": "Amazon.sg",
-      "title": "SAMSUNG T7 1TB, Portable SSD, up to 1050MB/s, USB 3.2 Gen2, Gaming, Students & Professionals, External Solid State Drive (MU-PC1T0H/AM), Blue",
-      "url": "https://www.amazon.sg/dp/B0874YJP92",
-      "image_url": "https://m.media-amazon.com/images/I/91eUq8LtTDL._AC_UL320_.jpg",
-      "price": 357.0,
-      "original_price": 357.0,
+      "title": "Samsung 9100 PRO NVMe M.2 SSD, 1TB, PCIe 5.0, 14,700 MB/s Read, 13,300 MB/s Write, Internal SSD for Gaming, Video Editing and AI, Black, MZ-VAP1T0BW",
+      "url": "https://www.amazon.sg/dp/B0DWFMD52T",
+      "image_url": "https://m.media-amazon.com/images/I/61hP7YXuK8L._AC_UL320_.jpg",
+      "price": 360.0,
+      "original_price": 360.0,
       "capacity_gb": 1000.0,
       "capacity_tb": 1.0,
       "is_ssd": true,
-      "cost_per_tb": 357.0,
+      "cost_per_tb": 360.0,
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T00:54:08.008381"
+      "timestamp": "2026-08-18T09:25:34.671495"
     },
     {
       "platform": "Amazon.sg",
-      "title": "Crucial T710 SSD 1TB M.2 NVMe PCIe 5.0 x4 Gen5 with Heatsink, up to 14,900 MB/s Read, 13,700 MB/s Write, for Desktop PC & PS5, TLC NAND, Internal Hard Drive - CT1000T710SSD5-01",
-      "url": "https://www.amazon.sg/dp/B0F9XNN7XF",
-      "image_url": "https://m.media-amazon.com/images/I/51v3BjyBITL._AC_UL320_.jpg",
-      "price": 361.0,
-      "original_price": 361.0,
+      "title": "Crucial New 2024 T705 1TB PCIe Gen5 NVMe M.2 SSD - Up to 13,600 MB/s - Game Ready - Internal Solid State Drive (PC) - +1mo Adobe CC - CT1000T705SSD3",
+      "url": "https://www.amazon.sg/dp/B0CTRV9CVP",
+      "image_url": "https://m.media-amazon.com/images/I/51dhbsC8C4L._AC_UL320_.jpg",
+      "price": 360.0,
+      "original_price": 360.0,
       "capacity_gb": 1000.0,
       "capacity_tb": 1.0,
       "is_ssd": true,
-      "cost_per_tb": 361.0,
+      "cost_per_tb": 360.0,
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T00:54:08.008495"
+      "timestamp": "2026-08-18T09:25:34.671558"
     },
     {
       "platform": "Amazon.sg",
@@ -3758,39 +4622,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T09:02:56.192085"
-    },
-    {
-      "platform": "Amazon.sg",
-      "title": "Crucial New 2024 T705 1TB PCIe Gen5 NVMe M.2 SSD - Up to 13,600 MB/s - Game Ready - Internal Solid State Drive (PC) - +1mo Adobe CC - CT1000T705SSD3",
-      "url": "https://www.amazon.sg/dp/B0CTRV9CVP",
-      "image_url": "https://m.media-amazon.com/images/I/51dhbsC8C4L._AC_UL320_.jpg",
-      "price": 365.0,
-      "original_price": 365.0,
-      "capacity_gb": 1000.0,
-      "capacity_tb": 1.0,
-      "is_ssd": true,
-      "cost_per_tb": 365.0,
-      "rating": 0.0,
-      "review_count": 0,
-      "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T00:54:08.008490"
-    },
-    {
-      "platform": "Amazon.sg",
-      "title": "Samsung 9100 PRO NVMe M.2 SSD, 1TB, PCIe 5.0, 14,700 MB/s Read, 13,300 MB/s Write, Internal SSD for Gaming, Video Editing and AI, Black, MZ-VAP1T0BW",
-      "url": "https://www.amazon.sg/dp/B0DWFMD52T",
-      "image_url": "https://m.media-amazon.com/images/I/61hP7YXuK8L._AC_UL320_.jpg",
-      "price": 368.0,
-      "original_price": 368.0,
-      "capacity_gb": 1000.0,
-      "capacity_tb": 1.0,
-      "is_ssd": true,
-      "cost_per_tb": 368.0,
-      "rating": 0.0,
-      "review_count": 0,
-      "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T09:06:04.854833"
+      "timestamp": "2026-08-18T09:28:16.728997"
     },
     {
       "platform": "Amazon.sg",
@@ -3822,7 +4654,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T09:04:23.950640"
+      "timestamp": "2026-08-18T09:27:50.722189"
     },
     {
       "platform": "Amazon.sg",
@@ -3838,7 +4670,23 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T00:54:08.008437"
+      "timestamp": "2026-08-18T09:25:34.671507"
+    },
+    {
+      "platform": "Amazon.sg",
+      "title": "Crucial T710 SSD 1TB M.2 NVMe PCIe 5.0 x4 Gen5 with Heatsink, up to 14,900 MB/s Read, 13,700 MB/s Write, for Desktop PC & PS5, TLC NAND, Internal Hard Drive - CT1000T710SSD5-01",
+      "url": "https://www.amazon.sg/dp/B0F9XNN7XF",
+      "image_url": "https://m.media-amazon.com/images/I/51v3BjyBITL._AC_UL320_.jpg",
+      "price": 374.0,
+      "original_price": 374.0,
+      "capacity_gb": 1000.0,
+      "capacity_tb": 1.0,
+      "is_ssd": true,
+      "cost_per_tb": 374.0,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T09:27:50.722256"
     },
     {
       "platform": "Amazon.sg",
@@ -3855,6 +4703,22 @@
       "review_count": 0,
       "seller": "Amazon.sg",
       "timestamp": "2026-08-18T09:06:04.854784"
+    },
+    {
+      "platform": "Amazon.sg",
+      "title": "CHGRNLF Macmini M4 SSD Hard Disk 1TB",
+      "url": "https://www.amazon.sg/dp/B0FBWMP5DG",
+      "image_url": "https://m.media-amazon.com/images/I/61UnNouOb3L._AC_UL320_.jpg",
+      "price": 376.0,
+      "original_price": 376.0,
+      "capacity_gb": 1000.0,
+      "capacity_tb": 1.0,
+      "is_ssd": true,
+      "cost_per_tb": 376.0,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T09:27:50.722229"
     },
     {
       "platform": "Amazon.sg",
@@ -3906,6 +4770,22 @@
     },
     {
       "platform": "Amazon.sg",
+      "title": "Crucial T710 SSD 1TB M.2 NVMe PCIe 5.0 x4 Gen5, up to 14,900 MB/s read, 13,700 MB/s write, for laptop and desktop PC, TLC NAND, internal hard drive - CT1000T710SSD8-01",
+      "url": "https://www.amazon.sg/dp/B0F9XN4DCC",
+      "image_url": "https://m.media-amazon.com/images/I/51WMvihHRvL._AC_UL320_.jpg",
+      "price": 388.0,
+      "original_price": 388.0,
+      "capacity_gb": 1000.0,
+      "capacity_tb": 1.0,
+      "is_ssd": true,
+      "cost_per_tb": 388.0,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T09:27:50.722243"
+    },
+    {
+      "platform": "Amazon.sg",
       "title": "Samsung External SSD T7 4TB [with Bonus Model] Maximum Transfer Rate 1,050 MB/s Gray MU-PC4T0T-PD/EC",
       "url": "https://www.amazon.sg/dp/B0DM252JN1",
       "image_url": "https://m.media-amazon.com/images/I/61abr1GXtZL._AC_UL320_.jpg",
@@ -3934,7 +4814,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T09:02:56.192130"
+      "timestamp": "2026-08-18T09:28:16.729028"
     },
     {
       "platform": "Amazon.sg",
@@ -3982,7 +4862,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T09:06:31.538163"
+      "timestamp": "2026-08-18T09:25:34.671412"
     },
     {
       "platform": "Amazon.sg",
@@ -4046,7 +4926,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T09:01:23.201666"
+      "timestamp": "2026-08-18T09:25:34.671528"
     },
     {
       "platform": "Amazon.sg",
@@ -4126,7 +5006,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T09:02:56.192167"
+      "timestamp": "2026-08-18T09:29:08.108369"
     },
     {
       "platform": "Amazon.sg",
@@ -4366,9 +5246,9 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T09:02:56.191965"
+      "timestamp": "2026-08-18T09:28:16.728959"
     }
   ],
-  "lastUpdated": "2026-08-18T09:06:31.538723",
-  "exportedAt": "2026-08-18T09:06:33.165607"
+  "lastUpdated": "2026-08-18T09:29:08.108373",
+  "exportedAt": "2026-08-18T09:30:44.063489"
 }
