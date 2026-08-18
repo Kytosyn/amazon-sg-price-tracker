@@ -191,6 +191,14 @@ def scrape_amazon(query: str, max_pages: int = 2) -> list:
         time.sleep(random.uniform(1, 2))
     return all_items
 
+# ─── Capacity Filter ───────────────────────────────────────────
+
+MIN_CAPACITY_TB = 10  # Only track drives 10TB+
+
+def meets_capacity_requirement(capacity_tb: float) -> bool:
+    """Only track high-capacity drives (10TB+)."""
+    return capacity_tb >= MIN_CAPACITY_TB
+
 # ─── Price Processor ───────────────────────────────────────────
 
 def process_storage_products(items: list, platform: str) -> list:
@@ -206,7 +214,8 @@ def process_storage_products(items: list, platform: str) -> list:
         if is_not_accessory(title):
             continue
         capacity_gb, capacity_tb = parse_capacity(title)
-        if capacity_tb <= 0:
+        # Only 10TB+ drives
+        if not meets_capacity_requirement(capacity_tb):
             continue
         seen.add(url)
         cost_per_tb = price / capacity_tb
@@ -251,20 +260,47 @@ def save_products(products: list):
 
 def scrape_all():
     queries = [
-        'ssd 1tb', 'ssd 2tb', 'ssd 4tb',
-        'hard disk 1tb', 'hard disk 2tb', 'hard disk 4tb',
-        'external ssd', 'external hard disk',
-        'nvme ssd', 'sata ssd',
+        # High-capacity internal hard drives (10TB+)
+        'hard drive 10tb', 'hard drive 12tb', 'hard drive 14tb', 'hard drive 16tb', 'hard drive 18tb', 'hard drive 20tb', 'hard drive 22tb',
+        'hard disk 10tb', 'hard disk 12tb', 'hard disk 14tb', 'hard disk 16tb', 'hard disk 18tb',
+        'internal hard drive 10tb', 'internal hard drive 12tb', 'internal hard drive 14tb', 'internal hard drive 16tb', 'internal hard drive 18tb', 'internal hard drive 20tb',
+        # Enterprise / NAS drives
+        'seagate ironwolf 10tb', 'seagate ironwolf 12tb', 'seagate ironwolf 16tb', 'seagate ironwolf 18tb', 'seagate ironwolf pro 20tb',
+        'wd red plus 10tb', 'wd red plus 12tb', 'wd red plus 14tb', 'wd red pro 16tb', 'wd red pro 18tb', 'wd red pro 20tb',
+        'seagate exos 16tb', 'seagate exos 18tb', 'seagate exos 20tb', 'seagate exos 22tb',
+        'toshiba mg09 16tb', 'toshiba mg09 18tb', 'toshiba mg10 20tb', 'toshiba mg10 22tb',
+        'wd gold 16tb', 'wd gold 18tb', 'wd gold 20tb', 'wd gold 22tb',
+        'wd ultrastar 16tb', 'wd ultrastar 18tb', 'wd ultrastar 20tb', 'wd ultrastar 22tb',
+        # NAS drives
+        'nas hard drive 10tb', 'nas hard drive 12tb', 'nas hard drive 14tb', 'nas hard drive 16tb', 'nas hard drive 18tb',
+        'synology 10tb', 'synology 12tb', 'synology 16tb',
+        'qnap 10tb', 'qnap 12tb', 'qnap 16tb',
+        # Data center drives
+        'data center hard drive 10tb', 'data center hard drive 12tb', 'data center hard drive 14tb', 'data center hard drive 16tb', 'data center hard drive 18tb', 'data center hard drive 20tb',
+        'enterprise hard drive 10tb', 'enterprise hard drive 12tb', 'enterprise hard drive 14tb', 'enterprise hard drive 16tb', 'enterprise hard drive 18tb', 'enterprise hard drive 20tb',
+        'server hard drive 10tb', 'server hard drive 12tb', 'server hard drive 14tb', 'server hard drive 16tb', 'server hard drive 18tb',
+        # External high-capacity drives
+        'external hard drive 10tb', 'external hard drive 12tb', 'external hard drive 14tb', 'external hard drive 16tb', 'external hard drive 18tb', 'external hard drive 20tb',
+        'desktop hard drive 10tb', 'desktop hard drive 12tb', 'desktop hard drive 14tb', 'desktop hard drive 16tb', 'desktop hard drive 18tb', 'desktop hard drive 20tb',
+        # Specific high-capacity models
+        'wd elements 10tb', 'wd elements 12tb', 'wd elements 14tb', 'wd elements 16tb', 'wd elements 18tb', 'wd elements 20tb', 'wd elements 22tb',
+        'wd my book 10tb', 'wd my book 12tb', 'wd my book 14tb', 'wd my book 16tb', 'wd my book 18tb', 'wd my book 20tb', 'wd my book 22tb',
+        'seagate expansion 10tb', 'seagate expansion 12tb', 'seagate expansion 14tb', 'seagate expansion 16tb', 'seagate expansion 18tb', 'seagate expansion 20tb',
+        'seagate backup plus 10tb', 'seagate backup plus 12tb', 'seagate backup plus 14tb', 'seagate backup plus 16tb', 'seagate backup plus 18tb',
+        'lacie 10tb', 'lacie 12tb', 'lacie 14tb', 'lacie 16tb', 'lacie 18tb', 'lacie 20tb',
+        # High-capacity SSDs (rare but exist)
+        'ssd 10tb', 'ssd 15tb', 'ssd 16tb', 'ssd 30tb',
+        'enterprise ssd 10tb', 'enterprise ssd 15tb', 'enterprise ssd 16tb', 'enterprise ssd 30tb',
     ]
     
     all_products = []
     for query in queries:
         print(f"Scraping: {query}")
-        items = scrape_amazon(query, max_pages=2)
+        items = scrape_amazon(query, max_pages=3)
         products = process_storage_products(items, 'Amazon.sg')
         all_products.extend(products)
         print(f"  Total: {len(products)}\n")
-        time.sleep(random.uniform(1, 2))
+        time.sleep(random.uniform(2, 4))
     
     save_products(all_products)
     print(f"=== Grand total: {len(all_products)} ===")

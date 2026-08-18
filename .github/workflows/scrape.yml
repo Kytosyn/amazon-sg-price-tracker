@@ -1,17 +1,22 @@
-name: Daily DiskPrices SG Scrape
+name: DiskPrices SG Scrape
 
 on:
   schedule:
-    - cron: '0 9 * * *'
+    - cron: '*/30 * * * *'  # Every 30 minutes
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   scrape:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     
     steps:
       - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT }}
       
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -19,8 +24,7 @@ jobs:
           python-version: '3.11'
       
       - name: Install dependencies
-        run: |
-          pip install requests beautifulsoup4 lxml
+        run: pip install requests beautifulsoup4 lxml
       
       - name: Run scraper
         id: scrape
@@ -32,22 +36,22 @@ jobs:
       
       - name: Show scraper output
         if: always()
-        run: |
-          echo "=== Scraper Output ==="
-          cat scraper_output.log || echo "No log file found"
+        run: cat scraper_output.log || echo "No log"
       
       - name: Export to JSON
         if: steps.scrape.outputs.exit_code == '0'
         run: python export_json.py
       
-      - name: Commit and push database
+      - name: Commit and push changes
         if: steps.scrape.outputs.exit_code == '0'
-        run: |
-          git config user.name "github-actions"
-          git config user.email "actions@github.com"
-          git add -f diskprices.db data/products.json
-          git diff --quiet && git diff --staged --quiet || git commit -m "Update price data: $(date +%Y-%m-%d)"
-          git push
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Update price data: $(date +%Y-%m-%d-%H%M)"
+          file_pattern: "diskprices.db data/products.json"
+          commit_user_name: "github-actions"
+          commit_user_email: "actions@github.com"
+          push_options: --force
+          token: ${{ secrets.PAT }}
       
       - name: Upload logs as artifact
         if: always()
