@@ -1,9 +1,8 @@
 {
   "version": 2,
-  "buildCommand": "cd frontend && npm install && mkdir -p public && cp ../data/products.json public/products.json && npm run build && cp ../data/products.json dist/products.json",
+  "buildCommand": "cd frontend && npm install && npm run build && cp ../data/products.json dist/products.json",
   "outputDirectory": "frontend/dist",
   "routes": [
-    { "src": "/products.json", "dest": "/products.json" },
     { "handle": "filesystem" },
     { "src": "/(.*)", "dest": "/index.html" }
   ]
