@@ -3,6 +3,7 @@
   "buildCommand": "cd frontend && npm install && npm run build",
   "outputDirectory": "frontend/dist",
   "rewrites": [
+    { "source": "/products.json", "destination": "/products.json" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
