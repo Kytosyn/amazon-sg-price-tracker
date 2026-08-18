@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "buildCommand": "cd frontend && npm install && npm run build",
+  "buildCommand": "mkdir -p frontend/public && cp -f data/products.json frontend/public/products.json 2>/dev/null; cd frontend && npm install && npm run build",
   "outputDirectory": "frontend/dist",
   "rewrites": [
     { "source": "/products.json", "destination": "/products.json" },
