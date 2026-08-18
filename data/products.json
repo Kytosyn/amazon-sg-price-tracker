@@ -110,7 +110,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T13:47:44.684120"
+      "timestamp": "2026-08-18T14:25:11.304785"
     },
     {
       "platform": "Amazon.sg",
@@ -126,7 +126,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T14:01:37.814465"
+      "timestamp": "2026-08-18T14:41:36.815360"
     },
     {
       "platform": "Amazon.sg",
@@ -174,23 +174,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T13:45:05.601564"
-    },
-    {
-      "platform": "Amazon.sg",
-      "title": "Seagate EXOS X24 24TB Internal Hard Drive 3.5 inches SATA 3 Gbit/s 512 MB, ST24000NM000C (Refurbished)",
-      "url": "https://www.amazon.sg/dp/B0DFCTBDRQ",
-      "image_url": "https://m.media-amazon.com/images/I/61JqMS7rwvL._AC_UL320_.jpg",
-      "price": 1079.0,
-      "original_price": 1079.0,
-      "capacity_gb": 24000.0,
-      "capacity_tb": 24.0,
-      "is_ssd": false,
-      "cost_per_tb": 44.958333333333336,
-      "rating": 0.0,
-      "review_count": 0,
-      "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T13:48:20.467085"
+      "timestamp": "2026-08-18T14:26:04.596711"
     },
     {
       "platform": "Amazon.sg",
@@ -206,7 +190,23 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T13:48:20.466947"
+      "timestamp": "2026-08-18T14:29:10.495895"
+    },
+    {
+      "platform": "Amazon.sg",
+      "title": "Seagate EXOS X24 24TB Internal Hard Drive 3.5 inches SATA 3 Gbit/s 512 MB, ST24000NM000C (Refurbished)",
+      "url": "https://www.amazon.sg/dp/B0DFCTBDRQ",
+      "image_url": "https://m.media-amazon.com/images/I/61JqMS7rwvL._AC_UL320_.jpg",
+      "price": 1110.0,
+      "original_price": 1110.0,
+      "capacity_gb": 24000.0,
+      "capacity_tb": 24.0,
+      "is_ssd": false,
+      "cost_per_tb": 46.25,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T14:29:10.496010"
     },
     {
       "platform": "Amazon.sg",
@@ -222,7 +222,55 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T13:56:26.448833"
+      "timestamp": "2026-08-18T14:23:49.699694"
+    },
+    {
+      "platform": "Amazon.sg",
+      "title": "Seagate Exos X14 10TB Internal Server Hard Drive ST10000NM0568 3.5 Inch HDD, 512e/4Kn, SATA 6Gb/s 7200RPM 256MB Cache",
+      "url": "https://www.amazon.sg/dp/B0DTJDCYSH",
+      "image_url": "https://m.media-amazon.com/images/I/51tSFZ7lmlL._AC_UL320_.jpg",
+      "price": 469.0,
+      "original_price": 469.0,
+      "capacity_gb": 10000.0,
+      "capacity_tb": 10.0,
+      "is_ssd": false,
+      "cost_per_tb": 46.9,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T14:23:49.699611"
+    },
+    {
+      "platform": "Amazon.sg",
+      "title": "HGST Ultrastar He10 | HUH721010ALE600 | 0F27604 | 10TB SATA 6-Gbps 7.2K RPM 256MB 3.5\" 512E ISE Hard Drive (Certified Refurbished)",
+      "url": "https://www.amazon.sg/dp/B07DPKWLJR",
+      "image_url": "https://m.media-amazon.com/images/I/61SzTHCrIJL._AC_UL320_.jpg",
+      "price": 475.0,
+      "original_price": 475.0,
+      "capacity_gb": 10000.0,
+      "capacity_tb": 10.0,
+      "is_ssd": false,
+      "cost_per_tb": 47.5,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T14:23:49.699631"
+    },
+    {
+      "platform": "Amazon.sg",
+      "title": "Toshiba Enterprise Capacity - Dell 10TB Internal Festplatte 3.5 Zoll HDD SATA 7200 U/min 256MB (Refurbished)",
+      "url": "https://www.amazon.sg/dp/B0DTK8VPRM",
+      "image_url": "https://m.media-amazon.com/images/I/61dK9RoysvL._AC_UL320_.jpg",
+      "price": 481.0,
+      "original_price": 481.0,
+      "capacity_gb": 10000.0,
+      "capacity_tb": 10.0,
+      "is_ssd": false,
+      "cost_per_tb": 48.1,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T14:23:49.699680"
     },
     {
       "platform": "Amazon.sg",
@@ -286,7 +334,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T13:55:40.120553"
+      "timestamp": "2026-08-18T14:26:04.596586"
     },
     {
       "platform": "Amazon.sg",
@@ -302,7 +350,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T13:43:11.441562"
+      "timestamp": "2026-08-18T14:26:04.596607"
     },
     {
       "platform": "Amazon.sg",
@@ -318,7 +366,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T13:48:20.466928"
+      "timestamp": "2026-08-18T14:29:10.495878"
     },
     {
       "platform": "Amazon.sg",
@@ -366,7 +414,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T13:46:06.331877"
+      "timestamp": "2026-08-18T14:26:04.596824"
     },
     {
       "platform": "Amazon.sg",
@@ -382,7 +430,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T13:45:05.601551"
+      "timestamp": "2026-08-18T14:26:29.750147"
     },
     {
       "platform": "Amazon.sg",
@@ -398,7 +446,23 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T13:45:05.601577"
+      "timestamp": "2026-08-18T14:26:29.750194"
+    },
+    {
+      "platform": "Amazon.sg",
+      "title": "Seagate ST10000NM0216 10TB Internal Hard Drive Silver",
+      "url": "https://www.amazon.sg/dp/B01KXCP9FK",
+      "image_url": "https://m.media-amazon.com/images/I/51j15LNulCL._AC_UL320_.jpg",
+      "price": 588.0,
+      "original_price": 588.0,
+      "capacity_gb": 10000.0,
+      "capacity_tb": 10.0,
+      "is_ssd": false,
+      "cost_per_tb": 58.8,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T14:23:49.699891"
     },
     {
       "platform": "Amazon.sg",
@@ -446,7 +510,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T13:41:07.598131"
+      "timestamp": "2026-08-18T14:23:49.699764"
     },
     {
       "platform": "Amazon.sg",
@@ -462,7 +526,23 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T13:45:05.601507"
+      "timestamp": "2026-08-18T14:26:29.750278"
+    },
+    {
+      "platform": "Amazon.sg",
+      "title": "Oyen Digital HDX Pro C 16TB USB-C 7200RPM Enterprise External Hard Drive",
+      "url": "https://www.amazon.sg/dp/B0GPY24GNK",
+      "image_url": "https://m.media-amazon.com/images/I/61chjzWBiLL._AC_UL320_.jpg",
+      "price": 999.0,
+      "original_price": 999.0,
+      "capacity_gb": 16000.0,
+      "capacity_tb": 16.0,
+      "is_ssd": false,
+      "cost_per_tb": 62.4375,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T14:25:27.943841"
     },
     {
       "platform": "Amazon.sg",
@@ -494,7 +574,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T14:05:20.049104"
+      "timestamp": "2026-08-18T14:42:54.119427"
     },
     {
       "platform": "Amazon.sg",
@@ -510,7 +590,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T13:59:42.946896"
+      "timestamp": "2026-08-18T14:26:29.750405"
     },
     {
       "platform": "Amazon.sg",
@@ -542,7 +622,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T14:01:37.814552"
+      "timestamp": "2026-08-18T14:41:36.815414"
     },
     {
       "platform": "Amazon.sg",
@@ -590,7 +670,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T13:43:11.441882"
+      "timestamp": "2026-08-18T14:26:29.750339"
     },
     {
       "platform": "Amazon.sg",
@@ -642,6 +722,22 @@
     },
     {
       "platform": "Amazon.sg",
+      "title": "HP P23608-B21 16TB SAS 7.2K LFF LP 512e ISE HDD",
+      "url": "https://www.amazon.sg/dp/B088ZXQ4L5",
+      "image_url": "https://m.media-amazon.com/images/I/61lMQ9EGuwS._AC_UL320_.jpg",
+      "price": 1066.0,
+      "original_price": 1066.0,
+      "capacity_gb": 16000.0,
+      "capacity_tb": 16.0,
+      "is_ssd": false,
+      "cost_per_tb": 66.625,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T14:25:27.944032"
+    },
+    {
+      "platform": "Amazon.sg",
       "title": "WD 4TB My Passport Portable Hard Drive, Works with USB-C and USB-A, Windows PC, Mac, Chromebook, Gaming Consoles, and Mobile Devices, Backup Software and Password Protection - WDBRMD0040BGY-WESN",
       "url": "https://www.amazon.sg/dp/B0CL7GCHZV",
       "image_url": "https://m.media-amazon.com/images/I/710w2MVDiVL._AC_UL320_.jpg",
@@ -658,19 +754,19 @@
     },
     {
       "platform": "Amazon.sg",
-      "title": "Western Digital 24TB WD Red Pro NAS Internal Hard Drive HDD - 7200 RPM, SATA 6 Gb/s, CMR, 512 MB Cache, 3.5\" -WD241KFGX | 7200 RPM drive with NASware technology and RV sensors for RAID, server and storage",
-      "url": "https://www.amazon.sg/dp/B0DZY2TN8T",
-      "image_url": "https://m.media-amazon.com/images/I/61Q8qVdxGbL._AC_UL320_.jpg",
-      "price": 1621.0,
-      "original_price": 1621.0,
-      "capacity_gb": 24000.0,
-      "capacity_tb": 24.0,
+      "title": "Western Digital WD161KFGX Red Pro 3.5\" SATA HDD, 512MB Cache, 16TB",
+      "url": "https://www.amazon.sg/dp/B08K3VVKSW",
+      "image_url": "https://m.media-amazon.com/images/I/61RO8bqBARL._AC_UL320_.jpg",
+      "price": 1078.0,
+      "original_price": 1078.0,
+      "capacity_gb": 16000.0,
+      "capacity_tb": 16.0,
       "is_ssd": false,
-      "cost_per_tb": 67.54166666666667,
+      "cost_per_tb": 67.375,
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T13:40:31.126491"
+      "timestamp": "2026-08-18T14:26:04.596852"
     },
     {
       "platform": "Amazon.sg",
@@ -690,6 +786,22 @@
     },
     {
       "platform": "Amazon.sg",
+      "title": "Western Digital 24TB WD Red Pro NAS Internal Hard Drive HDD - 7200 RPM, SATA 6 Gb/s, CMR, 512 MB Cache, 3.5\" -WD241KFGX | 7200 RPM drive with NASware technology and RV sensors for RAID, server and storage",
+      "url": "https://www.amazon.sg/dp/B0DZY2TN8T",
+      "image_url": "https://m.media-amazon.com/images/I/61Q8qVdxGbL._AC_UL320_.jpg",
+      "price": 1621.0,
+      "original_price": 1621.0,
+      "capacity_gb": 24000.0,
+      "capacity_tb": 24.0,
+      "is_ssd": false,
+      "cost_per_tb": 67.54166666666667,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T14:26:29.750386"
+    },
+    {
+      "platform": "Amazon.sg",
       "title": "WD 24TB Elements Desktop External Hard Drive for plug-and-play storage, USB 3.2 Gen1 - WDBWLG0240HBK-NESN",
       "url": "https://www.amazon.sg/dp/B0D7N5XRSV",
       "image_url": "https://m.media-amazon.com/images/I/71jbynLs5CL._AC_UL320_.jpg",
@@ -702,7 +814,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T14:01:37.814594"
+      "timestamp": "2026-08-18T14:41:36.815472"
     },
     {
       "platform": "Amazon.sg",
@@ -718,7 +830,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T13:43:11.441599"
+      "timestamp": "2026-08-18T14:26:04.596685"
     },
     {
       "platform": "Amazon.sg",
@@ -750,7 +862,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T13:48:20.467122"
+      "timestamp": "2026-08-18T14:29:10.496028"
     },
     {
       "platform": "Amazon.sg",
@@ -766,7 +878,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T13:46:06.331696"
+      "timestamp": "2026-08-18T14:25:27.944015"
     },
     {
       "platform": "Amazon.sg",
@@ -786,6 +898,38 @@
     },
     {
       "platform": "Amazon.sg",
+      "title": "BUSlink CipherShield FIPS 140-2 Level 2 HIPAA 256-bit AES USB 3.0 Encrypted RAID 0 Portable Hard Drive (10TB) (CSE-10TM3)",
+      "url": "https://www.amazon.sg/dp/B07JDJ569W",
+      "image_url": "https://m.media-amazon.com/images/I/7116lJdth5L._AC_UL320_.jpg",
+      "price": 702.0,
+      "original_price": 702.0,
+      "capacity_gb": 10000.0,
+      "capacity_tb": 10.0,
+      "is_ssd": false,
+      "cost_per_tb": 70.2,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T14:23:49.700088"
+    },
+    {
+      "platform": "Amazon.sg",
+      "title": "WD_Black 10TB High-Performance Storage 3.5\" HDD Gaming Hard Drive, 7,200 RPM, SATA 6 GB/s, 512MB Cache, Black",
+      "url": "https://www.amazon.sg/dp/B0DF99JTF1",
+      "image_url": "https://m.media-amazon.com/images/I/715M4sg634L._AC_UL320_.jpg",
+      "price": 703.0,
+      "original_price": 703.0,
+      "capacity_gb": 10000.0,
+      "capacity_tb": 10.0,
+      "is_ssd": false,
+      "cost_per_tb": 70.3,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T14:23:49.699777"
+    },
+    {
+      "platform": "Amazon.sg",
       "title": "Toshiba N300 PRO 24TB Large-Sized Business NAS (up to 24 Bays) 3.5-Inch Internal Hard Drive - Up to 550 TB/Year Workload Rate CMR SATA 6 Gb/s 7200 RPM 1.0 GB Cache - HDWG82EXZSTB",
       "url": "https://www.amazon.sg/dp/B0F255ZJLP",
       "image_url": "https://m.media-amazon.com/images/I/71JCU7jO8tL._AC_UL320_.jpg",
@@ -798,7 +942,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T13:45:05.601888"
+      "timestamp": "2026-08-18T14:26:29.750433"
     },
     {
       "platform": "Amazon.sg",
@@ -814,7 +958,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T13:43:11.441933"
+      "timestamp": "2026-08-18T14:25:27.944206"
     },
     {
       "platform": "Amazon.sg",
@@ -878,7 +1022,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T13:45:05.601911"
+      "timestamp": "2026-08-18T14:23:49.699835"
     },
     {
       "platform": "Amazon.sg",
@@ -1006,7 +1150,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T13:43:11.441831"
+      "timestamp": "2026-08-18T14:26:29.750328"
     },
     {
       "platform": "Amazon.sg",
@@ -1022,7 +1166,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T13:54:07.709852"
+      "timestamp": "2026-08-18T14:29:49.587107"
     },
     {
       "platform": "Amazon.sg",
@@ -1038,7 +1182,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T14:01:16.544363"
+      "timestamp": "2026-08-18T14:26:29.750213"
     },
     {
       "platform": "Amazon.sg",
@@ -1054,7 +1198,23 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T13:48:20.466994"
+      "timestamp": "2026-08-18T14:29:10.495927"
+    },
+    {
+      "platform": "Amazon.sg",
+      "title": "Seagate SkyHawk 10TB Surveillance Hard Drive - SATA 6Gb/s 256MB Cache 3.5-Inch Internal Drive (ST10000VX0004)",
+      "url": "https://www.amazon.sg/dp/B01IA9GYAW",
+      "image_url": "https://m.media-amazon.com/images/I/51juwMVB75L._AC_UL320_.jpg",
+      "price": 796.0,
+      "original_price": 796.0,
+      "capacity_gb": 10000.0,
+      "capacity_tb": 10.0,
+      "is_ssd": false,
+      "cost_per_tb": 79.6,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T14:23:49.699847"
     },
     {
       "platform": "Amazon.sg",
@@ -1074,6 +1234,22 @@
     },
     {
       "platform": "Amazon.sg",
+      "title": "Apricorn 16TB Aegis Desktop Padlock FIPS 140-2 Validated 256-Bit Encrypted Hard Drive (ADT-3PL256F-16TB)",
+      "url": "https://www.amazon.sg/dp/B082JNFKJQ",
+      "image_url": "https://m.media-amazon.com/images/I/612vGdAL+3L._AC_UL320_.jpg",
+      "price": 1297.0,
+      "original_price": 1297.0,
+      "capacity_gb": 16000.0,
+      "capacity_tb": 16.0,
+      "is_ssd": false,
+      "cost_per_tb": 81.0625,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T14:25:27.943961"
+    },
+    {
+      "platform": "Amazon.sg",
       "title": "Apricorn 18TB Aegis Padlock DT 256-Bit Encrypted USB 3.0 Hard Drive (ADT-3PL256-18TB)",
       "url": "https://www.amazon.sg/dp/B0CF3XSQV4",
       "image_url": "https://m.media-amazon.com/images/I/51FtLq5r2pL._AC_UL320_.jpg",
@@ -1086,7 +1262,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T13:47:44.684026"
+      "timestamp": "2026-08-18T14:26:04.596730"
     },
     {
       "platform": "Amazon.sg",
@@ -1326,7 +1502,23 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T13:42:29.933922"
+      "timestamp": "2026-08-18T14:25:27.944258"
+    },
+    {
+      "platform": "Amazon.sg",
+      "title": "Apricorn Aegis Padlock DT - USB 3.0 Desktop Drive ADT-3PL256-14TB (R2) External Hard Drive 14TB 3.5\" HD2464",
+      "url": "https://www.amazon.sg/dp/B07WVNNZ8R",
+      "image_url": "https://m.media-amazon.com/images/I/616QFKLFVFL._AC_UL320_.jpg",
+      "price": 1269.0,
+      "original_price": 1269.0,
+      "capacity_gb": 14000.0,
+      "capacity_tb": 14.0,
+      "is_ssd": false,
+      "cost_per_tb": 90.64285714285714,
+      "rating": 0.0,
+      "review_count": 0,
+      "seller": "Amazon.sg",
+      "timestamp": "2026-08-18T14:25:11.304994"
     },
     {
       "platform": "Amazon.sg",
@@ -2398,7 +2590,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T13:46:06.332072"
+      "timestamp": "2026-08-18T14:29:10.496117"
     },
     {
       "platform": "Amazon.sg",
@@ -3198,7 +3390,7 @@
       "rating": 0.0,
       "review_count": 0,
       "seller": "Amazon.sg",
-      "timestamp": "2026-08-18T13:42:29.934012"
+      "timestamp": "2026-08-18T14:27:23.460363"
     },
     {
       "platform": "Amazon.sg",
@@ -5985,6 +6177,6 @@
       "timestamp": "2026-08-18T09:28:16.728959"
     }
   ],
-  "lastUpdated": "2026-08-18T14:05:57.061234",
-  "exportedAt": "2026-08-18T14:05:58.216476"
+  "lastUpdated": "2026-08-18T14:42:54.119427",
+  "exportedAt": "2026-08-18T14:43:38.234994"
 }
