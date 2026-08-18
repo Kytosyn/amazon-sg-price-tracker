@@ -2,6 +2,6 @@
   "name": "amazon-sg-price-tracker",
   "version": "1.0.0",
   "scripts": {
-    "build": "mkdir -p frontend/public && cp -f data/products.json frontend/public/products.json 2>/dev/null; cd frontend && npm install && npm run build"
+    "build": "cd frontend && npm install && mkdir -p public && cp ../data/products.json public/products.json && npm run build && cp ../data/products.json dist/products.json"
   }
 }

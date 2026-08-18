@@ -1,17 +1,8 @@
 {
   "version": 2,
-  "buildCommand": "mkdir -p frontend/public && cp -f data/products.json frontend/public/products.json 2>/dev/null || true; cd frontend && npm install && npm run build",
+  "buildCommand": "cd frontend && npm install && mkdir -p public && cp ../data/products.json public/products.json 2>/dev/null || true && npm run build && cp ../data/products.json dist/products.json 2>/dev/null || true",
   "outputDirectory": "frontend/dist",
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
-  ],
-  "headers": [
-    {
-      "source": "/products.json",
-      "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=300, stale-while-revalidate=600" },
-        { "key": "Content-Type", "value": "application/json" }
-      ]
-    }
   ]
 }
