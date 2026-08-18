@@ -82,6 +82,30 @@ def is_ssd(title: str) -> bool:
             return False
     return False
 
+def is_not_accessory(title: str) -> bool:
+    """Filter out cases, enclosures, adapters, cables, and other non-drive items."""
+    title_lower = title.lower()
+    exclude_keywords = [
+        'case', 'enclosure', 'adapter', 'cable', 'hub', 'reader',
+        'mount', 'bracket', 'dock', 'station', ' converter',
+        'pouch', 'bag', 'box', 'sleeve', 'protector',
+        'stylus', 'pen', 'remote', 'keyboard', 'mouse',
+        'cleaner', 'cleaning', 'thermal', 'paste', 'compound',
+        'screw', 'screwdriver', 'tool', 'kit',
+        'ram', 'memory', 'motherboard', 'cpu', 'gpu', 'graphics card',
+        'power supply', 'psu', 'fan', 'heatsink', 'cooler',
+        'monitor', 'display', 'screen', 'webcam', 'headset',
+        'router', 'switch', 'modem', 'access point',
+        'printer', 'scanner', 'projector',
+        'tv', 'television', 'soundbar', 'speaker',
+        'game', 'controller', 'console',
+        'license', 'software', 'warranty',
+    ]
+    for kw in exclude_keywords:
+        if kw in title_lower:
+            return True
+    return False
+
 # ─── Amazon Scraper ────────────────────────────────────────────
 
 def scrape_amazon_page(query: str, page: int = 1, retries: int = 3) -> list:
@@ -177,6 +201,9 @@ def process_storage_products(items: list, platform: str) -> list:
         price = item.get('price', 0)
         url = item.get('url', '')
         if price <= 0 or url in seen:
+            continue
+        # Filter out non-storage accessories
+        if is_not_accessory(title):
             continue
         capacity_gb, capacity_tb = parse_capacity(title)
         if capacity_tb <= 0:
