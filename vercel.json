@@ -2,8 +2,7 @@
   "version": 2,
   "buildCommand": "cd frontend && npm install && npm run build && cp ../data/products.json dist/products.json",
   "outputDirectory": "frontend/dist",
-  "routes": [
-    { "handle": "filesystem" },
-    { "src": "/(.*)", "dest": "/index.html" }
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
