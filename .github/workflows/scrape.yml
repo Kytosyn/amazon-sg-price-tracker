@@ -1,8 +1,8 @@
-name: DiskPrices SG Scrape
+name: Scrape Disk Prices
 
 on:
   schedule:
-    - cron: '*/30 * * * *'  # Every 30 minutes
+    - cron: '*/30 * * * *'
   workflow_dispatch:
 
 permissions:
@@ -15,8 +15,6 @@ jobs:
     
     steps:
       - uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.PAT }}
       
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -38,22 +36,16 @@ jobs:
         if: always()
         run: cat scraper_output.log || echo "No log"
       
-      - name: Export to JSON
-        if: steps.scrape.outputs.exit_code == '0'
-        run: python export_json.py
-      
-      - name: Commit and push changes
+      - name: Commit and push
         if: steps.scrape.outputs.exit_code == '0'
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "Update price data: $(date +%Y-%m-%d-%H%M)"
+          commit_message: "Update prices: $(date +%Y-%m-%d-%H%M)"
           file_pattern: "diskprices.db data/products.json"
           commit_user_name: "github-actions"
           commit_user_email: "actions@github.com"
-          push_options: --force
-          token: ${{ secrets.PAT }}
       
-      - name: Upload logs as artifact
+      - name: Upload logs
         if: always()
         uses: actions/upload-artifact@v4
         with:

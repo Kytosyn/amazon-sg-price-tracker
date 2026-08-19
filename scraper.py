@@ -1,8 +1,5 @@
 #!/usr/bin/env python3
-"""
-DiskPrices Singapore - Multi-Platform HDD/SSD Price Comparison
-Uses requests + BeautifulSoup with retry logic and proper headers.
-"""
+"""DiskPrices Singapore - Broad scraper for all storage devices."""
 
 import re
 import time
@@ -15,82 +12,65 @@ from urllib.parse import quote_plus
 
 DB_PATH = "./diskprices.db"
 
-# ─── Database ──────────────────────────────────────────────────
-
 def init_db():
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
-    c.execute('''
-        CREATE TABLE IF NOT EXISTS products (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            platform TEXT NOT NULL,
-            title TEXT NOT NULL,
-            url TEXT UNIQUE NOT NULL,
-            image_url TEXT,
-            price REAL NOT NULL,
-            original_price REAL,
-            capacity_gb REAL NOT NULL,
-            capacity_tb REAL NOT NULL,
-            is_ssd BOOLEAN NOT NULL,
-            cost_per_tb REAL NOT NULL,
-            rating REAL DEFAULT 0,
-            review_count INTEGER DEFAULT 0,
-            seller TEXT,
-            timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
-    ''')
-    c.execute('''
-        CREATE TABLE IF NOT EXISTS price_history (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            url TEXT NOT NULL,
-            price REAL NOT NULL,
-            timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (url) REFERENCES products(url)
-        )
-    ''')
-    c.execute('CREATE INDEX IF NOT EXISTS idx_products_platform ON products(platform)')
-    c.execute('CREATE INDEX IF NOT EXISTS idx_products_ssd ON products(is_ssd)')
-    c.execute('CREATE INDEX IF NOT EXISTS idx_products_cost ON products(cost_per_tb)')
+    c.execute('''CREATE TABLE IF NOT EXISTS products (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        platform TEXT NOT NULL,
+        title TEXT NOT NULL,
+        url TEXT UNIQUE NOT NULL,
+        image_url TEXT,
+        price REAL NOT NULL,
+        original_price REAL,
+        capacity_gb REAL NOT NULL,
+        capacity_tb REAL NOT NULL,
+        is_ssd BOOLEAN NOT NULL,
+        cost_per_tb REAL NOT NULL,
+        rating REAL DEFAULT 0,
+        review_count INTEGER DEFAULT 0,
+        seller TEXT,
+        timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        first_seen TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        last_seen TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        is_active BOOLEAN DEFAULT 1
+    )''')
+    c.execute('CREATE INDEX IF NOT EXISTS idx_url ON products(url)')
+    c.execute('CREATE INDEX IF NOT EXISTS idx_capacity ON products(capacity_tb)')
     conn.commit()
     conn.close()
 
 init_db()
 
-# ─── Capacity Parser ───────────────────────────────────────────
-
-def parse_capacity(title: str) -> tuple:
-    title_lower = title.lower()
-    tb_match = re.search(r'(\d+(?:\.\d+)?)\s*tb(?!w)', title_lower)
-    if tb_match:
-        tb = float(tb_match.group(1))
+def parse_capacity(title):
+    tl = title.lower()
+    m = re.search(r'(\d+(?:\.\d+)?)\s*tb(?!w)', tl)
+    if m:
+        tb = float(m.group(1))
         return tb * 1000, tb
-    gb_match = re.search(r'(\d+(?:\.\d+)?)\s*gb(?!w)', title_lower)
-    if gb_match:
-        gb = float(gb_match.group(1))
+    m = re.search(r'(\d+(?:\.\d+)?)\s*gb(?!w)', tl)
+    if m:
+        gb = float(m.group(1))
         return gb, gb / 1000
     return 0, 0
 
-def is_ssd(title: str) -> bool:
-    title_lower = title.lower()
-    ssd_keywords = ['ssd', 'solid state', 'nvme', 'm.2', 'pcie']
-    hdd_keywords = ['hdd', 'hard drive', 'hard disk', 'mechanical']
-    for kw in ssd_keywords:
-        if kw in title_lower:
-            return True
-    for kw in hdd_keywords:
-        if kw in title_lower:
-            return False
+def is_ssd(title):
+    tl = title.lower()
+    for kw in ['ssd', 'solid state', 'nvme', 'm.2', 'pcie']:
+        if kw in tl: return True
+    for kw in ['hdd', 'hard drive', 'hard disk', 'mechanical']:
+        if kw in tl: return False
     return False
 
-def is_real_drive(title: str) -> bool:
-    """Whitelist approach: only include actual storage drives."""
+def is_real_storage(title):
+    """Whitelist: only include actual storage devices."""
     t = title.lower()
     
-    # Must contain a capacity (TB or GB)
+    # Must have capacity
     if not re.search(r'\d+\s*tb|\d+\s*gb', t):
         return False
     
-    # Must NOT be an accessory
+    # Exclude accessories
     accessory_kw = [
         'case', 'enclosure', 'stand', 'cable', 'adapter', 'mount', 'bracket',
         'dock', 'pouch', 'bag', 'box', 'sleeve', 'protector', 'sticker', 'label',
@@ -108,108 +88,54 @@ def is_real_drive(title: str) -> bool:
         if kw in t:
             return False
     
-    # Must be a storage device
+    # Must be storage
     storage_kw = ['hdd', 'hard drive', 'hard disk', 'ssd', 'solid state', 'nvme', 
                   'sata', 'storage', 'internal', 'external', 'portable', 'desktop',
-                  'enterprise', 'nas', 'data center', 'server']
+                  'enterprise', 'nas', 'data center', 'server', 'drive']
     return any(kw in t for kw in storage_kw)
 
-# ─── Amazon Scraper ────────────────────────────────────────────
+HEADERS = {
+    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+    'Accept-Language': 'en-US,en;q=0.9',
+    'Connection': 'keep-alive',
+}
 
-def scrape_amazon_page(query: str, page: int = 1, retries: int = 3) -> list:
+def scrape_page(session, query, page=1, retries=3):
     items = []
     url = f"https://www.amazon.sg/s?k={quote_plus(query)}&page={page}"
     
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-        'Accept-Language': 'en-US,en;q=0.5',
-        'Accept-Encoding': 'gzip, deflate, br',
-        'Connection': 'keep-alive',
-        'Upgrade-Insecure-Requests': '1',
-        'Sec-Fetch-Dest': 'document',
-        'Sec-Fetch-Mode': 'navigate',
-        'Sec-Fetch-Site': 'none',
-        'Sec-Fetch-User': '?1',
-        'Cache-Control': 'max-age=0',
-    }
-    
     for attempt in range(retries):
         try:
-            resp = requests.get(url, headers=headers, timeout=20)
-            
-            if resp.status_code == 503:
-                wait_time = (attempt + 1) * 5
-                print(f"  503 error, retrying in {wait_time}s...")
-                time.sleep(wait_time)
-                continue
-            
-            resp.raise_for_status()
-            soup = BeautifulSoup(resp.text, 'html.parser')
-            products = soup.find_all('div', {'data-asin': True})
-            
-            for product in products:
-                try:
-                    asin = product.get('data-asin')
-                    if not asin:
+            resp = session.get(url, headers=HEADERS, timeout=20)
+            if resp.status_code == 200:
+                soup = BeautifulSoup(resp.text, 'html.parser')
+                for p in soup.find_all('div', {'data-asin': True}):
+                    try:
+                        asin = p.get('data-asin')
+                        if not asin: continue
+                        t = p.find('h2')
+                        title = t.get_text(strip=True) if t else ""
+                        pr = p.find('span', class_='a-price-whole')
+                        pt = pr.get_text(strip=True) if pr else "0"
+                        price = float(re.sub(r'[^\d.]', '', pt))
+                        im = p.find('img', class_='s-image')
+                        iu = im.get('src', '') if im else ""
+                        if title and price > 0:
+                            items.append({'title': title, 'url': f'https://www.amazon.sg/dp/{asin}',
+                                          'image_url': iu, 'price': price})
+                    except:
                         continue
-                    
-                    title_el = product.find('h2')
-                    title = title_el.get_text(strip=True) if title_el else ""
-                    
-                    price_el = product.find('span', class_='a-price-whole')
-                    price_text = price_el.get_text(strip=True) if price_el else "0"
-                    price = float(re.sub(r'[^\d.]', '', price_text))
-                    
-                    img = product.find('img', class_='s-image')
-                    img_url = img.get('src', '') if img else ""
-                    
-                    if title and price > 0:
-                        items.append({
-                            'title': title,
-                            'url': f"https://www.amazon.sg/dp/{asin}",
-                            'image_url': img_url,
-                            'price': price,
-                            'original_price': price,
-                            'rating': 0,
-                            'review_count': 0,
-                            'seller': 'Amazon.sg',
-                        })
-                except:
-                    continue
-            
-            return items
-            
-        except requests.exceptions.RequestException as e:
-            if attempt < retries - 1:
-                wait_time = (attempt + 1) * 3
-                print(f"  Request error, retrying in {wait_time}s: {e}")
-                time.sleep(wait_time)
+                return items
+            elif resp.status_code == 503:
+                time.sleep((attempt + 1) * 10)
             else:
-                print(f"  Failed after {retries} attempts: {e}")
-    
+                return items
+        except:
+            time.sleep(5)
     return items
 
-def scrape_amazon(query: str, max_pages: int = 2) -> list:
-    all_items = []
-    for page in range(1, max_pages + 1):
-        items = scrape_amazon_page(query, page)
-        all_items.extend(items)
-        print(f"  Page {page}: {len(items)} items")
-        time.sleep(random.uniform(1, 2))
-    return all_items
-
-# ─── Capacity Filter ───────────────────────────────────────────
-
-MIN_CAPACITY_TB = 10  # Only track drives 10TB+
-
-def meets_capacity_requirement(capacity_tb: float) -> bool:
-    """Only track high-capacity drives (10TB+)."""
-    return capacity_tb >= MIN_CAPACITY_TB
-
-# ─── Price Processor ───────────────────────────────────────────
-
-def process_storage_products(items: list, platform: str) -> list:
+def process_products(items):
     products = []
     seen = set()
     for item in items:
@@ -218,91 +144,97 @@ def process_storage_products(items: list, platform: str) -> list:
         url = item.get('url', '')
         if price <= 0 or url in seen:
             continue
-        # Only include real storage drives (whitelist approach)
-        if not is_real_drive(title):
+        if not is_real_storage(title):
             continue
-        capacity_gb, capacity_tb = parse_capacity(title)
-        # Only 10TB+ drives
-        if not meets_capacity_requirement(capacity_tb):
+        cap_gb, cap_tb = parse_capacity(title)
+        if cap_tb <= 0:
             continue
         seen.add(url)
-        cost_per_tb = price / capacity_tb
         products.append({
-            'platform': platform,
+            'platform': 'Amazon.sg',
             'title': title,
             'url': url,
             'image_url': item.get('image_url', ''),
             'price': price,
-            'original_price': item.get('original_price', price),
-            'capacity_gb': capacity_gb,
-            'capacity_tb': capacity_tb,
+            'original_price': price,
+            'capacity_gb': cap_gb,
+            'capacity_tb': cap_tb,
             'is_ssd': is_ssd(title),
-            'cost_per_tb': cost_per_tb,
-            'rating': 0,
-            'review_count': 0,
-            'seller': item.get('seller', ''),
-            'timestamp': datetime.now().isoformat(),
+            'cost_per_tb': price / cap_tb if cap_tb > 0 else 0,
+            'seller': 'Amazon.sg',
         })
     return products
 
-# ─── Database ──────────────────────────────────────────────────
-
-def save_products(products: list):
+def save_products(products):
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
+    now = datetime.now().isoformat()
     for p in products:
         try:
-            c.execute('''INSERT OR REPLACE INTO products 
-                (platform, title, url, image_url, price, original_price, capacity_gb, capacity_tb, is_ssd, cost_per_tb, rating, review_count, seller, timestamp)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
+            c.execute('''INSERT INTO products 
+                (platform,title,url,image_url,price,original_price,capacity_gb,capacity_tb,is_ssd,cost_per_tb,seller,timestamp,first_seen,last_seen,is_active)
+                VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,1)''',
                 (p['platform'], p['title'], p['url'], p['image_url'], p['price'], p['original_price'],
-                 p['capacity_gb'], p['capacity_tb'], p['is_ssd'], p['cost_per_tb'], p['rating'],
-                 p['review_count'], p['seller'], p['timestamp']))
-            c.execute('INSERT INTO price_history (url, price) VALUES (?, ?)', (p['url'], p['price']))
+                 p['capacity_gb'], p['capacity_tb'], p['is_ssd'], p['cost_per_tb'], p['seller'],
+                 now, now, now))
         except sqlite3.IntegrityError:
-            pass
+            c.execute('''UPDATE products SET price=?, original_price=?, cost_per_tb=?, last_seen=?, is_active=1 WHERE url=?''',
+                (p['price'], p['original_price'], p['cost_per_tb'], now, p['url']))
     conn.commit()
     conn.close()
 
-# ─── Main ──────────────────────────────────────────────────────
-
-def scrape_all():
+def main():
+    session = requests.Session()
+    session.get("https://www.amazon.sg", headers=HEADERS, timeout=15)
+    time.sleep(2)
+    
     queries = [
-        # Internal high-capacity HDDs
-        'hard drive 10tb', 'hard drive 12tb', 'hard drive 14tb', 'hard drive 16tb', 'hard drive 18tb', 'hard drive 20tb', 'hard drive 22tb',
-        # External high-capacity
-        'external hard drive 10tb', 'external hard drive 12tb', 'external hard drive 14tb', 'external hard drive 16tb', 'external hard drive 18tb', 'external hard drive 20tb',
-        # NAS / Enterprise
-        'seagate ironwolf 12tb', 'seagate ironwolf 16tb', 'seagate ironwolf 18tb',
-        'wd red pro 16tb', 'wd red pro 18tb', 'wd red pro 20tb',
-        'seagate exos 16tb', 'seagate exos 18tb', 'seagate exos 20tb',
-        'wd gold 16tb', 'wd gold 18tb', 'wd gold 20tb',
-        'wd ultrastar 16tb', 'wd ultrastar 18tb', 'wd ultrastar 20tb',
-        'toshiba mg09 16tb', 'toshiba mg09 18tb', 'toshiba mg10 20tb',
-        # Desktop / External brands
-        'wd elements 10tb', 'wd elements 12tb', 'wd elements 14tb', 'wd elements 16tb', 'wd elements 18tb', 'wd elements 20tb', 'wd elements 22tb',
-        'wd my book 10tb', 'wd my book 12tb', 'wd my book 14tb', 'wd my book 16tb', 'wd my book 18tb', 'wd my book 20tb', 'wd my book 22tb',
-        'seagate expansion 10tb', 'seagate expansion 12tb', 'seagate expansion 14tb', 'seagate expansion 16tb', 'seagate expansion 18tb', 'seagate expansion 20tb',
-        'lacie 10tb', 'lacie 12tb', 'lacie 14tb', 'lacie 16tb', 'lacie 18tb', 'lacie 20tb',
-        # High-capacity SSDs
-        'ssd 10tb', 'ssd 15tb', 'ssd 16tb', 'ssd 30tb',
+        # Internal HDDs
+        'internal hard drive', 'internal hdd', 'internal hard disk',
+        'wd gold', 'wd red', 'wd purple', 'wd blue', 'wd black',
+        'seagate barracuda', 'seagate ironwolf', 'seagate exos',
+        'toshiba n300', 'toshiba x300', 'toshiba mg',
+        # External HDDs
+        'external hard drive', 'external hdd', 'portable hard drive',
+        'wd elements', 'wd my book', 'wd my passport',
+        'seagate expansion', 'seagate backup plus',
+        'toshiba canvio', 'lacie', 'buffalo',
+        # Internal SSDs
+        'internal ssd', 'nvme ssd', 'm.2 ssd', 'sata ssd',
+        'samsung 870', 'samsung 980', 'samsung 990',
+        'crucial mx500', 'crucial p5', 'crucial t500',
+        'wd blue ssd', 'wd black ssd', 'kingston nv2',
+        # External SSDs
+        'external ssd', 'portable ssd',
+        'samsung t7', 'samsung t9', 'sandisk extreme',
+        'crucial x10', 'crucial x9', 'kingston xs2000',
+        # NAS drives
+        'nas hard drive', 'nas storage',
+        'synology', 'qnap',
+        # Enterprise
+        'enterprise hard drive', 'enterprise ssd',
+        'server hard drive', 'data center drive',
+        # General
+        'hard drive', 'hdd', 'ssd', 'solid state drive',
+        'storage drive', 'computer drive', 'laptop drive',
+        'desktop drive', 'pc drive', 'mac drive',
     ]
     
     all_products = []
-    for query in queries:
-        print(f"Scraping: {query}")
-        items = scrape_amazon(query, max_pages=2)
-        products = process_storage_products(items, 'Amazon.sg')
-        all_products.extend(products)
-        print(f"  Total: {len(products)}\n")
-        time.sleep(random.uniform(1, 2))
+    for q in queries:
+        print(f"Scraping: {q}")
+        for page in [1, 2]:
+            items = scrape_page(session, q, page)
+            products = process_products(items)
+            all_products.extend(products)
+            time.sleep(random.uniform(0.5, 1.5))
+        print(f"  Total: {len(products)}")
     
-    # Sort: TB drives first (descending), then GB drives (descending)
+    # Sort: TB first (descending), then GB (descending)
     all_products.sort(key=lambda p: (p['capacity_tb'] >= 1, -p['capacity_tb']), reverse=True)
     
     save_products(all_products)
-    print(f"=== Grand total: {len(all_products)} ===")
-    return all_products
+    print(f"\n=== Grand total: {len(all_products)} ===")
 
 if __name__ == '__main__':
-    scrape_all()
+    main()
