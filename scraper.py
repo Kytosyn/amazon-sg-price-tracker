@@ -82,45 +82,37 @@ def is_ssd(title: str) -> bool:
             return False
     return False
 
-def is_not_accessory(title: str) -> bool:
-    """Filter out cases, enclosures, adapters, cables, and other non-drive items."""
-    title_lower = title.lower()
-    exclude_keywords = [
-        # Cases & Enclosures
-        'case', 'enclosure', 'hdd case', 'hdd enclosure', 'hdd stand',
-        'hdd carrying case', 'hdd capacity sticker', 'hdd sticker',
-        'hard drive case', 'hard drive enclosure', 'hard drive stand',
-        'hard disk case', 'hard disk enclosure', 'hard disk stand',
-        'external case', 'drive case', 'drive enclosure',
-        # Adapters & Cables
-        'adapter', 'cable', 'hub', 'reader', 'converter',
-        'usb to sata', 'sata cable', 'power cable', 'data cable',
-        # Mounts & Brackets
-        'mount', 'bracket', 'dock', 'station', ' cradle',
-        'drive bay', 'drive tray', 'drive caddy',
-        # Protectors & Storage
-        'pouch', 'bag', 'box', 'sleeve', 'protector', 'cover',
+def is_real_drive(title: str) -> bool:
+    """Whitelist approach: only include actual storage drives."""
+    t = title.lower()
+    
+    # Must contain a capacity (TB or GB)
+    if not re.search(r'\d+\s*tb|\d+\s*gb', t):
+        return False
+    
+    # Must NOT be an accessory
+    accessory_kw = [
+        'case', 'enclosure', 'stand', 'cable', 'adapter', 'mount', 'bracket',
+        'dock', 'pouch', 'bag', 'box', 'sleeve', 'protector', 'sticker', 'label',
+        'decal', 'skin', 'wrap', 'cover', 'tray', 'caddy', 'bay', 'rail',
+        'installation kit', 'mounting kit', 'bracket kit', 'tool kit',
         'carrying case', 'storage case', 'travel case',
-        # Tools & Accessories
-        'sticker', 'label', 'decal', 'skin', 'wrap',
-        'screwdriver', 'tool', 'kit', 'installation kit',
-        'rail kit', 'mounting kit', 'bracket kit',
-        # Other non-drive items
-        'stylus', 'pen', 'remote', 'keyboard', 'mouse',
-        'cleaner', 'cleaning', 'thermal', 'paste', 'compound',
-        'ram', 'memory', 'motherboard', 'cpu', 'gpu', 'graphics card',
-        'power supply', 'psu', 'fan', 'heatsink', 'cooler',
-        'monitor', 'display', 'screen', 'webcam', 'headset',
-        'router', 'switch', 'modem', 'access point',
-        'printer', 'scanner', 'projector',
-        'tv', 'television', 'soundbar', 'speaker',
-        'game', 'controller', 'console',
-        'license', 'software', 'warranty',
+        'hdd stand', 'hdd enclosure', 'hdd case', 'hdd carrying case',
+        'hard drive stand', 'hard drive enclosure', 'hard drive case',
+        'hard disk stand', 'hard disk enclosure', 'hard disk stand',
+        'usb to sata', 'sata cable', 'power cable', 'data cable',
+        'docking station', 'cloner', 'duplicator',
+        'sabrent', 'maiwo', 'ssk', 'avolusion', 'intenso memory case', 'modustech facet',
     ]
-    for kw in exclude_keywords:
-        if kw in title_lower:
-            return True
-    return False
+    for kw in accessory_kw:
+        if kw in t:
+            return False
+    
+    # Must be a storage device
+    storage_kw = ['hdd', 'hard drive', 'hard disk', 'ssd', 'solid state', 'nvme', 
+                  'sata', 'storage', 'internal', 'external', 'portable', 'desktop',
+                  'enterprise', 'nas', 'data center', 'server']
+    return any(kw in t for kw in storage_kw)
 
 # ─── Amazon Scraper ────────────────────────────────────────────
 
@@ -226,8 +218,8 @@ def process_storage_products(items: list, platform: str) -> list:
         url = item.get('url', '')
         if price <= 0 or url in seen:
             continue
-        # Filter out non-storage accessories
-        if is_not_accessory(title):
+        # Only include real storage drives (whitelist approach)
+        if not is_real_drive(title):
             continue
         capacity_gb, capacity_tb = parse_capacity(title)
         # Only 10TB+ drives
@@ -304,6 +296,9 @@ def scrape_all():
         all_products.extend(products)
         print(f"  Total: {len(products)}\n")
         time.sleep(random.uniform(1, 2))
+    
+    # Sort: TB drives first (descending), then GB drives (descending)
+    all_products.sort(key=lambda p: (p['capacity_tb'] >= 1, -p['capacity_tb']), reverse=True)
     
     save_products(all_products)
     print(f"=== Grand total: {len(all_products)} ===")

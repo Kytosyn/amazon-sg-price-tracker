@@ -21,7 +21,7 @@ def export_to_json():
                capacity_gb, capacity_tb, is_ssd, cost_per_tb, rating, 
                review_count, seller, timestamp 
         FROM products 
-        ORDER BY cost_per_tb ASC
+        ORDER BY capacity_tb DESC, capacity_gb DESC
     ''')
     rows = c.fetchall()
     
