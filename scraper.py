@@ -86,12 +86,28 @@ def is_not_accessory(title: str) -> bool:
     """Filter out cases, enclosures, adapters, cables, and other non-drive items."""
     title_lower = title.lower()
     exclude_keywords = [
-        'case', 'enclosure', 'adapter', 'cable', 'hub', 'reader',
-        'mount', 'bracket', 'dock', 'station', ' converter',
-        'pouch', 'bag', 'box', 'sleeve', 'protector',
+        # Cases & Enclosures
+        'case', 'enclosure', 'hdd case', 'hdd enclosure', 'hdd stand',
+        'hdd carrying case', 'hdd capacity sticker', 'hdd sticker',
+        'hard drive case', 'hard drive enclosure', 'hard drive stand',
+        'hard disk case', 'hard disk enclosure', 'hard disk stand',
+        'external case', 'drive case', 'drive enclosure',
+        # Adapters & Cables
+        'adapter', 'cable', 'hub', 'reader', 'converter',
+        'usb to sata', 'sata cable', 'power cable', 'data cable',
+        # Mounts & Brackets
+        'mount', 'bracket', 'dock', 'station', ' cradle',
+        'drive bay', 'drive tray', 'drive caddy',
+        # Protectors & Storage
+        'pouch', 'bag', 'box', 'sleeve', 'protector', 'cover',
+        'carrying case', 'storage case', 'travel case',
+        # Tools & Accessories
+        'sticker', 'label', 'decal', 'skin', 'wrap',
+        'screwdriver', 'tool', 'kit', 'installation kit',
+        'rail kit', 'mounting kit', 'bracket kit',
+        # Other non-drive items
         'stylus', 'pen', 'remote', 'keyboard', 'mouse',
         'cleaner', 'cleaning', 'thermal', 'paste', 'compound',
-        'screw', 'screwdriver', 'tool', 'kit',
         'ram', 'memory', 'motherboard', 'cpu', 'gpu', 'graphics card',
         'power supply', 'psu', 'fan', 'heatsink', 'cooler',
         'monitor', 'display', 'screen', 'webcam', 'headset',
