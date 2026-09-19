@@ -156,12 +156,7 @@ def _extract_list_items(data: Any) -> list:
     return []
 
 
-# Module-level: after first successful parse, stick to that ZenRows mode.
-_FETCH_MODE: str | None = None  # "ajax" | "js"
-
-
 def search_catalog(session: requests.Session, keyword: str, page: int = 1) -> list[dict]:
-    global _FETCH_MODE
     params = {
         "q": keyword,
         "ajax": "true",
@@ -171,54 +166,37 @@ def search_catalog(session: requests.Session, keyword: str, page: int = 1) -> li
         "isFirstRequest": "true" if page == 1 else "false",
     }
     url = f"{SEARCH_BASE}?{urlencode(params, quote_via=quote_plus)}"
-
-    def _one(extra: dict | None) -> list[dict] | None:
-        resp = zenrows_get(
-            session,
-            url,
-            headers=HEADERS,
-            timeout=70 if not extra else 90,
-            extra_params=extra,
-            retries=2,
-        )
-        if resp is None:
-            return None
-        if resp.status_code != 200:
-            print(f"  HTTP {resp.status_code} for '{keyword}' page {page}: {resp.text[:200]}")
-            return None
-        data = _parse_payload(resp)
-        if data is None:
-            return None
-        raw_items = _extract_list_items(data)
-        out: list[dict] = []
-        for entry in raw_items:
-            if not isinstance(entry, dict):
-                continue
-            norm = _normalize_item(entry)
-            if norm:
-                out.append(norm)
-        if not out and raw_items:
-            print(f"  {len(raw_items)} raw items but none normalized for '{keyword}'")
-        return out
-
-    # Lazada returns ZenRows REQS002 without js_render; skip ajax-only probe.
-    js_params = {"js_render": "true", "wait": "2500", "proxy_country": "sg"}
-    modes: list[tuple[str, dict | None]]
-    if _FETCH_MODE == "ajax":
-        modes = [("ajax", None)]
-    else:
-        modes = [("js", js_params)]
-
-    for name, extra in modes:
-        result = _one(extra)
-        if result is None:
+    resp = zenrows_get(
+        session,
+        url,
+        headers=HEADERS,
+        timeout=120,
+        retries=2,
+        mode="auto",
+        extra_params={"proxy_country": "sg"},
+    )
+    if resp is None:
+        print(f"  no response for '{keyword}' page {page}")
+        return []
+    if resp.status_code != 200:
+        print(f"  HTTP {resp.status_code} for '{keyword}' page {page}: {resp.text[:200]}")
+        return []
+    data = _parse_payload(resp)
+    if data is None:
+        snippet = resp.text[:120].replace("\n", " ")
+        print(f"  Non-JSON/unparseable for '{keyword}': {snippet}")
+        return []
+    raw_items = _extract_list_items(data)
+    out: list[dict] = []
+    for entry in raw_items:
+        if not isinstance(entry, dict):
             continue
-        if _FETCH_MODE is None:
-            _FETCH_MODE = name
-            print(f"  Lazada fetch mode locked: {name}")
-        return result
-    print(f"  no parseable payload for '{keyword}' page {page}")
-    return []
+        norm = _normalize_item(entry)
+        if norm:
+            out.append(norm)
+    if not out and raw_items:
+        print(f"  {len(raw_items)} raw items but none normalized for '{keyword}'")
+    return out
 
 
 

@@ -210,8 +210,13 @@ def save_products(products):
 # --- Proxy helpers (shared by Amazon / Shopee / Lazada scrapers) ---
 
 
-def proxied_url(url: str) -> str:
-    """Optional ScraperAPI / ZenRows / custom proxy prefix via env (Amazon pattern)."""
+def proxied_url(url: str, *, mode: str | None = None, extra_params: dict | None = None) -> str:
+    """Optional ScraperAPI / ZenRows / custom proxy prefix via env (Amazon pattern).
+
+    ``mode="auto"`` uses ZenRows Adaptive Stealth (do not also pass js_render /
+    premium_proxy — ZenRows manages those). Amazon keeps the classic
+    ``premium_proxy=true`` path when mode is unset.
+    """
     scraperapi = os.environ.get("SCRAPERAPI_KEY", "").strip()
     if scraperapi:
         return (
@@ -220,10 +225,23 @@ def proxied_url(url: str) -> str:
         )
     zenrows = os.environ.get("ZENROWS_API_KEY", "").strip()
     if zenrows:
-        return (
-            f"https://api.zenrows.com/v1/?apikey={quote(zenrows)}"
-            f"&url={quote(url, safe='')}&premium_proxy=true"
-        )
+        params: dict[str, str] = {
+            "apikey": zenrows,
+            "url": url,
+        }
+        if mode == "auto":
+            params["mode"] = "auto"
+        else:
+            params["premium_proxy"] = "true"
+        if extra_params:
+            for k, v in extra_params.items():
+                if v is None:
+                    continue
+                # Avoid conflicting with Adaptive Stealth managed knobs.
+                if mode == "auto" and k in ("js_render", "premium_proxy"):
+                    continue
+                params[str(k)] = str(v)
+        return f"https://api.zenrows.com/v1/?{urlencode(params)}"
     return url
 
 
@@ -242,19 +260,14 @@ def zenrows_get(
     timeout: int = 60,
     retries: int = 3,
     extra_params: dict | None = None,
+    mode: str | None = None,
 ) -> requests.Response | None:
     """GET ``url`` through ZenRows/ScraperAPI when configured, else direct.
 
-    ``extra_params`` are appended to the ZenRows query string only (e.g.
-    js_render=true). ScraperAPI / direct paths ignore them.
+    Prefer ``mode="auto"`` for Shopee/Lazada (Adaptive Stealth). Amazon callers
+    omit mode and keep ``premium_proxy=true``.
     """
-    target = proxied_url(url)
-    if (
-        extra_params
-        and os.environ.get("ZENROWS_API_KEY", "").strip()
-        and "zenrows.com" in target
-    ):
-        target = f"{target}&{urlencode(extra_params)}"
+    target = proxied_url(url, mode=mode, extra_params=extra_params)
     last_err = None
     for attempt in range(retries):
         try:
