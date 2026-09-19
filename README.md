@@ -32,6 +32,10 @@ Find the best cost/TB deals automatically.
 - `is_ssd`: true/false
 - `sort_by`: cost_per_tb, price, capacity
 
+## Data sources
+
+Primary path: **Shopee Affiliate Open API** + **Lazada Affiliate** (stub until endpoint confirmed) + **Amazon.sg** (ZenRows/ScraperAPI). See [docs/DATA_SOURCES.md](docs/DATA_SOURCES.md) and [docs/AFFILIATE_SETUP.md](docs/AFFILIATE_SETUP.md). BuyWhere PR #7 was closed — not the primary path.
+
 ## Setup
 
 ### Frontend
