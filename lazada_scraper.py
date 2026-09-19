@@ -201,14 +201,13 @@ def search_catalog(session: requests.Session, keyword: str, page: int = 1) -> li
             print(f"  {len(raw_items)} raw items but none normalized for '{keyword}'")
         return out
 
+    # Lazada returns ZenRows REQS002 without js_render; skip ajax-only probe.
+    js_params = {"js_render": "true", "wait": "2500", "proxy_country": "sg"}
     modes: list[tuple[str, dict | None]]
-    if _FETCH_MODE == "js":
-        modes = [("js", {"js_render": "true", "wait": "2500"})]
-    elif _FETCH_MODE == "ajax":
+    if _FETCH_MODE == "ajax":
         modes = [("ajax", None)]
     else:
-        # Probe once: ajax first, then js_render — remember winner for later queries.
-        modes = [("ajax", None), ("js", {"js_render": "true", "wait": "2500"})]
+        modes = [("js", js_params)]
 
     for name, extra in modes:
         result = _one(extra)

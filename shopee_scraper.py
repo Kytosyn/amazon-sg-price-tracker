@@ -149,7 +149,15 @@ def search_items(session: requests.Session, keyword: str, newest: int = 0, limit
         "version": 2,
     }
     url = f"{SEARCH_BASE}?{urlencode(params, quote_via=quote_plus)}"
-    resp = zenrows_get(session, url, headers=HEADERS, timeout=60)
+    # Shopee domains require ZenRows js_render (REQS002 without it), even with premium_proxy.
+    resp = zenrows_get(
+        session,
+        url,
+        headers=HEADERS,
+        timeout=90,
+        retries=2,
+        extra_params={"js_render": "true", "wait": "2500", "proxy_country": "sg"},
+    )
     if resp is None:
         print(f"  no response for '{keyword}' newest={newest}")
         return []

@@ -55,7 +55,7 @@ dead ends** for now. The working SEA path is scraping public search JSON
 | Item | Detail |
 | --- | --- |
 | Endpoint | `GET https://shopee.sg/api/v4/search/search_items?keyword=…&limit=60&newest=0&by=relevancy&order=desc&page_type=search&scenario=PAGE_GLOBAL_SEARCH&version=2` |
-| Proxy | ZenRows `premium_proxy=true` via `zenrows_get` |
+| Proxy | ZenRows `premium_proxy=true` + `js_render=true` + `proxy_country=sg` via `zenrows_get` |
 | Mapping | `item_basic.name` / `price` (÷100000 → SGD) / image key / `i.{shopid}.{itemid}` URL |
 | Platform label | `Shopee` |
 | Filters | `is_real_storage` + `parse_capacity` over `STORAGE_QUERIES` |
@@ -66,7 +66,7 @@ dead ends** for now. The working SEA path is scraping public search JSON
 | Item | Detail |
 | --- | --- |
 | Endpoint | `GET https://www.lazada.sg/catalog/?q=…&ajax=true&page=1` (falls back to ZenRows `js_render` if ajax body is not JSON) |
-| Proxy | Same ZenRows key / `zenrows_get` |
+| Proxy | Same ZenRows key; `js_render=true` required (REQS002 without it) |
 | Mapping | `mods.listItems[]` → `name`, `price`/`priceShow`, `productUrl`, `image` |
 | Platform label | `Lazada` |
 | Fail behaviour | Same soft-fail as Shopee |
