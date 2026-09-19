@@ -172,27 +172,33 @@ export default function DiskPrices() {
       if (!res.ok) throw new Error(`HTTP ${res.status}`)
       return res.json()
     }
+    const pickFreshest = (a, b) => {
+      if (!a) return b
+      if (!b) return a
+      const ta = Date.parse(a.lastUpdated || '') || 0
+      const tb = Date.parse(b.lastUpdated || '') || 0
+      if (tb !== ta) return tb > ta ? b : a
+      const na = Array.isArray(a.products) ? a.products.length : 0
+      const nb = Array.isArray(b.products) ? b.products.length : 0
+      return nb > na ? b : a
+    }
     try {
-      // Prefer GitHub raw (freshest scrape). Fall back to Vercel build bundle.
-      let data
+      // Fetch remote + local; always take the newer lastUpdated (fixes stale
+      // Vercel /products.json winning when it returns 200 with old data).
+      let remote = null
+      let local = null
       try {
-        data = await tryUrl(REMOTE_DATA_URL)
+        remote = await tryUrl(REMOTE_DATA_URL)
       } catch {
-        data = await tryUrl(LOCAL_DATA_URL)
+        /* try local below */
       }
-      const products = Array.isArray(data.products) ? data.products : []
-      // If raw is empty but the build bundle has rows, use the bundle.
-      if (products.length === 0) {
-        try {
-          const local = await tryUrl(LOCAL_DATA_URL)
-          const localProducts = Array.isArray(local.products) ? local.products : []
-          if (localProducts.length > 0) {
-            data = local
-          }
-        } catch {
-          /* keep remote/empty */
-        }
+      try {
+        local = await tryUrl(LOCAL_DATA_URL)
+      } catch {
+        /* optional bundle */
       }
+      const data = pickFreshest(remote, local)
+      if (!data) throw new Error('no feed available')
       setProducts(Array.isArray(data.products) ? data.products : [])
       setLastUpdated(data.lastUpdated || null)
     } catch (err) {
