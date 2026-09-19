@@ -28,6 +28,7 @@ from scrape_common import (
     sea_soft_exit,
     using_proxy,
     zenrows_get,
+    zenrows_quota_exceeded,
 )
 
 # Shorter list for ZenRows cost/latency (full STORAGE_QUERIES still available).
@@ -54,6 +55,11 @@ SEA_QUERIES = [
 ]
 
 PLATFORM = "Lazada"
+
+
+class QuotaExceeded(RuntimeError):
+    """ZenRows AUTH004 / HTTP 402."""
+
 SEARCH_BASE = "https://www.lazada.sg/catalog/"
 HEADERS = {
     "User-Agent": (
@@ -184,6 +190,9 @@ def search_catalog(session: requests.Session, keyword: str, page: int = 1) -> li
     if resp is None:
         print(f"  no response for '{keyword}' page {page}")
         return []
+    if zenrows_quota_exceeded(resp):
+        print(f"  ZenRows quota exceeded (HTTP {resp.status_code}): {resp.text[:200]}")
+        raise QuotaExceeded("ZENROWS usage exceeded (AUTH004)")
     if resp.status_code != 200:
         print(f"  HTTP {resp.status_code} for '{keyword}' page {page}: {resp.text[:200]}")
         return []
@@ -243,26 +252,29 @@ def main() -> None:
     all_products: list[dict] = []
     empty_streak = 0
     queries = SEA_QUERIES or STORAGE_QUERIES
-    for q in queries:
-        print(f"Lazada ZenRows: {q}")
-        page_products: list[dict] = []
-        # Page 1 only for first-week ZenRows budget; widen later if needed.
-        for page in (1,):
-            items = search_catalog(session, q, page=page)
-            products = process_products(items, default_platform=PLATFORM, default_seller=PLATFORM)
-            page_products.extend(products)
-            all_products.extend(products)
-            time.sleep(1.0)
-        print(f"  Total: {len(page_products)}")
-        if len(page_products) == 0:
-            empty_streak += 1
-            # Soften fail-fast: ZenRows timeouts can zero the first few queries
-            # without meaning the whole catalog path is dead.
-            if empty_streak >= 8 and not all_products:
-                print("Fail-fast: first 8 queries returned 0 products.")
-                break
-        else:
-            empty_streak = 0
+    try:
+        for q in queries:
+            print(f"Lazada ZenRows: {q}")
+            page_products: list[dict] = []
+            # Page 1 only for first-week ZenRows budget; widen later if needed.
+            for page in (1,):
+                items = search_catalog(session, q, page=page)
+                products = process_products(items, default_platform=PLATFORM, default_seller=PLATFORM)
+                page_products.extend(products)
+                all_products.extend(products)
+                time.sleep(1.0)
+            print(f"  Total: {len(page_products)}")
+            if len(page_products) == 0:
+                empty_streak += 1
+                # Soften fail-fast: ZenRows timeouts can zero the first few queries
+                # without meaning the whole catalog path is dead.
+                if empty_streak >= 8 and not all_products:
+                    print("Fail-fast: first 8 queries returned 0 products.")
+                    break
+            else:
+                empty_streak = 0
+    except QuotaExceeded as e:
+        print(f"Aborting Lazada early: {e}")
 
     deduped: dict[str, dict] = {}
     for p in all_products:

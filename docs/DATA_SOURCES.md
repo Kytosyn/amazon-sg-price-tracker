@@ -169,4 +169,4 @@ Dispatched **Scrape Disk Prices** on `feat/zenrows-shopee-lazada` with repo `ZEN
 | `mode=auto` on search API | Shopee still **RESP001** (grand total 0) on master after #9 |
 | HTML `/search` + `js_render` + `json_response` | Next fix — capture browser `search_items` XHR instead of fetching the JSON API under Stealth |
 
-Amazon path with the same key continues to return hundreds of products. Soft-fail kept SEA steps from blocking the Amazon export.
+Amazon path with the same key continues to return hundreds of products. SEA scrapers abort early on ZenRows **AUTH004**/HTTP 402 (usage exceeded) so remaining queries do not keep burning quota. Soft-fail kept SEA steps from blocking the Amazon export.
