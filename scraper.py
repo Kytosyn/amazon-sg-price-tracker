@@ -118,7 +118,7 @@ def main():
     for q in queries:
         print(f"Scraping: {q}")
         page_products = []
-        for page in [1, 2]:
+        for page in [1, 2, 3]:
             items = scrape_page(session, q, page)
             products = process_products(items)
             page_products.extend(products)
