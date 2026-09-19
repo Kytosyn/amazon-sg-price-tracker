@@ -136,20 +136,35 @@ Signup: [lazada.sg/lazada-affiliate-program](https://www.lazada.sg/lazada-affili
 
 `.github/workflows/scrape.yml`:
 
-1. Always run Amazon (`scraper.py`) — **hard** fail-closed (unless `export_only`)
-2. If `ZENROWS_API_KEY` set: run `shopee_scraper.py` then `lazada_scraper.py`
+1. **Resolve scrape mode** — skip scrapers when `export_only` is true, or when
+   repo variable `ZENROWS_PAUSED` / `SCRAPE_PAUSED` is `true` (unless
+   `force_scrape` is set on workflow_dispatch)
+2. Always run Amazon (`scraper.py`) when not skipped — **hard** fail-closed
+3. If `ZENROWS_API_KEY` set: run `shopee_scraper.py` then `lazada_scraper.py`
    (`SEA_SOFT_FAIL=1`, `continue-on-error: true`)
-3. Optionally run BuyWhere / Shopee Affiliate / Lazada Affiliate when their
+4. Optionally run BuyWhere / Shopee Affiliate / Lazada Affiliate when their
    secrets are set (otherwise skip with a notice — parked paths)
-4. `export_json.py` → commit `diskprices.db` + `data/products.json` when non-empty
+5. `export_json.py` → commit `diskprices.db` + `data/products.json` when non-empty
+   (always runs, including pause / export_only)
+
+### Pause ZenRows (repo variable)
+
+Stop cron from calling Amazon/ZenRows without disabling the workflow:
+
+1. GitHub → **Settings** → **Secrets and variables** → **Actions** → **Variables**
+2. Create `ZENROWS_PAUSED` = `true` (alias: `SCRAPE_PAUSED`)
+3. Scheduled runs (and dispatch without override) take the export-only path
+4. Unpause: set to `false` or delete the variable
+5. Emergency scrape while paused: dispatch with **`force_scrape`**
 
 ### Export-only (no scrape)
 
 When ZenRows / Amazon scrape cannot run (e.g. HTTP 402), re-apply accessory
 filters and refresh the live catalog without hitting Amazon or SEA:
 
-1. GitHub → **Actions** → **Scrape Disk Prices** → **Run workflow**
-2. Enable **`export_only`** → Run
+1. Prefer the **pause variable** above so every cron tick stays export-only, or
+2. GitHub → **Actions** → **Scrape Disk Prices** → **Run workflow**
+3. Enable **`export_only`** → Run
 
 That path skips Amazon / Shopee / Lazada / affiliate importers and only runs
 `export_json.py` (which calls `init_db()` → `deactivate_non_storage()` → write
