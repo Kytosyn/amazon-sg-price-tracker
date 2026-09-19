@@ -32,6 +32,7 @@ from scrape_common import (
     sea_soft_exit,
     using_proxy,
     zenrows_get,
+    zenrows_quota_exceeded,
 )
 
 # Shorter list for ZenRows cost/latency (matches Lazada SEA_QUERIES).
@@ -58,6 +59,11 @@ SEA_QUERIES = [
 ]
 
 PLATFORM = "Shopee"
+
+
+class QuotaExceeded(RuntimeError):
+    """ZenRows AUTH004 / HTTP 402."""
+
 SEARCH_API = "https://shopee.sg/api/v4/search/search_items"
 SEARCH_HTML = "https://shopee.sg/search"
 PRICE_DIVISOR = 100_000  # Shopee micros → SGD
@@ -198,6 +204,9 @@ def _items_from_zenrows_json_response(payload: Any) -> list[dict]:
 
 
 def _parse_response_items(resp: requests.Response, keyword: str, label: str) -> list[dict]:
+    if zenrows_quota_exceeded(resp):
+        print(f"  ZenRows quota exceeded ({label} HTTP {resp.status_code}): {resp.text[:200]}")
+        raise QuotaExceeded("ZENROWS usage exceeded (AUTH004)")
     if resp.status_code != 200:
         print(f"  HTTP {resp.status_code} ({label}) for '{keyword}': {resp.text[:200]}")
         return []
@@ -298,23 +307,26 @@ def main() -> None:
     all_products: list[dict] = []
     empty_streak = 0
     queries = SEA_QUERIES or STORAGE_QUERIES
-    for q in queries:
-        print(f"Shopee ZenRows: {q}")
-        page_products: list[dict] = []
-        for newest in (0,):
-            items = search_items(session, q, newest=newest, limit=60)
-            products = process_products(items, default_platform=PLATFORM, default_seller=PLATFORM)
-            page_products.extend(products)
-            all_products.extend(products)
-            time.sleep(0.8)
-        print(f"  Total: {len(page_products)}")
-        if len(page_products) == 0:
-            empty_streak += 1
-            if empty_streak >= 5 and not all_products:
-                print("Fail-fast: first 5 queries returned 0 products.")
-                break
-        else:
-            empty_streak = 0
+    try:
+        for q in queries:
+            print(f"Shopee ZenRows: {q}")
+            page_products: list[dict] = []
+            for newest in (0,):
+                items = search_items(session, q, newest=newest, limit=60)
+                products = process_products(items, default_platform=PLATFORM, default_seller=PLATFORM)
+                page_products.extend(products)
+                all_products.extend(products)
+                time.sleep(0.8)
+            print(f"  Total: {len(page_products)}")
+            if len(page_products) == 0:
+                empty_streak += 1
+                if empty_streak >= 5 and not all_products:
+                    print("Fail-fast: first 5 queries returned 0 products.")
+                    break
+            else:
+                empty_streak = 0
+    except QuotaExceeded as e:
+        print(f"Aborting Shopee early: {e}")
 
     deduped: dict[str, dict] = {}
     for p in all_products:
