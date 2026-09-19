@@ -1,14 +1,16 @@
 #!/usr/bin/env python3
-"""DiskPrices Singapore - Broad scraper for all storage devices."""
+"""DiskPrices Singapore - Amazon.sg scraper with fail-closed + optional proxy API."""
 
+import os
 import re
+import sys
 import time
 import random
 import sqlite3
 import requests
 from datetime import datetime
 from bs4 import BeautifulSoup
-from urllib.parse import quote_plus
+from urllib.parse import quote_plus, quote
 
 DB_PATH = "./diskprices.db"
 
@@ -57,20 +59,17 @@ def parse_capacity(title):
 def is_ssd(title):
     tl = title.lower()
     for kw in ['ssd', 'solid state', 'nvme', 'm.2', 'pcie']:
-        if kw in tl: return True
+        if kw in tl:
+            return True
     for kw in ['hdd', 'hard drive', 'hard disk', 'mechanical']:
-        if kw in tl: return False
+        if kw in tl:
+            return False
     return False
 
 def is_real_storage(title):
-    """Whitelist: only include actual storage devices."""
     t = title.lower()
-    
-    # Must have capacity
     if not re.search(r'\d+\s*tb|\d+\s*gb', t):
         return False
-    
-    # Exclude accessories
     accessory_kw = [
         'case', 'enclosure', 'stand', 'cable', 'adapter', 'mount', 'bracket',
         'dock', 'pouch', 'bag', 'box', 'sleeve', 'protector', 'sticker', 'label',
@@ -78,60 +77,102 @@ def is_real_storage(title):
         'installation kit', 'mounting kit', 'bracket kit', 'tool kit',
         'carrying case', 'storage case', 'travel case',
         'hdd stand', 'hdd enclosure', 'hdd case', 'hdd carrying case',
-        'hard drive stand', 'hard drive enclosure', 'hard drive case',
-        'hard disk stand', 'hard disk enclosure', 'hard disk stand',
-        'usb to sata', 'sata cable', 'power cable', 'data cable',
-        'docking station', 'cloner', 'duplicator',
-        'sabrent', 'maiwo', 'ssk', 'avolusion', 'intenso memory case', 'modustech facet',
     ]
-    for kw in accessory_kw:
-        if kw in t:
-            return False
-    
-    # Must be storage
-    storage_kw = ['hdd', 'hard drive', 'hard disk', 'ssd', 'solid state', 'nvme', 
-                  'sata', 'storage', 'internal', 'external', 'portable', 'desktop',
-                  'enterprise', 'nas', 'data center', 'server', 'drive']
+    if any(kw in t for kw in accessory_kw):
+        return False
+    storage_kw = [
+        'hdd', 'hard drive', 'hard disk', 'ssd', 'solid state', 'nvme',
+        'sata', 'storage', 'internal', 'external', 'portable', 'desktop',
+        'enterprise', 'nas', 'data center', 'server', 'drive',
+    ]
     return any(kw in t for kw in storage_kw)
 
 HEADERS = {
-    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-    'Accept-Language': 'en-US,en;q=0.9',
-    'Connection': 'keep-alive',
+    'User-Agent': (
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 '
+        '(KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36'
+    ),
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+    'Accept-Language': 'en-SG,en;q=0.9',
+    'Cache-Control': 'no-cache',
+    'Pragma': 'no-cache',
+    'Upgrade-Insecure-Requests': '1',
+    'Sec-Fetch-Dest': 'document',
+    'Sec-Fetch-Mode': 'navigate',
+    'Sec-Fetch-Site': 'none',
+    'Sec-Fetch-User': '?1',
 }
+
+def _proxied_url(url: str) -> str:
+    """Optional ScraperAPI / ZenRows / custom proxy prefix via env."""
+    scraperapi = os.environ.get('SCRAPERAPI_KEY', '').strip()
+    if scraperapi:
+        return f"http://api.scraperapi.com?api_key={quote(scraperapi)}&url={quote(url, safe='')}&country_code=sg"
+    zenrows = os.environ.get('ZENROWS_API_KEY', '').strip()
+    if zenrows:
+        return f"https://api.zenrows.com/v1/?apikey={quote(zenrows)}&url={quote(url, safe='')}&premium_proxy=true"
+    return url
+
+def _is_blocked(html: str) -> bool:
+    low = html.lower()
+    markers = [
+        'enter the characters you see below',
+        '/errors/validatecaptcha',
+        'api-services-support@amazon.com',
+        'sorry, we just need to make sure you\'re not a robot',
+        'automated access',
+    ]
+    return any(m in low for m in markers)
 
 def scrape_page(session, query, page=1, retries=3):
     items = []
-    url = f"https://www.amazon.sg/s?k={quote_plus(query)}&page={page}"
-    
+    target = f"https://www.amazon.sg/s?k={quote_plus(query)}&page={page}"
+    url = _proxied_url(target)
+
     for attempt in range(retries):
         try:
-            resp = session.get(url, headers=HEADERS, timeout=20)
+            resp = session.get(url, headers=HEADERS, timeout=40)
             if resp.status_code == 200:
+                if _is_blocked(resp.text):
+                    print(f"  BLOCKED/captcha on '{query}' page {page}")
+                    time.sleep((attempt + 1) * 8)
+                    continue
                 soup = BeautifulSoup(resp.text, 'html.parser')
-                for p in soup.find_all('div', {'data-asin': True}):
+                cards = soup.select('[data-component-type="s-search-result"]')
+                if not cards:
+                    cards = soup.find_all('div', {'data-asin': True})
+                for p in cards:
                     try:
                         asin = p.get('data-asin')
-                        if not asin: continue
+                        if not asin:
+                            continue
                         t = p.find('h2')
                         title = t.get_text(strip=True) if t else ""
-                        pr = p.find('span', class_='a-price-whole')
+                        if not title:
+                            tn = p.select_one('span.a-text-normal')
+                            title = tn.get_text(strip=True) if tn else ""
+                        pr = p.select_one('span.a-price span.a-offscreen') or p.find('span', class_='a-price-whole')
                         pt = pr.get_text(strip=True) if pr else "0"
-                        price = float(re.sub(r'[^\d.]', '', pt))
+                        price = float(re.sub(r'[^\d.]', '', pt) or 0)
                         im = p.find('img', class_='s-image')
                         iu = im.get('src', '') if im else ""
                         if title and price > 0:
-                            items.append({'title': title, 'url': f'https://www.amazon.sg/dp/{asin}',
-                                          'image_url': iu, 'price': price})
-                    except:
+                            items.append({
+                                'title': title,
+                                'url': f'https://www.amazon.sg/dp/{asin}',
+                                'image_url': iu,
+                                'price': price,
+                            })
+                    except Exception:
                         continue
                 return items
-            elif resp.status_code == 503:
+            if resp.status_code in (503, 429):
                 time.sleep((attempt + 1) * 10)
-            else:
-                return items
-        except:
+                continue
+            print(f"  HTTP {resp.status_code} on '{query}' page {page}")
+            return items
+        except Exception as e:
+            print(f"  request error: {e}")
             time.sleep(5)
     return items
 
@@ -171,70 +212,76 @@ def save_products(products):
     now = datetime.now().isoformat()
     for p in products:
         try:
-            c.execute('''INSERT INTO products 
+            c.execute('''INSERT INTO products
                 (platform,title,url,image_url,price,original_price,capacity_gb,capacity_tb,is_ssd,cost_per_tb,seller,timestamp,first_seen,last_seen,is_active)
                 VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,1)''',
                 (p['platform'], p['title'], p['url'], p['image_url'], p['price'], p['original_price'],
                  p['capacity_gb'], p['capacity_tb'], p['is_ssd'], p['cost_per_tb'], p['seller'],
                  now, now, now))
         except sqlite3.IntegrityError:
-            c.execute('''UPDATE products SET price=?, original_price=?, cost_per_tb=?, last_seen=?, is_active=1 WHERE url=?''',
-                (p['price'], p['original_price'], p['cost_per_tb'], now, p['url']))
+            c.execute('''UPDATE products SET price=?, original_price=?, cost_per_tb=?, timestamp=?, last_seen=?, is_active=1 WHERE url=?''',
+                (p['price'], p['original_price'], p['cost_per_tb'], now, now, p['url']))
     conn.commit()
     conn.close()
 
 def main():
     session = requests.Session()
-    session.get("https://www.amazon.sg", headers=HEADERS, timeout=15)
+    using_proxy = bool(os.environ.get('SCRAPERAPI_KEY') or os.environ.get('ZENROWS_API_KEY'))
+    print(f"Proxy API: {'yes' if using_proxy else 'no (direct)'}")
+    try:
+        session.get(_proxied_url("https://www.amazon.sg"), headers=HEADERS, timeout=30)
+    except Exception as e:
+        print(f"Warmup failed: {e}")
     time.sleep(2)
-    
+
     queries = [
-        # Internal HDDs
-        'internal hard drive', 'internal hdd', 'internal hard disk',
-        'wd gold', 'wd red', 'wd purple', 'wd blue', 'wd black',
-        'seagate barracuda', 'seagate ironwolf', 'seagate exos',
-        'toshiba n300', 'toshiba x300', 'toshiba mg',
-        # External HDDs
+        'internal hard drive', 'internal hdd', 'wd gold', 'wd red', 'wd purple',
+        'wd blue', 'wd black', 'seagate barracuda', 'seagate ironwolf', 'seagate exos',
+        'toshiba n300', 'toshiba x300',
         'external hard drive', 'external hdd', 'portable hard drive',
         'wd elements', 'wd my book', 'wd my passport',
-        'seagate expansion', 'seagate backup plus',
-        'toshiba canvio', 'lacie', 'buffalo',
-        # Internal SSDs
+        'seagate expansion', 'toshiba canvio',
         'internal ssd', 'nvme ssd', 'm.2 ssd', 'sata ssd',
         'samsung 870', 'samsung 980', 'samsung 990',
-        'crucial mx500', 'crucial p5', 'crucial t500',
-        'wd blue ssd', 'wd black ssd', 'kingston nv2',
-        # External SSDs
-        'external ssd', 'portable ssd',
-        'samsung t7', 'samsung t9', 'sandisk extreme',
-        'crucial x10', 'crucial x9', 'kingston xs2000',
-        # NAS drives
-        'nas hard drive', 'nas storage',
-        'synology', 'qnap',
-        # Enterprise
-        'enterprise hard drive', 'enterprise ssd',
-        'server hard drive', 'data center drive',
-        # General
-        'hard drive', 'hdd', 'ssd', 'solid state drive',
-        'storage drive', 'computer drive', 'laptop drive',
-        'desktop drive', 'pc drive', 'mac drive',
+        'crucial mx500', 'wd blue ssd', 'kingston nv2',
+        'external ssd', 'portable ssd', 'samsung t7', 'samsung t9', 'sandisk extreme',
+        'nas hard drive', 'enterprise hard drive', 'hard drive', 'ssd',
     ]
-    
+
     all_products = []
+    empty_streak = 0
     for q in queries:
         print(f"Scraping: {q}")
+        page_products = []
         for page in [1, 2]:
             items = scrape_page(session, q, page)
             products = process_products(items)
+            page_products.extend(products)
             all_products.extend(products)
-            time.sleep(random.uniform(0.5, 1.5))
-        print(f"  Total: {len(products)}")
-    
-    # Sort: TB first (descending), then GB (descending)
+            time.sleep(random.uniform(0.8, 1.8))
+        print(f"  Total: {len(page_products)}")
+        if len(page_products) == 0:
+            empty_streak += 1
+            if empty_streak >= 5 and not all_products:
+                print("Fail-fast: first 5 queries returned 0 products (likely blocked).")
+                break
+        else:
+            empty_streak = 0
+
+    # dedupe by url keeping first
+    deduped = {}
+    for p in all_products:
+        deduped.setdefault(p['url'], p)
+    all_products = list(deduped.values())
     all_products.sort(key=lambda p: (p['capacity_tb'] >= 1, -p['capacity_tb']), reverse=True)
-    
-    save_products(all_products)
+
     print(f"\n=== Grand total: {len(all_products)} ===")
+    if len(all_products) == 0:
+        print("ERROR: scrape returned 0 products — refusing to overwrite with empty results.")
+        print("Hint: set SCRAPERAPI_KEY or ZENROWS_API_KEY repo secret for GitHub Actions.")
+        sys.exit(1)
+
+    save_products(all_products)
 
 if __name__ == '__main__':
     main()
