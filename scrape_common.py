@@ -80,6 +80,14 @@ STORAGE_QUERIES = [
 ]
 
 
+# Absurd $/TB floor (SGD). Empty enclosures / fake high-TB listings often
+# land well under ~S$5/TB. Typical new enterprise HDD floors on Amazon.sg
+# are ~S$15+/TB; S$4 leaves headroom for deep used/refurb deals. Only
+# applied to claims of 4TB+ so small legitimate SSDs/HDDs are untouched.
+ABSURD_MIN_COST_PER_TB_SGD = 4.0
+ABSURD_MIN_CAPACITY_TB = 4.0
+
+
 def init_db():
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
@@ -304,6 +312,13 @@ def process_products(items, default_platform='Amazon.sg', default_seller=None):
         cap_gb, cap_tb = parse_capacity(title)
         if cap_tb <= 0:
             continue
+        cost_per_tb = price / cap_tb if cap_tb > 0 else 0
+        # Cheap $/TB sanity: absurd high-TB @ tiny price (empty enclosure / fake).
+        if (
+            cap_tb >= ABSURD_MIN_CAPACITY_TB
+            and cost_per_tb < ABSURD_MIN_COST_PER_TB_SGD
+        ):
+            continue
         seen.add(url)
         platform = item.get('platform') or default_platform
         seller = item.get('seller') or seller_fallback
@@ -320,29 +335,63 @@ def process_products(items, default_platform='Amazon.sg', default_seller=None):
             'capacity_gb': cap_gb,
             'capacity_tb': cap_tb,
             'is_ssd': is_ssd(title),
-            'cost_per_tb': price / cap_tb if cap_tb > 0 else 0,
+            'cost_per_tb': cost_per_tb,
             'seller': seller,
         })
     return products
 
 
 def save_products(products):
+    """Upsert products. Always migrates schema first (defensive for Actions DB).
+
+    Callers should still invoke init_db() early, but save_products must not
+    assume that — run https://github.com/Kytosyn/amazon-sg-price-tracker/actions/runs/35431766074
+    crashed with OperationalError when INSERT used first_seen on an old
+    checked-in diskprices.db after CREATE TABLE IF NOT EXISTS no-oped.
+    """
+    init_db()
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
     now = datetime.now().isoformat()
-    for p in products:
-        try:
-            c.execute('''INSERT INTO products
-                (platform,title,url,image_url,price,original_price,capacity_gb,capacity_tb,is_ssd,cost_per_tb,seller,timestamp,first_seen,last_seen,is_active)
-                VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,1)''',
-                (p['platform'], p['title'], p['url'], p['image_url'], p['price'], p['original_price'],
-                 p['capacity_gb'], p['capacity_tb'], p['is_ssd'], p['cost_per_tb'], p['seller'],
-                 now, now, now))
-        except sqlite3.IntegrityError:
-            c.execute('''UPDATE products SET price=?, original_price=?, cost_per_tb=?, timestamp=?, last_seen=?, is_active=1 WHERE url=?''',
-                (p['price'], p['original_price'], p['cost_per_tb'], now, now, p['url']))
-    conn.commit()
-    conn.close()
+    try:
+        for p in products:
+            try:
+                c.execute(
+                    """INSERT INTO products
+                    (platform,title,url,image_url,price,original_price,capacity_gb,capacity_tb,is_ssd,cost_per_tb,seller,timestamp,first_seen,last_seen,is_active)
+                    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,1)""",
+                    (
+                        p["platform"],
+                        p["title"],
+                        p["url"],
+                        p["image_url"],
+                        p["price"],
+                        p["original_price"],
+                        p["capacity_gb"],
+                        p["capacity_tb"],
+                        p["is_ssd"],
+                        p["cost_per_tb"],
+                        p["seller"],
+                        now,
+                        now,
+                        now,
+                    ),
+                )
+            except sqlite3.IntegrityError:
+                c.execute(
+                    """UPDATE products SET price=?, original_price=?, cost_per_tb=?,
+                       timestamp=?, last_seen=?, is_active=1 WHERE url=?""",
+                    (p["price"], p["original_price"], p["cost_per_tb"], now, now, p["url"]),
+                )
+        conn.commit()
+    except sqlite3.OperationalError as e:
+        cols = {row[1] for row in c.execute("PRAGMA table_info(products)")}
+        raise sqlite3.OperationalError(
+            f"{e}; DB={DB_PATH!r} columns={sorted(cols)}. "
+            "Call init_db() (or use this save_products) so first_seen/last_seen/is_active exist."
+        ) from e
+    finally:
+        conn.close()
 
 
 # --- Proxy helpers (shared by Amazon / Shopee / Lazada scrapers) ---

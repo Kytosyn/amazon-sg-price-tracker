@@ -10,6 +10,7 @@ from scrape_common import (
     KNOWN_ACCESSORY_ASINS,
     _asin_from_url,
     deactivate_non_storage,
+    init_db,
     is_real_storage,
 )
 
@@ -19,6 +20,8 @@ JSON_PATH = "./data/products.json"
 os.makedirs(os.path.dirname(JSON_PATH), exist_ok=True)
 
 def export_to_json():
+    # Migrate schema so COALESCE(is_active, 1) / accessory purge work on old DBs.
+    init_db()
     conn = sqlite3.connect(DB_PATH)
     deactivated = deactivate_non_storage(conn)
     if deactivated:

@@ -148,6 +148,9 @@ def main():
         print("Hint: set SCRAPERAPI_KEY or ZENROWS_API_KEY repo secret for GitHub Actions.")
         sys.exit(1)
 
+    # Re-run migration immediately before write (module-level init_db is not enough
+    # if the checked-in DB is old or DB_PATH was swapped during a long scrape).
+    init_db()
     save_products(all_products)
 
 if __name__ == '__main__':
