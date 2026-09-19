@@ -22,6 +22,8 @@ from scrape_common import (
 
 init_db()
 
+AMAZON_PAGES = 3  # search result pages per STORAGE_QUERIES term
+
 HEADERS = {
     'User-Agent': (
         'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 '
@@ -118,7 +120,7 @@ def main():
     for q in queries:
         print(f"Scraping: {q}")
         page_products = []
-        for page in [1, 2, 3]:
+        for page in range(1, AMAZON_PAGES + 1):
             items = scrape_page(session, q, page)
             products = process_products(items)
             page_products.extend(products)
