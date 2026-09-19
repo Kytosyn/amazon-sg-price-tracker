@@ -12,39 +12,60 @@ jobs:
   scrape:
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+        with:
+          token: ${{ secrets.PAT }}
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      
+
       - name: Install dependencies
         run: pip install requests beautifulsoup4 lxml
-      
+
       - name: Run scraper
         id: scrape
-        continue-on-error: true
         run: |
+          set -o pipefail
           echo "Starting scraper..."
           python scraper.py 2>&1 | tee scraper_output.log
-          echo "exit_code=$?" >> $GITHUB_OUTPUT
-      
+
       - name: Show scraper output
         if: always()
         run: cat scraper_output.log || echo "No log"
-      
+
+      - name: Export to JSON
+        run: python export_json.py
+
+      - name: Fail if products.json empty
+        run: |
+          python - <<'PY'
+          import json, pathlib, sys
+          p = pathlib.Path("data/products.json")
+          if not p.exists():
+              print("data/products.json missing")
+              sys.exit(1)
+          data = json.loads(p.read_text())
+          products = data.get("products", data if isinstance(data, list) else [])
+          n = len(products)
+          print(f"products_count={n}")
+          if n == 0:
+              print("Refusing to commit empty products.json")
+              sys.exit(1)
+          PY
+
       - name: Commit and push
-        if: steps.scrape.outputs.exit_code == '0'
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "Update prices: $(date +%Y-%m-%d-%H%M)"
           file_pattern: "diskprices.db data/products.json"
           commit_user_name: "github-actions"
           commit_user_email: "actions@github.com"
-      
+          token: ${{ secrets.PAT }}
+
       - name: Upload logs
         if: always()
         uses: actions/upload-artifact@v4
