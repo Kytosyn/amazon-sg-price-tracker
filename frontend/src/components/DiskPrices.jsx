@@ -172,35 +172,43 @@ export default function DiskPrices() {
       if (!res.ok) throw new Error(`HTTP ${res.status}`)
       return res.json()
     }
-    const pickFreshest = (a, b) => {
-      if (!a) return b
-      if (!b) return a
-      const ta = Date.parse(a.lastUpdated || '') || 0
-      const tb = Date.parse(b.lastUpdated || '') || 0
-      if (tb !== ta) return tb > ta ? b : a
-      const na = Array.isArray(a.products) ? a.products.length : 0
-      const nb = Array.isArray(b.products) ? b.products.length : 0
-      return nb > na ? b : a
+    const isFresher = (candidate, current) => {
+      if (!candidate) return false
+      if (!current) return true
+      const tc = Date.parse(candidate.lastUpdated || '') || 0
+      const t0 = Date.parse(current.lastUpdated || '') || 0
+      if (tc !== t0) return tc > t0
+      const nc = Array.isArray(candidate.products) ? candidate.products.length : 0
+      const n0 = Array.isArray(current.products) ? current.products.length : 0
+      return nc > n0
     }
-    try {
-      // Fetch remote + local; always take the newer lastUpdated (fixes stale
-      // Vercel /products.json winning when it returns 200 with old data).
-      let remote = null
-      let local = null
-      try {
-        remote = await tryUrl(REMOTE_DATA_URL)
-      } catch {
-        /* try local below */
-      }
-      try {
-        local = await tryUrl(LOCAL_DATA_URL)
-      } catch {
-        /* optional bundle */
-      }
-      const data = pickFreshest(remote, local)
-      if (!data) throw new Error('no feed available')
+    const applyFeed = (data) => {
       setProducts(Array.isArray(data.products) ? data.products : [])
       setLastUpdated(data.lastUpdated || null)
+      setFetchError(null)
+    }
+    try {
+      // Same-origin first — never blank the UI if GitHub raw CORS/network fails.
+      let current = null
+      try {
+        current = await tryUrl(LOCAL_DATA_URL)
+        applyFeed(current)
+        setLoading(false)
+      } catch {
+        /* remote may still save us */
+      }
+
+      try {
+        const remote = await tryUrl(REMOTE_DATA_URL)
+        if (isFresher(remote, current)) {
+          applyFeed(remote)
+          current = remote
+        }
+      } catch (err) {
+        console.warn('Remote feed unavailable (CORS/network); using local', err)
+      }
+
+      if (!current) throw new Error('no feed available')
     } catch (err) {
       console.error('Failed to fetch:', err)
       setProducts([])
@@ -256,6 +264,15 @@ export default function DiskPrices() {
       : filteredProducts.length === 0
         ? 'filtered'
         : null
+
+  const livePlatforms = useMemo(
+    () => ['Amazon.sg', 'Shopee', 'Lazada'].filter((name) => (platformCounts[name] || 0) > 0),
+    [platformCounts]
+  )
+  const pendingPlatforms = useMemo(
+    () => ['Shopee', 'Lazada', 'Amazon.sg'].filter((name) => (platformCounts[name] || 0) === 0),
+    [platformCounts]
+  )
 
   const clearFilters = () => {
     setFilter('all')
