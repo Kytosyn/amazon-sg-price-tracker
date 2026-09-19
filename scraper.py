@@ -17,7 +17,7 @@ DB_PATH = "./diskprices.db"
 def init_db():
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
-    c.execute('''CREATE TABLE IF NOT EXISTS products (
+    c.execute("""CREATE TABLE IF NOT EXISTS products (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         platform TEXT NOT NULL,
         title TEXT NOT NULL,
@@ -36,9 +36,26 @@ def init_db():
         first_seen TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         last_seen TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         is_active BOOLEAN DEFAULT 1
-    )''')
-    c.execute('CREATE INDEX IF NOT EXISTS idx_url ON products(url)')
-    c.execute('CREATE INDEX IF NOT EXISTS idx_capacity ON products(capacity_tb)')
+    )""")
+    # Existing checked-in DBs predate first_seen/last_seen/is_active;
+    # CREATE TABLE IF NOT EXISTS will not add columns to an old schema.
+    cols = {row[1] for row in c.execute("PRAGMA table_info(products)")}
+    for name, decl in (
+        ("first_seen", "TIMESTAMP"),
+        ("last_seen", "TIMESTAMP"),
+        ("is_active", "BOOLEAN DEFAULT 1"),
+    ):
+        if name not in cols:
+            c.execute(f"ALTER TABLE products ADD COLUMN {name} {decl}")
+            print(f"Migrated products: added column {name}")
+    c.execute("""UPDATE products SET first_seen = COALESCE(first_seen, timestamp, CURRENT_TIMESTAMP)
+                 WHERE first_seen IS NULL""")
+    c.execute("""UPDATE products SET last_seen = COALESCE(last_seen, timestamp, CURRENT_TIMESTAMP)
+                 WHERE last_seen IS NULL""")
+    c.execute("""UPDATE products SET is_active = COALESCE(is_active, 1)
+                 WHERE is_active IS NULL""")
+    c.execute("CREATE INDEX IF NOT EXISTS idx_url ON products(url)")
+    c.execute("CREATE INDEX IF NOT EXISTS idx_capacity ON products(capacity_tb)")
     conn.commit()
     conn.close()
 
