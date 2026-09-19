@@ -26,6 +26,29 @@ from scrape_common import (
     zenrows_get,
 )
 
+# Shorter list for ZenRows cost/latency (matches Lazada SEA_QUERIES).
+SEA_QUERIES = [
+    "internal hard drive",
+    "internal hdd",
+    "external hard drive",
+    "portable hard drive",
+    "nas hard drive",
+    "wd red",
+    "wd gold",
+    "seagate ironwolf",
+    "seagate barracuda",
+    "toshiba n300",
+    "internal ssd",
+    "nvme ssd",
+    "m.2 ssd",
+    "sata ssd",
+    "external ssd",
+    "portable ssd",
+    "samsung 990",
+    "samsung t7",
+    "crucial mx500",
+]
+
 PLATFORM = "Shopee"
 SEARCH_BASE = "https://shopee.sg/api/v4/search/search_items"
 PRICE_DIVISOR = 100_000  # Shopee micros → SGD
@@ -165,15 +188,16 @@ def main() -> None:
 
     all_products: list[dict] = []
     empty_streak = 0
-    for q in STORAGE_QUERIES:
+    queries = SEA_QUERIES or STORAGE_QUERIES
+    for q in queries:
         print(f"Shopee ZenRows: {q}")
         page_products: list[dict] = []
-        for newest in (0, 60):
+        for newest in (0,):
             items = search_items(session, q, newest=newest, limit=60)
             products = process_products(items, default_platform=PLATFORM, default_seller=PLATFORM)
             page_products.extend(products)
             all_products.extend(products)
-            time.sleep(0.6)
+            time.sleep(0.5)
         print(f"  Total: {len(page_products)}")
         if len(page_products) == 0:
             empty_streak += 1

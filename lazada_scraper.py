@@ -26,6 +26,29 @@ from scrape_common import (
     zenrows_get,
 )
 
+# Shorter list for ZenRows cost/latency (full STORAGE_QUERIES still available).
+SEA_QUERIES = [
+    "internal hard drive",
+    "internal hdd",
+    "external hard drive",
+    "portable hard drive",
+    "nas hard drive",
+    "wd red",
+    "wd gold",
+    "seagate ironwolf",
+    "seagate barracuda",
+    "toshiba n300",
+    "internal ssd",
+    "nvme ssd",
+    "m.2 ssd",
+    "sata ssd",
+    "external ssd",
+    "portable ssd",
+    "samsung 990",
+    "samsung t7",
+    "crucial mx500",
+]
+
 PLATFORM = "Lazada"
 SEARCH_BASE = "https://www.lazada.sg/catalog/"
 HEADERS = {
@@ -133,7 +156,12 @@ def _extract_list_items(data: Any) -> list:
     return []
 
 
+# Module-level: after first successful parse, stick to that ZenRows mode.
+_FETCH_MODE: str | None = None  # "ajax" | "js"
+
+
 def search_catalog(session: requests.Session, keyword: str, page: int = 1) -> list[dict]:
+    global _FETCH_MODE
     params = {
         "q": keyword,
         "ajax": "true",
@@ -143,44 +171,57 @@ def search_catalog(session: requests.Session, keyword: str, page: int = 1) -> li
         "isFirstRequest": "true" if page == 1 else "false",
     }
     url = f"{SEARCH_BASE}?{urlencode(params, quote_via=quote_plus)}"
-    # Lazada ajax sometimes needs light JS; try premium_proxy first, then js_render.
-    resp = zenrows_get(session, url, headers=HEADERS, timeout=70)
-    if resp is None or resp.status_code != 200 or not _looks_like_json(resp):
+
+    def _one(extra: dict | None) -> list[dict] | None:
         resp = zenrows_get(
             session,
             url,
             headers=HEADERS,
-            timeout=90,
-            extra_params={"js_render": "true", "wait": "3000"},
+            timeout=70 if not extra else 90,
+            extra_params=extra,
+            retries=2,
         )
-    if resp is None:
-        print(f"  no response for '{keyword}' page {page}")
-        return []
-    if resp.status_code != 200:
-        print(f"  HTTP {resp.status_code} for '{keyword}' page {page}: {resp.text[:200]}")
-        return []
-    data = _parse_payload(resp)
-    if data is None:
-        snippet = resp.text[:120].replace("\n", " ")
-        print(f"  Non-JSON/unparseable for '{keyword}': {snippet}")
-        return []
-    raw_items = _extract_list_items(data)
-    out: list[dict] = []
-    for entry in raw_items:
-        if not isinstance(entry, dict):
+        if resp is None:
+            return None
+        if resp.status_code != 200:
+            print(f"  HTTP {resp.status_code} for '{keyword}' page {page}: {resp.text[:200]}")
+            return None
+        data = _parse_payload(resp)
+        if data is None:
+            return None
+        raw_items = _extract_list_items(data)
+        out: list[dict] = []
+        for entry in raw_items:
+            if not isinstance(entry, dict):
+                continue
+            norm = _normalize_item(entry)
+            if norm:
+                out.append(norm)
+        if not out and raw_items:
+            print(f"  {len(raw_items)} raw items but none normalized for '{keyword}'")
+        return out
+
+    modes: list[tuple[str, dict | None]]
+    if _FETCH_MODE == "js":
+        modes = [("js", {"js_render": "true", "wait": "2500"})]
+    elif _FETCH_MODE == "ajax":
+        modes = [("ajax", None)]
+    else:
+        # Probe once: ajax first, then js_render — remember winner for later queries.
+        modes = [("ajax", None), ("js", {"js_render": "true", "wait": "2500"})]
+
+    for name, extra in modes:
+        result = _one(extra)
+        if result is None:
             continue
-        norm = _normalize_item(entry)
-        if norm:
-            out.append(norm)
-    if not out and raw_items:
-        print(f"  {len(raw_items)} raw items but none normalized for '{keyword}'")
-    return out
+        if _FETCH_MODE is None:
+            _FETCH_MODE = name
+            print(f"  Lazada fetch mode locked: {name}")
+        return result
+    print(f"  no parseable payload for '{keyword}' page {page}")
+    return []
 
 
-def _looks_like_json(resp: requests.Response) -> bool:
-    ctype = (resp.headers.get("Content-Type") or "").lower()
-    text = (resp.text or "").lstrip()
-    return "json" in ctype or text.startswith("{") or text.startswith("[")
 
 
 def _parse_payload(resp: requests.Response) -> dict | None:
@@ -218,15 +259,17 @@ def main() -> None:
 
     all_products: list[dict] = []
     empty_streak = 0
-    for q in STORAGE_QUERIES:
+    queries = SEA_QUERIES or STORAGE_QUERIES
+    for q in queries:
         print(f"Lazada ZenRows: {q}")
         page_products: list[dict] = []
-        for page in (1, 2):
+        # Page 1 only for first-week ZenRows budget; widen later if needed.
+        for page in (1,):
             items = search_catalog(session, q, page=page)
             products = process_products(items, default_platform=PLATFORM, default_seller=PLATFORM)
             page_products.extend(products)
             all_products.extend(products)
-            time.sleep(0.8)
+            time.sleep(0.5)
         print(f"  Total: {len(page_products)}")
         if len(page_products) == 0:
             empty_streak += 1
