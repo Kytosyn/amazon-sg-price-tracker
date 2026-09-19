@@ -20,14 +20,21 @@ STORAGE_QUERIES = [
     "internal hdd",
     "wd gold",
     "wd red",
+    "wd red plus",
+    "wd red pro",
     "wd purple",
+    "wd purple pro",
     "wd blue",
     "wd black",
     "seagate barracuda",
     "seagate ironwolf",
+    "seagate ironwolf pro",
+    "seagate skyhawk",
     "seagate exos",
     "toshiba n300",
     "toshiba x300",
+    "enterprise sas",
+    "sas hard drive",
     "external hard drive",
     "external hdd",
     "portable hard drive",
@@ -41,14 +48,22 @@ STORAGE_QUERIES = [
     "m.2 ssd",
     "sata ssd",
     "samsung 870",
+    "samsung 870 qvo",
     "samsung 980",
     "samsung 990",
+    "samsung 990 pro",
     "crucial mx500",
+    "crucial p3",
+    "crucial t500",
     "wd blue ssd",
+    "wd black sn850x",
     "kingston nv2",
+    "kingston kc3000",
     "external ssd",
     "portable ssd",
+    "samsung t5",
     "samsung t7",
+    "samsung t7 shield",
     "samsung t9",
     "sandisk extreme",
     "nas hard drive",
@@ -132,19 +147,39 @@ def is_real_storage(title):
     t = title.lower()
     if not re.search(r'\d+\s*tb|\d+\s*gb', t):
         return False
-    accessory_kw = [
-        'case', 'enclosure', 'stand', 'cable', 'adapter', 'mount', 'bracket',
-        'dock', 'pouch', 'bag', 'box', 'sleeve', 'protector', 'sticker', 'label',
-        'decal', 'skin', 'wrap', 'cover', 'tray', 'caddy', 'bay', 'rail',
+    # Packaging mentions in real drive titles (avoid false deny on bare "box").
+    t = re.sub(r'\b(?:retail|oem|factory)\s+box\b', ' ', t)
+
+    # Multi-word / distinctive accessory phrases (substring OK).
+    accessory_phrases = [
+        'flash drive', 'usb stick', 'pendrive', 'pen drive',
+        'microsd', 'micro sd', 'sd card', 'memory card', 'tf card',
+        'heatsink', 'heat sink', 'thermal pad', 'card reader',
+        'blu-ray', 'blu ray', 'docking station', 'usb hub', 'power bank',
+        'laptop bag', 'phone case',
         'installation kit', 'mounting kit', 'bracket kit', 'tool kit',
         'carrying case', 'storage case', 'travel case',
         'hdd stand', 'hdd enclosure', 'hdd case', 'hdd carrying case',
     ]
-    if any(kw in t for kw in accessory_kw):
+    if any(p in t for p in accessory_phrases):
         return False
+
+    # Short tokens: word-boundary so real HDD/SSD titles survive
+    # (e.g. avoid matching inside longer words; still catch accessory words).
+    accessory_tokens = [
+        'case', 'enclosure', 'stand', 'cable', 'adapter', 'mount', 'bracket',
+        'dock', 'pouch', 'bag', 'box', 'sleeve', 'protector', 'sticker', 'label',
+        'decal', 'skin', 'wrap', 'cover', 'tray', 'caddy', 'bay', 'rail',
+        'ddr', 'ram', 'heatsink', 'cooler', 'optical', 'dvd', 'duplicator',
+        'cloner',
+    ]
+    for tok in accessory_tokens:
+        if re.search(rf'\b{re.escape(tok)}\b', t):
+            return False
+
     storage_kw = [
         'hdd', 'hard drive', 'hard disk', 'ssd', 'solid state', 'nvme',
-        'sata', 'storage', 'internal', 'external', 'portable', 'desktop',
+        'sata', 'sas', 'storage', 'internal', 'external', 'portable', 'desktop',
         'enterprise', 'nas', 'data center', 'server', 'drive',
     ]
     return any(kw in t for kw in storage_kw)
