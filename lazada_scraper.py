@@ -170,7 +170,7 @@ def search_catalog(session: requests.Session, keyword: str, page: int = 1) -> li
         session,
         url,
         headers=HEADERS,
-        timeout=180,
+        timeout=120,
         retries=2,
         mode="auto",
         extra_params={"proxy_country": "sg"},
