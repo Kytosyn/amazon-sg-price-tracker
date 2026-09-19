@@ -23,7 +23,7 @@ function Chip({ active, onClick, children, title }) {
       type="button"
       title={title}
       onClick={onClick}
-      className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium transition-colors whitespace-nowrap ${
+      className={`flex-shrink-0 min-h-[44px] px-3.5 py-2 rounded-full text-xs sm:text-sm font-medium transition-colors whitespace-nowrap inline-flex items-center ${
         active
           ? 'bg-[#ff9900] text-black'
           : 'bg-white/5 text-slate-200 border border-white/10 hover:border-[#ff9900]/60 hover:text-white'
@@ -346,7 +346,7 @@ export default function DiskPrices() {
                 id="sort-by"
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="px-3 py-1.5 rounded-lg text-sm bg-white/5 text-white border border-white/10 focus:outline-none focus:border-[#ff9900]"
+                className="min-h-[44px] px-3 py-2 rounded-lg text-sm bg-white/5 text-white border border-white/10 focus:outline-none focus:border-[#ff9900]"
               >
                 <option value="cost_per_tb">S$/TB (best first)</option>
                 <option value="price">Price (low → high)</option>
