@@ -174,11 +174,24 @@ export default function DiskPrices() {
     }
     try {
       let data
+      let remoteData
       try {
-        data = await tryUrl(LOCAL_DATA_URL)
+        remoteData = await tryUrl(REMOTE_DATA_URL)
       } catch {
-        data = await tryUrl(REMOTE_DATA_URL)
+        data = await tryUrl(LOCAL_DATA_URL)
       }
+
+      if (remoteData) {
+        try {
+          const localData = await tryUrl(LOCAL_DATA_URL)
+          const remoteTimestamp = Date.parse(remoteData.lastUpdated || '')
+          const localTimestamp = Date.parse(localData.lastUpdated || '')
+          data = localTimestamp > remoteTimestamp ? localData : remoteData
+        } catch {
+          data = remoteData
+        }
+      }
+
       setProducts(Array.isArray(data.products) ? data.products : [])
       setLastUpdated(data.lastUpdated || null)
     } catch (err) {
