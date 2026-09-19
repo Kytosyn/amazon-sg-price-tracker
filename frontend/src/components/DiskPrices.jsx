@@ -11,6 +11,67 @@ const TYPE_FILTERS = [
   { id: 'hdd', label: 'HDD' },
 ]
 
+/** Match diskprices.com-style protocol chips. Prefer products.json field; else title parse. */
+const PROTOCOL_OPTIONS = [
+  'SATA',
+  'SAS',
+  'NVMe',
+  'PCIe',
+  'M.2',
+  'USB',
+  'Thunderbolt',
+]
+
+const PROTOCOL_RULES = [
+  { id: 'SAS', re: /\bSAS\b/i },
+  { id: 'NVMe', re: /\bNVMe\b|\bNVM\s*Express\b/i },
+  { id: 'Thunderbolt', re: /\bThunderbolt\b|\bTB[34]\b/i },
+  { id: 'PCIe', re: /\bPCIe\b|\bPCI[\s-]?Express\b|\bPCI-E\b/i },
+  { id: 'M.2', re: /\bM\.?\s*2\b/i },
+  { id: 'SATA', re: /\bSATA\b/i },
+  { id: 'USB', re: /\bUSB\b/i },
+]
+
+const PROTOCOL_ALIASES = {
+  'm2': 'M.2',
+  'm.2': 'M.2',
+  'nvme': 'NVMe',
+  'pcie': 'PCIe',
+  'pci-e': 'PCIe',
+  'pci express': 'PCIe',
+  'sata': 'SATA',
+  'sas': 'SAS',
+  'usb': 'USB',
+  'thunderbolt': 'Thunderbolt',
+  'tb3': 'Thunderbolt',
+  'tb4': 'Thunderbolt',
+}
+
+function normalizeProtocol(value) {
+  if (value == null) return null
+  const raw = String(value).trim()
+  if (!raw) return null
+  if (PROTOCOL_OPTIONS.includes(raw)) return raw
+  const aliased = PROTOCOL_ALIASES[raw.toLowerCase()]
+  if (aliased) return aliased
+  const hit = PROTOCOL_RULES.find((r) => r.re.test(raw))
+  return hit ? hit.id : null
+}
+
+/** protocols[] / protocol from feed, else parse title (same labels as export). */
+function protocolsFor(product) {
+  if (Array.isArray(product.protocols) && product.protocols.length > 0) {
+    const normalized = product.protocols.map(normalizeProtocol).filter(Boolean)
+    return [...new Set(normalized)]
+  }
+  if (product.protocol) {
+    const one = normalizeProtocol(product.protocol)
+    if (one) return [one]
+  }
+  const title = product.title || ''
+  return PROTOCOL_RULES.filter((r) => r.re.test(title)).map((r) => r.id)
+}
+
 const platformColors = {
   Shopee: 'bg-[#EE4D2D]',
   Lazada: 'bg-[#0F146D]',
@@ -39,6 +100,7 @@ function DiskPriceCard({ product }) {
   const capacityTb = Number(product.capacity_tb)
   const price = Number(product.price)
   const original = Number(product.original_price)
+  const protocols = product._protocols || protocolsFor(product)
 
   return (
     <a
@@ -70,6 +132,14 @@ function DiskPriceCard({ product }) {
             <span className="text-[10px] font-medium text-slate-300 tracking-wide">
               {product.is_ssd ? 'SSD' : 'HDD'}
             </span>
+            {protocols.slice(0, 3).map((proto) => (
+              <span
+                key={proto}
+                className="text-[10px] px-1.5 py-0.5 rounded bg-sky-500/20 text-sky-200 border border-sky-400/30"
+              >
+                {proto}
+              </span>
+            ))}
             {Number.isFinite(capacityTb) && (
               <span className="text-[10px] text-slate-500">
                 {capacityTb >= 1
@@ -124,8 +194,8 @@ function EmptyState({ kind, onRetry, onClearFilters }) {
       <div className="text-center py-16 px-4 rounded-xl border border-white/10 bg-white/[0.03]">
         <p className="text-base font-medium text-slate-200">No matches for these filters</p>
         <p className="text-sm text-slate-400 mt-2 max-w-md mx-auto">
-          Try All / All Platforms, or clear filters. Platforms with a “soon” chip have no
-          listings in the current feed yet.
+          Try clearing Type, Platform, or Protocol filters. Platforms with a “soon” chip
+          have no listings in the current feed yet.
         </p>
         <button
           type="button"
@@ -162,6 +232,7 @@ export default function DiskPrices() {
   const [lastUpdated, setLastUpdated] = useState(null)
   const [filter, setFilter] = useState('all')
   const [platform, setPlatform] = useState('all')
+  const [protocols, setProtocols] = useState([]) // multi-select; empty = all
   const [sortBy, setSortBy] = useState('cost_per_tb')
 
   const fetchProducts = async () => {
@@ -222,14 +293,38 @@ export default function DiskPrices() {
     fetchProducts()
   }, [])
 
+  const enrichedProducts = useMemo(
+    () =>
+      products.map((p) => ({
+        ...p,
+        _protocols: protocolsFor(p),
+      })),
+    [products]
+  )
+
   const platformCounts = useMemo(() => {
-    const counts = { all: products.length }
+    const counts = { all: enrichedProducts.length }
     for (const p of PLATFORMS) {
       if (p === 'all') continue
-      counts[p] = products.filter((x) => x.platform === p).length
+      counts[p] = enrichedProducts.filter((x) => x.platform === p).length
     }
     return counts
-  }, [products])
+  }, [enrichedProducts])
+
+  const protocolCounts = useMemo(() => {
+    const counts = { Unknown: 0 }
+    for (const id of PROTOCOL_OPTIONS) counts[id] = 0
+    for (const p of enrichedProducts) {
+      if (!p._protocols.length) {
+        counts.Unknown += 1
+      } else {
+        for (const id of p._protocols) {
+          if (counts[id] != null) counts[id] += 1
+        }
+      }
+    }
+    return counts
+  }, [enrichedProducts])
 
   const livePlatforms = PLATFORMS.filter(
     (p) => p !== 'all' && platformCounts[p] > 0
@@ -240,18 +335,26 @@ export default function DiskPrices() {
 
   const typeCounts = useMemo(
     () => ({
-      all: products.length,
-      ssd: products.filter((p) => p.is_ssd).length,
-      hdd: products.filter((p) => !p.is_ssd).length,
+      all: enrichedProducts.length,
+      ssd: enrichedProducts.filter((p) => p.is_ssd).length,
+      hdd: enrichedProducts.filter((p) => !p.is_ssd).length,
     }),
-    [products]
+    [enrichedProducts]
   )
 
   const filteredProducts = useMemo(() => {
-    let list = products
+    let list = enrichedProducts
     if (filter === 'ssd') list = list.filter((p) => p.is_ssd)
     if (filter === 'hdd') list = list.filter((p) => !p.is_ssd)
     if (platform !== 'all') list = list.filter((p) => p.platform === platform)
+    if (protocols.length > 0) {
+      list = list.filter((p) => {
+        if (protocols.includes('Unknown')) {
+          if (!p._protocols.length) return true
+        }
+        return p._protocols.some((id) => protocols.includes(id))
+      })
+    }
 
     const sorted = [...list]
     if (sortBy === 'cost_per_tb') {
@@ -262,19 +365,26 @@ export default function DiskPrices() {
       sorted.sort((a, b) => (b.capacity_tb ?? 0) - (a.capacity_tb ?? 0))
     }
     return sorted
-  }, [products, filter, platform, sortBy])
+  }, [enrichedProducts, filter, platform, protocols, sortBy])
 
   const emptyKind = fetchError
     ? 'error'
-    : products.length === 0
+    : enrichedProducts.length === 0
       ? 'none'
       : filteredProducts.length === 0
         ? 'filtered'
         : null
 
+  const toggleProtocol = (id) => {
+    setProtocols((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+    )
+  }
+
   const clearFilters = () => {
     setFilter('all')
     setPlatform('all')
+    setProtocols([])
     setSortBy('cost_per_tb')
   }
 
@@ -375,6 +485,49 @@ export default function DiskPrices() {
             </div>
           </div>
 
+          <div>
+            <div className="text-[10px] uppercase tracking-wider text-slate-500 mb-1.5">
+              Protocol
+              {protocols.length > 0 ? (
+                <button
+                  type="button"
+                  onClick={() => setProtocols([])}
+                  className="ml-2 normal-case tracking-normal text-sky-300 hover:text-sky-200"
+                >
+                  Clear
+                </button>
+              ) : null}
+            </div>
+            <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1 scrollbar-hide">
+              {PROTOCOL_OPTIONS.map((id) => (
+                <Chip
+                  key={id}
+                  active={protocols.includes(id)}
+                  onClick={() => toggleProtocol(id)}
+                >
+                  {id}
+                  {!loading && (
+                    <span className="ml-1 opacity-70 tabular-nums">
+                      {protocolCounts[id] ?? 0}
+                    </span>
+                  )}
+                </Chip>
+              ))}
+              <Chip
+                active={protocols.includes('Unknown')}
+                onClick={() => toggleProtocol('Unknown')}
+                title="No SAS/SATA/NVMe/PCIe/M.2/USB/Thunderbolt detected in title"
+              >
+                Other
+                {!loading && (
+                  <span className="ml-1 opacity-70 tabular-nums">
+                    {protocolCounts.Unknown ?? 0}
+                  </span>
+                )}
+              </Chip>
+            </div>
+          </div>
+
           <div className="flex flex-wrap items-center gap-2 justify-between">
             <div className="flex items-center gap-2 min-w-0">
               <label
@@ -394,9 +547,9 @@ export default function DiskPrices() {
                 <option value="capacity">Capacity (high → low)</option>
               </select>
             </div>
-            {!loading && !fetchError && products.length > 0 && (
+            {!loading && !fetchError && enrichedProducts.length > 0 && (
               <p className="text-xs text-slate-500 tabular-nums">
-                Showing {filteredProducts.length} of {products.length}
+                Showing {filteredProducts.length} of {enrichedProducts.length}
               </p>
             )}
           </div>
