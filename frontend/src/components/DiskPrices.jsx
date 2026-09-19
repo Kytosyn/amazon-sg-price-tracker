@@ -124,8 +124,8 @@ function EmptyState({ kind, onRetry, onClearFilters }) {
       <div className="text-center py-16 px-4 rounded-xl border border-white/10 bg-white/[0.03]">
         <p className="text-base font-medium text-slate-200">No matches for these filters</p>
         <p className="text-sm text-slate-400 mt-2 max-w-md mx-auto">
-          Try All / All Platforms, or clear filters. Shopee and Lazada data isn’t live yet —
-          Amazon.sg is available now.
+          Try All / All Platforms, or clear filters. Platforms with a “soon” chip have no
+          listings in the current feed yet.
         </p>
         <button
           type="button"
@@ -173,11 +173,25 @@ export default function DiskPrices() {
       return res.json()
     }
     try {
+      // Prefer GitHub raw (freshest scrape). Fall back to Vercel build bundle.
       let data
       try {
-        data = await tryUrl(LOCAL_DATA_URL)
-      } catch {
         data = await tryUrl(REMOTE_DATA_URL)
+      } catch {
+        data = await tryUrl(LOCAL_DATA_URL)
+      }
+      const products = Array.isArray(data.products) ? data.products : []
+      // If raw is empty but the build bundle has rows, use the bundle.
+      if (products.length === 0) {
+        try {
+          const local = await tryUrl(LOCAL_DATA_URL)
+          const localProducts = Array.isArray(local.products) ? local.products : []
+          if (localProducts.length > 0) {
+            data = local
+          }
+        } catch {
+          /* keep remote/empty */
+        }
       }
       setProducts(Array.isArray(data.products) ? data.products : [])
       setLastUpdated(data.lastUpdated || null)
@@ -250,7 +264,13 @@ export default function DiskPrices() {
           <div className="min-w-0">
             <h1 className="text-lg sm:text-xl font-bold truncate">DiskPrices Singapore</h1>
             <p className="text-[11px] text-slate-400 truncate">
-              Best S$/TB across Amazon.sg · Shopee &amp; Lazada soon
+              Best S$/TB
+              {livePlatforms.length > 0
+                ? ` across ${livePlatforms.join(' · ')}`
+                : ' — loading platforms…'}
+              {pendingPlatforms.length > 0
+                ? ` · ${pendingPlatforms.join(' & ')} soon`
+                : ''}
             </p>
           </div>
           <button
