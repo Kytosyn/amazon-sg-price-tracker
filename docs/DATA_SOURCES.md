@@ -160,13 +160,13 @@ python export_json.py
 
 ## Live spike notes (2026-09-19 SGT)
 
-Dispatched **Scrape Disk Prices** on `feat/zenrows-shopee-lazada` with repo `ZENROWS_API_KEY`:
+Dispatched **Scrape Disk Prices** on `feat/zenrows-shopee-lazada` with repo `ZENROWS_API_KEY`
+(run [35436316294](https://github.com/Kytosyn/amazon-sg-price-tracker/actions/runs/35436316294)):
 
 | Attempt | Result |
 | --- | --- |
-| `premium_proxy` only on search API | ZenRows **REQS002** (needs js_render and/or premium) on Shopee/Lazada |
-| `js_render` + `premium_proxy` on search API | Shopee **RESP001** (could not get content); Lazada **read timeout** 90s |
-| `mode=auto` on search API | Shopee still **RESP001** (grand total 0) on master after #9 |
-| HTML `/search` + `js_render` + `json_response` | Next fix — capture browser `search_items` XHR instead of fetching the JSON API under Stealth |
+| `premium_proxy` only | ZenRows **REQS002** on Shopee/Lazada |
+| `js_render` + `premium_proxy` | Shopee **RESP001**; Lazada timeouts |
+| `mode=auto` + `proxy_country=sg` | **Lazada saved 68 storage products**; Shopee still **RESP001** on `/api/v4/search/search_items`; late queries hit **AUTH004** (ZenRows usage limit) |
 
-Amazon path with the same key continues to return hundreds of products. Soft-fail kept SEA steps from blocking the Amazon export.
+Amazon path with the same key continues to return hundreds of products. Soft-fail kept SEA steps from blocking the Amazon export. Scrapers now abort early on AUTH004/402 to stop burning quota.

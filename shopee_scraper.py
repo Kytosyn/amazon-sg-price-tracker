@@ -32,6 +32,7 @@ from scrape_common import (
     sea_soft_exit,
     using_proxy,
     zenrows_get,
+    zenrows_quota_exceeded,
 )
 
 # Shorter list for ZenRows cost/latency (matches Lazada SEA_QUERIES).
@@ -58,6 +59,11 @@ SEA_QUERIES = [
 ]
 
 PLATFORM = "Shopee"
+
+
+class QuotaExceeded(RuntimeError):
+    """ZenRows AUTH004 / HTTP 402."""
+
 SEARCH_API = "https://shopee.sg/api/v4/search/search_items"
 SEARCH_HTML = "https://shopee.sg/search"
 PRICE_DIVISOR = 100_000  # Shopee micros → SGD
