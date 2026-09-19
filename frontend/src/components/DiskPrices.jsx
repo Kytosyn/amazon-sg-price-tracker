@@ -231,6 +231,13 @@ export default function DiskPrices() {
     return counts
   }, [products])
 
+  const livePlatforms = PLATFORMS.filter(
+    (p) => p !== 'all' && platformCounts[p] > 0
+  )
+  const pendingPlatforms = PLATFORMS.filter(
+    (p) => p !== 'all' && platformCounts[p] === 0
+  )
+
   const typeCounts = useMemo(
     () => ({
       all: products.length,
