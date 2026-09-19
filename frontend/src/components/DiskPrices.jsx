@@ -175,11 +175,24 @@ export default function DiskPrices() {
     try {
       // Prefer GitHub raw (freshest scrape). Fall back to Vercel build bundle.
       let data
+      let remoteData
       try {
-        data = await tryUrl(REMOTE_DATA_URL)
+        remoteData = await tryUrl(REMOTE_DATA_URL)
       } catch {
         data = await tryUrl(LOCAL_DATA_URL)
       }
+
+      if (remoteData) {
+        try {
+          const localData = await tryUrl(LOCAL_DATA_URL)
+          const remoteTimestamp = Date.parse(remoteData.lastUpdated || '')
+          const localTimestamp = Date.parse(localData.lastUpdated || '')
+          data = localTimestamp > remoteTimestamp ? localData : remoteData
+        } catch {
+          data = remoteData
+        }
+      }
+
       const products = Array.isArray(data.products) ? data.products : []
       // If raw is empty but the build bundle has rows, use the bundle.
       if (products.length === 0) {
@@ -193,6 +206,7 @@ export default function DiskPrices() {
           /* keep remote/empty */
         }
       }
+
       setProducts(Array.isArray(data.products) ? data.products : [])
       setLastUpdated(data.lastUpdated || null)
     } catch (err) {
