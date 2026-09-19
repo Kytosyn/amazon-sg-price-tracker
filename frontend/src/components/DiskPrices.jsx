@@ -272,15 +272,6 @@ export default function DiskPrices() {
         ? 'filtered'
         : null
 
-  const livePlatforms = useMemo(
-    () => ['Amazon.sg', 'Shopee', 'Lazada'].filter((name) => (platformCounts[name] || 0) > 0),
-    [platformCounts]
-  )
-  const pendingPlatforms = useMemo(
-    () => ['Shopee', 'Lazada', 'Amazon.sg'].filter((name) => (platformCounts[name] || 0) === 0),
-    [platformCounts]
-  )
-
   const clearFilters = () => {
     setFilter('all')
     setPlatform('all')
