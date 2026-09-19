@@ -158,6 +158,79 @@ def is_ssd(title):
     return False
 
 
+
+# --- Interface / protocol tags (diskprices.com-style) ---
+#
+# Emitted into data/products.json by export_json.py.
+# `protocols`: all matched tags in stable canonical order.
+# `protocol`: single primary for UI filters / badges.
+#
+# Primary preference when multiple match (first wins):
+#   NVMe > SAS > PCIe > SATA > Thunderbolt > USB > M.2
+# Rationale:
+#   - NVMe implies PCIe; prefer NVMe when both appear in the title.
+#   - SAS > SATA for enterprise dual-protocol wording.
+#   - Thunderbolt > USB when a drive lists both (e.g. TB3 + USB-C).
+#   - M.2 is a form-factor; keep it in `protocols` alongside NVMe/SATA/PCIe,
+#     but use M.2 as primary only when no bus protocol was inferred.
+#
+# False-positive notes:
+#   - Never treat bare "TB" capacity as Thunderbolt (require thunderbolt / tb3 / tb4).
+#   - USB4 is grouped with Thunderbolt (common portable-SSD marketing).
+
+PROTOCOL_TAGS = ("NVMe", "SAS", "PCIe", "SATA", "Thunderbolt", "USB", "M.2")
+
+# Detection patterns (title, case-insensitive). Order of checks does not
+# affect emission order — PROTOCOL_TAGS is the stable array order.
+_PROTOCOL_PATTERNS = {
+    "NVMe": re.compile(r"\bnvme\b", re.I),
+    "SAS": re.compile(r"\bsas\b", re.I),
+    "PCIe": re.compile(r"\bpcie\b|\bpci-e\b|\bpci\s*express\b", re.I),
+    "SATA": re.compile(r"\bsata(?:\b|[\s\-]?[0-9])|serial\s*ata", re.I),
+    # thunderbolt / tb3 / tb4 / usb4 — not bare "TB" (capacity).
+    "Thunderbolt": re.compile(
+        r"thunderbolt|\btb\s*[34]\b|\btb[34]\b|\busb[\s-]?4\b", re.I
+    ),
+    # usb / usb-c / usb3.0 / … (usb4 also matches; both tags may appear).
+    "USB": re.compile(r"\busb(?:\b|[\s\-]?[0-9a-z])", re.I),
+    # m.2 / m2 / m-2 form factor (avoid matching mid-token like "1M2").
+    "M.2": re.compile(r"\bm\.2\b|\bm-2\b|(?<![a-z0-9])m2(?![a-z0-9])", re.I),
+}
+
+
+def infer_protocols(title: str, asin: str | None = None) -> list[str]:
+    """Infer interface/protocol tags from a product title.
+
+    Optional ``asin`` is reserved for future heuristics; unused for now.
+    Returns matched tags in stable ``PROTOCOL_TAGS`` order.
+    """
+    if not title:
+        return []
+    # asin reserved for clearly useful ASIN heuristics (none yet).
+    _ = asin
+    found: set[str] = set()
+    for tag, pat in _PROTOCOL_PATTERNS.items():
+        if pat.search(title):
+            found.add(tag)
+    return [tag for tag in PROTOCOL_TAGS if tag in found]
+
+
+def primary_protocol(protocols) -> str:
+    """Pick UI primary protocol from an ``infer_protocols`` result.
+
+    Preference: NVMe > SAS > PCIe > SATA > Thunderbolt > USB > M.2.
+    Empty string when nothing matched.
+    """
+    if not protocols:
+        return ""
+    have = set(protocols)
+    for tag in PROTOCOL_TAGS:
+        if tag in have:
+            # M.2 is last in PROTOCOL_TAGS — only chosen if nothing else matched.
+            return tag
+    return ""
+
+
 KNOWN_ACCESSORY_ASINS = frozenset({
     "B0BV5V4TVS",  # MAIWO enclosure + SD/CD box reader
     "B0BJV2Q8JD",  # MAIWO enclosure
