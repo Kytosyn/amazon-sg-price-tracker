@@ -11,7 +11,7 @@ permissions:
 jobs:
   scrape:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
 
     steps:
       - uses: actions/checkout@v4
@@ -24,19 +24,77 @@ jobs:
       - name: Install dependencies
         run: pip install requests beautifulsoup4 lxml
 
-      - name: Run scraper
+      - name: Run Amazon scraper
         id: scrape
         env:
           SCRAPERAPI_KEY: ${{ secrets.SCRAPERAPI_KEY }}
           ZENROWS_API_KEY: ${{ secrets.ZENROWS_API_KEY }}
         run: |
           set -o pipefail
-          echo "Starting scraper..."
+          echo "Starting Amazon scraper..."
           python scraper.py 2>&1 | tee scraper_output.log
 
-      - name: Show scraper output
+      - name: Show Amazon scraper output
         if: always()
-        run: cat scraper_output.log || echo "No log"
+        run: cat scraper_output.log || echo "No Amazon log"
+
+      - name: Run BuyWhere importer
+        id: buywhere
+        env:
+          BUYWHERE_API_KEY: ${{ secrets.BUYWHERE_API_KEY }}
+        run: |
+          set -o pipefail
+          if [ -z "${BUYWHERE_API_KEY}" ]; then
+            echo "BUYWHERE_API_KEY not set — skipping BuyWhere multi-platform import."
+            echo "Docs: https://buywhere.ai/quickstart  (see docs/DATA_SOURCES.md)"
+            exit 0
+          fi
+          echo "Starting BuyWhere importer..."
+          python buywhere_scraper.py 2>&1 | tee buywhere_output.log
+
+      - name: Show BuyWhere output
+        if: always()
+        run: cat buywhere_output.log || echo "No BuyWhere log (skipped or not run)"
+
+      - name: Run Shopee Affiliate importer
+        id: shopee
+        env:
+          SHOPEE_AFFILIATE_APP_ID: ${{ secrets.SHOPEE_AFFILIATE_APP_ID }}
+          SHOPEE_AFFILIATE_SECRET: ${{ secrets.SHOPEE_AFFILIATE_SECRET }}
+        run: |
+          set -o pipefail
+          if [ -z "${SHOPEE_AFFILIATE_APP_ID}" ] || [ -z "${SHOPEE_AFFILIATE_SECRET}" ]; then
+            echo "SHOPEE_AFFILIATE_APP_ID / SHOPEE_AFFILIATE_SECRET not set — skipping Shopee Affiliate import."
+            echo "Signup: https://affiliate.shopee.sg/  (see docs/AFFILIATE_SETUP.md)"
+            exit 0
+          fi
+          echo "Starting Shopee Affiliate importer..."
+          python shopee_affiliate_scraper.py 2>&1 | tee shopee_output.log
+
+      - name: Show Shopee output
+        if: always()
+        run: cat shopee_output.log || echo "No Shopee log (skipped or not run)"
+
+      - name: Run Lazada Affiliate importer
+        id: lazada
+        env:
+          LAZADA_AFFILIATE_APP_KEY: ${{ secrets.LAZADA_AFFILIATE_APP_KEY }}
+          LAZADA_AFFILIATE_APP_SECRET: ${{ secrets.LAZADA_AFFILIATE_APP_SECRET }}
+          LAZADA_AFFILIATE_ACCESS_TOKEN: ${{ secrets.LAZADA_AFFILIATE_ACCESS_TOKEN }}
+        run: |
+          set -o pipefail
+          if [ -z "${LAZADA_AFFILIATE_APP_KEY}" ] || [ -z "${LAZADA_AFFILIATE_APP_SECRET}" ]; then
+            echo "LAZADA_AFFILIATE_APP_KEY / LAZADA_AFFILIATE_APP_SECRET not set — skipping Lazada Affiliate import."
+            echo "Signup: https://www.lazada.sg/lazada-affiliate-program  (see docs/AFFILIATE_SETUP.md)"
+            echo "Note: script is a stub until Affiliate product-search endpoint is confirmed after approval."
+            exit 0
+          fi
+          echo "Starting Lazada Affiliate importer..."
+          python lazada_affiliate_scraper.py 2>&1 | tee lazada_output.log
+
+      - name: Show Lazada output
+        if: always()
+        run: cat lazada_output.log || echo "No Lazada log (skipped or not run)"
 
       - name: Export to JSON
         run: python export_json.py
@@ -71,5 +129,10 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: scraper-logs
-          path: scraper_output.log
+          path: |
+            scraper_output.log
+            buywhere_output.log
+            shopee_output.log
+            lazada_output.log
           retention-days: 7
+          if-no-files-found: ignore

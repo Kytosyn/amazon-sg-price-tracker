@@ -32,6 +32,10 @@ Find the best cost/TB deals automatically.
 - `is_ssd`: true/false
 - `sort_by`: cost_per_tb, price, capacity
 
+## Data sources
+
+Sources: **Amazon.sg** (ZenRows/ScraperAPI, required) + optional **BuyWhere** + optional **Shopee / Lazada Affiliate** APIs. See [docs/DATA_SOURCES.md](docs/DATA_SOURCES.md) and [docs/AFFILIATE_SETUP.md](docs/AFFILIATE_SETUP.md).
+
 ## Setup
 
 ### Frontend
