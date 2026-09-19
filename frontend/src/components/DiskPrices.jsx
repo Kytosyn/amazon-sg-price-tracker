@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react'
 
-const DATA_URL =
+const LOCAL_DATA_URL = '/products.json'
+const REMOTE_DATA_URL =
   'https://raw.githubusercontent.com/Kytosyn/amazon-sg-price-tracker/master/data/products.json'
 
 const PLATFORMS = ['all', 'Shopee', 'Lazada', 'Amazon.sg']
@@ -166,12 +167,18 @@ export default function DiskPrices() {
   const fetchProducts = async () => {
     setLoading(true)
     setFetchError(null)
+    const tryUrl = async (url) => {
+      const res = await fetch(url, { cache: 'no-cache' })
+      if (!res.ok) throw new Error(`HTTP ${res.status}`)
+      return res.json()
+    }
     try {
-      const res = await fetch(DATA_URL, { cache: 'no-cache' })
-      if (!res.ok) {
-        throw new Error(`HTTP ${res.status}`)
+      let data
+      try {
+        data = await tryUrl(LOCAL_DATA_URL)
+      } catch {
+        data = await tryUrl(REMOTE_DATA_URL)
       }
-      const data = await res.json()
       setProducts(Array.isArray(data.products) ? data.products : [])
       setLastUpdated(data.lastUpdated || null)
     } catch (err) {
