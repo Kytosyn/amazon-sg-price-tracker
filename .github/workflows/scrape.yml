@@ -15,8 +15,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.PAT }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -64,7 +62,6 @@ jobs:
           file_pattern: "diskprices.db data/products.json"
           commit_user_name: "github-actions"
           commit_user_email: "actions@github.com"
-          token: ${{ secrets.PAT }}
 
       - name: Upload logs
         if: always()
