@@ -136,12 +136,25 @@ Signup: [lazada.sg/lazada-affiliate-program](https://www.lazada.sg/lazada-affili
 
 `.github/workflows/scrape.yml`:
 
-1. Always run Amazon (`scraper.py`) — **hard** fail-closed
+1. Always run Amazon (`scraper.py`) — **hard** fail-closed (unless `export_only`)
 2. If `ZENROWS_API_KEY` set: run `shopee_scraper.py` then `lazada_scraper.py`
    (`SEA_SOFT_FAIL=1`, `continue-on-error: true`)
 3. Optionally run BuyWhere / Shopee Affiliate / Lazada Affiliate when their
    secrets are set (otherwise skip with a notice — parked paths)
 4. `export_json.py` → commit `diskprices.db` + `data/products.json` when non-empty
+
+### Export-only (no scrape)
+
+When ZenRows / Amazon scrape cannot run (e.g. HTTP 402), re-apply accessory
+filters and refresh the live catalog without hitting Amazon or SEA:
+
+1. GitHub → **Actions** → **Scrape Disk Prices** → **Run workflow**
+2. Enable **`export_only`** → Run
+
+That path skips Amazon / Shopee / Lazada / affiliate importers and only runs
+`export_json.py` (which calls `init_db()` → `deactivate_non_storage()` → write
+`data/products.json`) → empty-gate → commit. Amazon scrape remains hard-fail
+whenever a full scrape runs.
 
 ## Local refresh
 
