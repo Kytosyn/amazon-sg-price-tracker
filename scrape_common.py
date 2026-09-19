@@ -264,8 +264,11 @@ def zenrows_get(
 ) -> requests.Response | None:
     """GET ``url`` through ZenRows/ScraperAPI when configured, else direct.
 
-    Prefer ``mode="auto"`` for Shopee/Lazada (Adaptive Stealth). Amazon callers
-    omit mode and keep ``premium_proxy=true``.
+    Amazon callers omit mode and keep ``premium_proxy=true``. Shopee prefers
+    explicit ``js_render`` / ``json_response`` / ``custom_headers`` via
+    ``extra_params`` (``mode=auto`` on the search API returned RESP001).
+    Pass target headers here; with ``custom_headers=true`` ZenRows forwards
+    them to the destination URL.
     """
     target = proxied_url(url, mode=mode, extra_params=extra_params)
     last_err = None
