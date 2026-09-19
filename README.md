@@ -64,7 +64,10 @@ python scraper.py
 
 ## GitHub Actions
 
-Daily scraping runs at 9 AM SGT. Results committed to the repository.
+Scheduled scraping commits `diskprices.db` + `data/products.json`. To re-filter
+and re-export without scraping (accessory purge while ZenRows is down):
+**Actions → Scrape Disk Prices → Run workflow → enable `export_only`**.
+See [docs/DATA_SOURCES.md](docs/DATA_SOURCES.md#export-only-no-scrape).
 
 ## License
 

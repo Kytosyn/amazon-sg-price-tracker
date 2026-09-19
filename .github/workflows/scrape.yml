@@ -4,6 +4,11 @@ on:
   schedule:
     - cron: '*/30 * * * *'
   workflow_dispatch:
+    inputs:
+      export_only:
+        description: 'Skip Amazon/SEA/affiliate scrapers; only init_db → deactivate_non_storage → export products.json → commit (for accessory purge without ZenRows)'
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -24,8 +29,15 @@ jobs:
       - name: Install dependencies
         run: pip install requests beautifulsoup4 lxml
 
+      - name: Export-only mode notice
+        if: ${{ inputs.export_only }}
+        run: |
+          echo "export_only=true — skipping all scrapers."
+          echo "Will run export_json.py (init_db → deactivate_non_storage → write data/products.json)."
+
       - name: Run Amazon scraper
         id: scrape
+        if: ${{ !inputs.export_only }}
         env:
           SCRAPERAPI_KEY: ${{ secrets.SCRAPERAPI_KEY }}
           ZENROWS_API_KEY: ${{ secrets.ZENROWS_API_KEY }}
@@ -35,7 +47,7 @@ jobs:
           python scraper.py 2>&1 | tee scraper_output.log
 
       - name: Show Amazon scraper output
-        if: always()
+        if: ${{ always() && !inputs.export_only }}
         run: cat scraper_output.log || echo "No Amazon log"
 
       # --- SEA (Shopee / Lazada) via ZenRows — soft-fail first week ---
@@ -43,6 +55,7 @@ jobs:
       # so one platform outage still lets the other + export ship.
       - name: Run Shopee ZenRows scraper
         id: shopee_zenrows
+        if: ${{ !inputs.export_only }}
         continue-on-error: true
         env:
           ZENROWS_API_KEY: ${{ secrets.ZENROWS_API_KEY }}
@@ -58,11 +71,12 @@ jobs:
           python shopee_scraper.py 2>&1 | tee shopee_zenrows_output.log
 
       - name: Show Shopee ZenRows output
-        if: always()
+        if: ${{ always() && !inputs.export_only }}
         run: cat shopee_zenrows_output.log || echo "No Shopee ZenRows log (skipped or not run)"
 
       - name: Run Lazada ZenRows scraper
         id: lazada_zenrows
+        if: ${{ !inputs.export_only }}
         continue-on-error: true
         env:
           ZENROWS_API_KEY: ${{ secrets.ZENROWS_API_KEY }}
@@ -78,11 +92,12 @@ jobs:
           python lazada_scraper.py 2>&1 | tee lazada_zenrows_output.log
 
       - name: Show Lazada ZenRows output
-        if: always()
+        if: ${{ always() && !inputs.export_only }}
         run: cat lazada_zenrows_output.log || echo "No Lazada ZenRows log (skipped or not run)"
 
       - name: Run BuyWhere importer
         id: buywhere
+        if: ${{ !inputs.export_only }}
         env:
           BUYWHERE_API_KEY: ${{ secrets.BUYWHERE_API_KEY }}
         run: |
@@ -96,11 +111,12 @@ jobs:
           python buywhere_scraper.py 2>&1 | tee buywhere_output.log
 
       - name: Show BuyWhere output
-        if: always()
+        if: ${{ always() && !inputs.export_only }}
         run: cat buywhere_output.log || echo "No BuyWhere log (skipped or not run)"
 
       - name: Run Shopee Affiliate importer
         id: shopee
+        if: ${{ !inputs.export_only }}
         env:
           SHOPEE_AFFILIATE_APP_ID: ${{ secrets.SHOPEE_AFFILIATE_APP_ID }}
           SHOPEE_AFFILIATE_SECRET: ${{ secrets.SHOPEE_AFFILIATE_SECRET }}
@@ -115,11 +131,12 @@ jobs:
           python shopee_affiliate_scraper.py 2>&1 | tee shopee_output.log
 
       - name: Show Shopee output
-        if: always()
+        if: ${{ always() && !inputs.export_only }}
         run: cat shopee_output.log || echo "No Shopee log (skipped or not run)"
 
       - name: Run Lazada Affiliate importer
         id: lazada
+        if: ${{ !inputs.export_only }}
         env:
           LAZADA_AFFILIATE_APP_KEY: ${{ secrets.LAZADA_AFFILIATE_APP_KEY }}
           LAZADA_AFFILIATE_APP_SECRET: ${{ secrets.LAZADA_AFFILIATE_APP_SECRET }}
@@ -136,9 +153,11 @@ jobs:
           python lazada_affiliate_scraper.py 2>&1 | tee lazada_output.log
 
       - name: Show Lazada output
-        if: always()
+        if: ${{ always() && !inputs.export_only }}
         run: cat lazada_output.log || echo "No Lazada log (skipped or not run)"
 
+      # Always runs (full scrape and export_only). export_json.py calls init_db() then
+      # deactivate_non_storage() before writing data/products.json (#20/#23 accessory purge).
       - name: Export to JSON
         run: python export_json.py
 
@@ -168,7 +187,7 @@ jobs:
           commit_user_email: "actions@github.com"
 
       - name: Upload logs
-        if: always()
+        if: ${{ always() && !inputs.export_only }}
         uses: actions/upload-artifact@v4
         with:
           name: scraper-logs
