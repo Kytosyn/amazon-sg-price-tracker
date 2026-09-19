@@ -6,7 +6,7 @@ DiskPrices SG ingests into the same `diskprices.db` → `export_json.py` →
 | Path | Script | Status | Secrets |
 | --- | --- | --- | --- |
 | **Amazon.sg** (HTML) | `scraper.py` | **Required** — ZenRows / ScraperAPI (or direct); hard fail-closed | `ZENROWS_API_KEY` or `SCRAPERAPI_KEY` |
-| **Shopee.sg** (search JSON via ZenRows) | `shopee_scraper.py` | **Primary SEA** — public `/api/v4/search/search_items` through ZenRows | `ZENROWS_API_KEY` (same as Amazon) |
+| **Shopee.sg** (HTML search + XHR via ZenRows) | `shopee_scraper.py` | **Primary SEA** — `/search?keyword=…` with js_render + json_response (captures search_items XHR) | `ZENROWS_API_KEY` (same as Amazon) |
 | **Lazada.sg** (catalog ajax via ZenRows) | `lazada_scraper.py` | **Primary SEA** — `/catalog/?q=…&ajax=true` through ZenRows | `ZENROWS_API_KEY` (same as Amazon) |
 | **BuyWhere** (multi-platform) | `buywhere_scraper.py` | **Parked / broken** — Eddy: BuyWhere is dead; kept as optional skip | `BUYWHERE_API_KEY` |
 | **Shopee Affiliate** | `shopee_affiliate_scraper.py` | **Parked / dead end** — official GraphQL stalled; optional skip | `SHOPEE_AFFILIATE_APP_ID`, `SHOPEE_AFFILIATE_SECRET` |
@@ -54,11 +54,11 @@ dead ends** for now. The working SEA path is scraping public search JSON
 
 | Item | Detail |
 | --- | --- |
-| Endpoint | `GET https://shopee.sg/api/v4/search/search_items?keyword=…&limit=60&newest=0&by=relevancy&order=desc&page_type=search&scenario=PAGE_GLOBAL_SEARCH&version=2` |
-| Proxy | ZenRows Adaptive Stealth `mode=auto` + `proxy_country=sg` via `zenrows_get` |
+| Endpoint (primary) | `GET https://shopee.sg/search?keyword=…` via ZenRows `js_render` + `premium_proxy` + `proxy_country=sg` + `wait=5000` + `json_response` + `custom_headers` — parse captured `search_items` XHR |
+| Endpoint (probe) | `GET https://shopee.sg/api/v4/search/search_items?…` with `premium_proxy` + `proxy_country=sg` + `custom_headers` only (no `js_render` / `mode=auto`) |
 | Mapping | `item_basic.name` / `price` (÷100000 → SGD) / image key / `i.{shopid}.{itemid}` URL |
 | Platform label | `Shopee` |
-| Filters | `is_real_storage` + `parse_capacity` over `STORAGE_QUERIES` |
+| Filters | `is_real_storage` + `parse_capacity` over SEA query list |
 | Fail behaviour | Soft-fail first week: log `ERROR`, exit 0 (`SEA_SOFT_FAIL=1` default). Set `SEA_SOFT_FAIL=0` to harden to exit 1. |
 
 ### Lazada (`lazada_scraper.py`)
@@ -164,8 +164,9 @@ Dispatched **Scrape Disk Prices** on `feat/zenrows-shopee-lazada` with repo `ZEN
 
 | Attempt | Result |
 | --- | --- |
-| `premium_proxy` only | ZenRows **REQS002** (needs js_render and/or premium) on Shopee/Lazada |
-| `js_render` + `premium_proxy` | Shopee **RESP001** (could not get content); Lazada **read timeout** 90s |
-| `mode=auto` (Adaptive Stealth) | Wired next — preferred for protected SEA domains |
+| `premium_proxy` only on search API | ZenRows **REQS002** (needs js_render and/or premium) on Shopee/Lazada |
+| `js_render` + `premium_proxy` on search API | Shopee **RESP001** (could not get content); Lazada **read timeout** 90s |
+| `mode=auto` on search API | Shopee still **RESP001** (grand total 0) on master after #9 |
+| HTML `/search` + `js_render` + `json_response` | Next fix — capture browser `search_items` XHR instead of fetching the JSON API under Stealth |
 
 Amazon path with the same key continues to return hundreds of products. Soft-fail kept SEA steps from blocking the Amazon export.
