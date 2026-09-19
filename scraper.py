@@ -8,14 +8,16 @@ import time
 import random
 import requests
 from bs4 import BeautifulSoup
-from urllib.parse import quote_plus, quote
+from urllib.parse import quote_plus
 
 from scrape_common import (
     DB_PATH,  # noqa: F401 — re-exported for callers/tests
     STORAGE_QUERIES,
     init_db,
     process_products,
+    proxied_url,
     save_products,
+    using_proxy,
 )
 
 init_db()
@@ -36,15 +38,6 @@ HEADERS = {
     'Sec-Fetch-User': '?1',
 }
 
-def _proxied_url(url: str) -> str:
-    """Optional ScraperAPI / ZenRows / custom proxy prefix via env."""
-    scraperapi = os.environ.get('SCRAPERAPI_KEY', '').strip()
-    if scraperapi:
-        return f"http://api.scraperapi.com?api_key={quote(scraperapi)}&url={quote(url, safe='')}&country_code=sg"
-    zenrows = os.environ.get('ZENROWS_API_KEY', '').strip()
-    if zenrows:
-        return f"https://api.zenrows.com/v1/?apikey={quote(zenrows)}&url={quote(url, safe='')}&premium_proxy=true"
-    return url
 
 def _is_blocked(html: str) -> bool:
     low = html.lower()
@@ -60,7 +53,7 @@ def _is_blocked(html: str) -> bool:
 def scrape_page(session, query, page=1, retries=3):
     items = []
     target = f"https://www.amazon.sg/s?k={quote_plus(query)}&page={page}"
-    url = _proxied_url(target)
+    url = proxied_url(target)
 
     for attempt in range(retries):
         try:
@@ -111,10 +104,9 @@ def scrape_page(session, query, page=1, retries=3):
 
 def main():
     session = requests.Session()
-    using_proxy = bool(os.environ.get('SCRAPERAPI_KEY') or os.environ.get('ZENROWS_API_KEY'))
-    print(f"Proxy API: {'yes' if using_proxy else 'no (direct)'}")
+    print(f"Proxy API: {'yes' if using_proxy() else 'no (direct)'}")
     try:
-        session.get(_proxied_url("https://www.amazon.sg"), headers=HEADERS, timeout=30)
+        session.get(proxied_url("https://www.amazon.sg"), headers=HEADERS, timeout=30)
     except Exception as e:
         print(f"Warmup failed: {e}")
     time.sleep(2)
