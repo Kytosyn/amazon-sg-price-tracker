@@ -38,6 +38,49 @@ jobs:
         if: always()
         run: cat scraper_output.log || echo "No Amazon log"
 
+      # --- SEA (Shopee / Lazada) via ZenRows — soft-fail first week ---
+      # Amazon remains the hard fail. These steps use continue-on-error + SEA_SOFT_FAIL=1
+      # so one platform outage still lets the other + export ship.
+      - name: Run Shopee ZenRows scraper
+        id: shopee_zenrows
+        continue-on-error: true
+        env:
+          ZENROWS_API_KEY: ${{ secrets.ZENROWS_API_KEY }}
+          SCRAPERAPI_KEY: ${{ secrets.SCRAPERAPI_KEY }}
+          SEA_SOFT_FAIL: "1"
+        run: |
+          set -o pipefail
+          if [ -z "${ZENROWS_API_KEY}" ]; then
+            echo "ZENROWS_API_KEY not set — skipping Shopee ZenRows scrape."
+            exit 0
+          fi
+          echo "Starting Shopee ZenRows scraper..."
+          python shopee_scraper.py 2>&1 | tee shopee_zenrows_output.log
+
+      - name: Show Shopee ZenRows output
+        if: always()
+        run: cat shopee_zenrows_output.log || echo "No Shopee ZenRows log (skipped or not run)"
+
+      - name: Run Lazada ZenRows scraper
+        id: lazada_zenrows
+        continue-on-error: true
+        env:
+          ZENROWS_API_KEY: ${{ secrets.ZENROWS_API_KEY }}
+          SCRAPERAPI_KEY: ${{ secrets.SCRAPERAPI_KEY }}
+          SEA_SOFT_FAIL: "1"
+        run: |
+          set -o pipefail
+          if [ -z "${ZENROWS_API_KEY}" ]; then
+            echo "ZENROWS_API_KEY not set — skipping Lazada ZenRows scrape."
+            exit 0
+          fi
+          echo "Starting Lazada ZenRows scraper..."
+          python lazada_scraper.py 2>&1 | tee lazada_zenrows_output.log
+
+      - name: Show Lazada ZenRows output
+        if: always()
+        run: cat lazada_zenrows_output.log || echo "No Lazada ZenRows log (skipped or not run)"
+
       - name: Run BuyWhere importer
         id: buywhere
         env:
@@ -131,6 +174,8 @@ jobs:
           name: scraper-logs
           path: |
             scraper_output.log
+            shopee_zenrows_output.log
+            lazada_zenrows_output.log
             buywhere_output.log
             shopee_output.log
             lazada_output.log

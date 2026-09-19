@@ -1,9 +1,16 @@
 #!/usr/bin/env python3
 """Shared DB + storage helpers for Amazon / BuyWhere / Shopee / Lazada importers."""
 
+from __future__ import annotations
+
+import os
 import re
 import sqlite3
+import time
 from datetime import datetime
+from urllib.parse import quote, urlencode
+
+import requests
 
 DB_PATH = "./diskprices.db"
 
@@ -198,3 +205,83 @@ def save_products(products):
                 (p['price'], p['original_price'], p['cost_per_tb'], now, now, p['url']))
     conn.commit()
     conn.close()
+
+
+# --- Proxy helpers (shared by Amazon / Shopee / Lazada scrapers) ---
+
+
+def proxied_url(url: str) -> str:
+    """Optional ScraperAPI / ZenRows / custom proxy prefix via env (Amazon pattern)."""
+    scraperapi = os.environ.get("SCRAPERAPI_KEY", "").strip()
+    if scraperapi:
+        return (
+            f"http://api.scraperapi.com?api_key={quote(scraperapi)}"
+            f"&url={quote(url, safe='')}&country_code=sg"
+        )
+    zenrows = os.environ.get("ZENROWS_API_KEY", "").strip()
+    if zenrows:
+        return (
+            f"https://api.zenrows.com/v1/?apikey={quote(zenrows)}"
+            f"&url={quote(url, safe='')}&premium_proxy=true"
+        )
+    return url
+
+
+def using_proxy() -> bool:
+    return bool(
+        os.environ.get("SCRAPERAPI_KEY", "").strip()
+        or os.environ.get("ZENROWS_API_KEY", "").strip()
+    )
+
+
+def zenrows_get(
+    session: requests.Session,
+    url: str,
+    *,
+    headers: dict | None = None,
+    timeout: int = 60,
+    retries: int = 3,
+    extra_params: dict | None = None,
+) -> requests.Response | None:
+    """GET ``url`` through ZenRows/ScraperAPI when configured, else direct.
+
+    ``extra_params`` are appended to the ZenRows query string only (e.g.
+    js_render=true). ScraperAPI / direct paths ignore them.
+    """
+    target = proxied_url(url)
+    if (
+        extra_params
+        and os.environ.get("ZENROWS_API_KEY", "").strip()
+        and "zenrows.com" in target
+    ):
+        target = f"{target}&{urlencode(extra_params)}"
+    last_err = None
+    for attempt in range(retries):
+        try:
+            resp = session.get(target, headers=headers or {}, timeout=timeout)
+            if resp.status_code in (429, 503):
+                time.sleep((attempt + 1) * 5)
+                continue
+            return resp
+        except Exception as e:
+            last_err = e
+            time.sleep((attempt + 1) * 3)
+    if last_err:
+        print(f"  zenrows_get failed for {url[:80]}…: {last_err}")
+    return None
+
+
+def sea_soft_exit(message: str) -> None:
+    """Log ERROR then soft-exit (0) for SEA scrapers in the first week.
+
+    Amazon remains hard-fail. Set SEA_SOFT_FAIL=0 to harden Shopee/Lazada later.
+    """
+    print(f"ERROR: {message}")
+    soft = os.environ.get("SEA_SOFT_FAIL", "1").strip().lower() not in ("0", "false", "no")
+    if soft:
+        print(
+            "SEA soft-fail: exiting 0 so Amazon export can still ship "
+            "(set SEA_SOFT_FAIL=0 to harden)."
+        )
+        raise SystemExit(0)
+    raise SystemExit(1)
