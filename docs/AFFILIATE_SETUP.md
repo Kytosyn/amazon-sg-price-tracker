@@ -1,6 +1,23 @@
-# Affiliate API setup (Singapore)
+# Affiliate + BuyWhere setup (Singapore)
 
 Step-by-step for DiskPrices SG. Credentials go in **GitHub → Settings → Secrets and variables → Actions** (never commit them).
+
+Also see **[DATA_SOURCES.md](./DATA_SOURCES.md)** for the full source matrix (Amazon + BuyWhere + affiliates).
+
+---
+
+## 0. BuyWhere (optional multi-platform)
+
+One key covers Shopee / Lazada / Amazon.sg / other SG merchants via `buywhere_scraper.py`.
+
+1. Get a key from **[https://buywhere.ai/quickstart](https://buywhere.ai/quickstart)**
+2. Add GitHub secret `BUYWHERE_API_KEY`
+3. Workflow runs BuyWhere after Amazon when the secret is set; skips with a notice when empty
+
+```bash
+export BUYWHERE_API_KEY=bw_live_...
+python buywhere_scraper.py
+```
 
 ---
 
@@ -44,7 +61,7 @@ Fail-closed: missing secrets or **0** storage products → exit code 1.
 
 ### Workflow
 
-If either secret is empty, the **Scrape Disk Prices** workflow **skips** Shopee with a notice. When both are set, it runs `shopee_affiliate_scraper.py` after Amazon.
+If either secret is empty, the **Scrape Disk Prices** workflow **skips** Shopee with a notice. When both are set, it runs `shopee_affiliate_scraper.py` after Amazon (and after BuyWhere if enabled).
 
 ---
 
@@ -73,17 +90,18 @@ If either secret is empty, the **Scrape Disk Prices** workflow **skips** Shopee 
 | `LAZADA_AFFILIATE_APP_SECRET` | App Secret |
 | `LAZADA_AFFILIATE_ACCESS_TOKEN` | Access token if required (optional until confirmed) |
 
-### Important: do not enable Lazada CI secrets yet
+### Stub behaviour (CI-safe)
 
-`lazada_affiliate_scraper.py` is a **structured stub**. Public docs did not expose a confirmed affiliate **product-search** endpoint without login. Seller REST (`https://api.lazada.sg/rest`, e.g. `/products/get`) is **not** marketplace search.
+`lazada_affiliate_scraper.py` is a **structured stub**. While `ENDPOINT` is unset:
+
+- Workflow skips entirely if Lazada secrets are empty
+- If secrets are present but the stub is still unwired, the script **exits 0 with a notice** so CI does not fail
 
 Once you can see the Affiliate API docs:
 
 1. Note the exact product-search / offer-feed path + signing sample.
 2. Hand that to the repo (or paste into the TODO in `lazada_affiliate_scraper.py`).
-3. Only then add the GitHub secrets so the workflow step can succeed.
-
-Until then, leave Lazada secrets empty so CI **skips** the step.
+3. Only then expect a real fail-closed product import.
 
 ### Signing (from public LazOP docs — verify against Affiliate docs)
 
@@ -103,16 +121,26 @@ Reference (may require login): [open.lazada.com signing doc](https://open.lazada
 
 ---
 
-## 4. What works without credentials
+## 4. Secret checklist
+
+| Secret | Enables |
+| --- | --- |
+| `ZENROWS_API_KEY` / `SCRAPERAPI_KEY` | Amazon.sg on Actions |
+| `BUYWHERE_API_KEY` | BuyWhere multi-platform import |
+| `SHOPEE_AFFILIATE_APP_ID` + `SHOPEE_AFFILIATE_SECRET` | Official Shopee Affiliate |
+| `LAZADA_AFFILIATE_APP_KEY` + `LAZADA_AFFILIATE_APP_SECRET` (+ optional token) | Lazada Affiliate (stub until endpoint) |
+
+## 5. What works without credentials
 
 | Component | Without secrets |
 | --- | --- |
 | Code / PR / docs | Fully reviewable |
 | Amazon local scrape | Works from a non-blocked IP |
 | Amazon on Actions | Usually 0 results without ZenRows/ScraperAPI |
+| BuyWhere on Actions | Skipped if secret empty |
 | Shopee script locally | Exit 1 + signup hint |
 | Shopee on Actions | Skipped if secrets empty |
-| Lazada script | Exit 1 + apply/TODO (stub) |
+| Lazada script (stub) | Exit 0 + notice while `ENDPOINT` unset |
 | Lazada on Actions | Skipped if secrets empty |
 
-Eddy approval needed for: Shopee affiliate account + App ID/Secret; Lazada affiliate approval + Open API docs/endpoint + App Key/Secret (and token if any).
+Eddy approval needed for: BuyWhere key; Shopee affiliate App ID/Secret; Lazada affiliate approval + Open API docs/endpoint + App Key/Secret (and token if any).

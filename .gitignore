@@ -10,3 +10,4 @@ build/
 *.sqlite
 playwright-report/
 test-results/
+.venv/

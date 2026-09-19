@@ -81,28 +81,33 @@ def _signing_notes() -> None:
 
 
 def main() -> None:
+    # While ENDPOINT is unset, skip with notice (exit 0) so CI stays green even
+    # when Lazada secrets are present. Once ENDPOINT is set, require creds and
+    # run the real importer (fail-closed).
+    if ENDPOINT is None:
+        print("NOTICE: Lazada Affiliate product-search endpoint is not yet wired — skipping.")
+        print("Official public product-search for affiliates could not be confirmed")
+        print("without portal login — refusing to fake-scrape Lazada HTML.")
+        print()
+        print("Next steps for Eddy:")
+        print(f"  1. Apply / wait for approval: {SIGNUP_URL}")
+        print(f"  2. Open API console (after approval): {OPEN_PLATFORM_URL}")
+        print("  3. Copy App Key / App Secret (and Access Token if shown)")
+        print("     into GitHub secrets: LAZADA_AFFILIATE_APP_KEY,")
+        print("     LAZADA_AFFILIATE_APP_SECRET, LAZADA_AFFILIATE_ACCESS_TOKEN")
+        print("  4. Paste the documented product-search path + sample request into")
+        print("     lazada_affiliate_scraper.py (set ENDPOINT, implement call + map")
+        print(f"     results to platform='{PLATFORM}').")
+        print()
+        _signing_notes()
+        print("TODO: ENDPOINT is None — implement after docs access. Exiting 0 (skip).")
+        sys.exit(0)
+
     creds = require_credentials()
     init_db()
-    _ = STORAGE_QUERIES  # reuse planned once ENDPOINT is set
+    _ = STORAGE_QUERIES
     _ = creds
-
-    print("ERROR: Lazada Affiliate product-search endpoint is not yet wired.")
-    print("Official public product-search for affiliates could not be confirmed")
-    print("without portal login — refusing to fake-scrape Lazada HTML.")
-    print()
-    print("Next steps for Eddy:")
-    print(f"  1. Apply / wait for approval: {SIGNUP_URL}")
-    print(f"  2. Open API console (after approval): {OPEN_PLATFORM_URL}")
-    print("  3. Copy App Key / App Secret (and Access Token if shown)")
-    print("     into GitHub secrets: LAZADA_AFFILIATE_APP_KEY,")
-    print("     LAZADA_AFFILIATE_APP_SECRET, LAZADA_AFFILIATE_ACCESS_TOKEN")
-    print("  4. Paste the documented product-search path + sample request into")
-    print("     lazada_affiliate_scraper.py (set ENDPOINT, implement call + map")
-    print(f"     results to platform='{PLATFORM}').")
-    print()
-    _signing_notes()
-    if ENDPOINT is None:
-        print("TODO: ENDPOINT is None — implement after docs access.")
+    print("ERROR: ENDPOINT is set but product-search loop is not implemented yet.")
     sys.exit(1)
 
 

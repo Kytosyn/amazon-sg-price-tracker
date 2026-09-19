@@ -34,7 +34,7 @@ Find the best cost/TB deals automatically.
 
 ## Data sources
 
-Primary path: **Shopee Affiliate Open API** + **Lazada Affiliate** (stub until endpoint confirmed) + **Amazon.sg** (ZenRows/ScraperAPI). See [docs/DATA_SOURCES.md](docs/DATA_SOURCES.md) and [docs/AFFILIATE_SETUP.md](docs/AFFILIATE_SETUP.md). BuyWhere PR #7 was closed — not the primary path.
+Sources: **Amazon.sg** (ZenRows/ScraperAPI, required) + optional **BuyWhere** + optional **Shopee / Lazada Affiliate** APIs. See [docs/DATA_SOURCES.md](docs/DATA_SOURCES.md) and [docs/AFFILIATE_SETUP.md](docs/AFFILIATE_SETUP.md).
 
 ## Setup
 

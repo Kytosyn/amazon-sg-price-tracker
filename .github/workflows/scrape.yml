@@ -38,6 +38,24 @@ jobs:
         if: always()
         run: cat scraper_output.log || echo "No Amazon log"
 
+      - name: Run BuyWhere importer
+        id: buywhere
+        env:
+          BUYWHERE_API_KEY: ${{ secrets.BUYWHERE_API_KEY }}
+        run: |
+          set -o pipefail
+          if [ -z "${BUYWHERE_API_KEY}" ]; then
+            echo "BUYWHERE_API_KEY not set — skipping BuyWhere multi-platform import."
+            echo "Docs: https://buywhere.ai/quickstart  (see docs/DATA_SOURCES.md)"
+            exit 0
+          fi
+          echo "Starting BuyWhere importer..."
+          python buywhere_scraper.py 2>&1 | tee buywhere_output.log
+
+      - name: Show BuyWhere output
+        if: always()
+        run: cat buywhere_output.log || echo "No BuyWhere log (skipped or not run)"
+
       - name: Run Shopee Affiliate importer
         id: shopee
         env:
@@ -113,6 +131,7 @@ jobs:
           name: scraper-logs
           path: |
             scraper_output.log
+            buywhere_output.log
             shopee_output.log
             lazada_output.log
           retention-days: 7

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Shared DB + storage helpers for Amazon / Shopee / Lazada importers."""
+"""Shared DB + storage helpers for Amazon / BuyWhere / Shopee / Lazada importers."""
 
 import re
 import sqlite3
