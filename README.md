@@ -64,9 +64,20 @@ python scraper.py
 
 ## GitHub Actions
 
-Scheduled scraping commits `diskprices.db` + `data/products.json`. To re-filter
-and re-export without scraping (accessory purge while ZenRows is down):
-**Actions → Scrape Disk Prices → Run workflow → enable `export_only`**.
+Scheduled scraping commits `diskprices.db` + `data/products.json`.
+
+### Pause ZenRows / scraping (no credit burn)
+
+While ZenRows is paused (e.g. HTTP 402), set a **repository variable** so cron
+takes the export-only path automatically:
+
+1. GitHub → **Settings** → **Secrets and variables** → **Actions** → **Variables**
+2. **New repository variable**: name `ZENROWS_PAUSED` (or `SCRAPE_PAUSED`), value `true`
+3. Cron and default dispatch then skip all scrapers, still run `export_json.py` + commit
+4. To unpause: set the variable to `false` or delete it
+5. Emergency full scrape while paused: **Run workflow** → enable **`force_scrape`**
+
+Manual one-shot without the variable: **Actions → Scrape Disk Prices → Run workflow → enable `export_only`**.
 See [docs/DATA_SOURCES.md](docs/DATA_SOURCES.md#export-only-no-scrape).
 
 ## License
