@@ -4,6 +4,10 @@
 Primary SEA path after BuyWhere / official affiliate APIs stalled.
 Requires ZENROWS_API_KEY (same secret as Amazon). Soft-fails by default
 (SEA_SOFT_FAIL=1) so a Lazada outage does not block Amazon export.
+
+Reliability knobs (post-#9): 180s client / 170s ZenRows timeout, 4 retries,
+slower inter-query pacing, softer empty fail-fast — Lazada ajax under
+Adaptive Stealth was timing out at 90–120s in GHA.
 """
 
 from __future__ import annotations
@@ -166,14 +170,16 @@ def search_catalog(session: requests.Session, keyword: str, page: int = 1) -> li
         "isFirstRequest": "true" if page == 1 else "false",
     }
     url = f"{SEARCH_BASE}?{urlencode(params, quote_via=quote_plus)}"
+    # Client timeout must exceed ZenRows `timeout` param; Adaptive Stealth
+    # often needs >90s on Lazada ajax. Retries absorb intermittent read timeouts.
     resp = zenrows_get(
         session,
         url,
         headers=HEADERS,
-        timeout=120,
-        retries=2,
+        timeout=180,
+        retries=4,
         mode="auto",
-        extra_params={"proxy_country": "sg"},
+        extra_params={"proxy_country": "sg", "timeout": "170"},
     )
     if resp is None:
         print(f"  no response for '{keyword}' page {page}")
@@ -246,12 +252,14 @@ def main() -> None:
             products = process_products(items, default_platform=PLATFORM, default_seller=PLATFORM)
             page_products.extend(products)
             all_products.extend(products)
-            time.sleep(0.5)
+            time.sleep(1.0)
         print(f"  Total: {len(page_products)}")
         if len(page_products) == 0:
             empty_streak += 1
-            if empty_streak >= 5 and not all_products:
-                print("Fail-fast: first 5 queries returned 0 products.")
+            # Soften fail-fast: ZenRows timeouts can zero the first few queries
+            # without meaning the whole catalog path is dead.
+            if empty_streak >= 8 and not all_products:
+                print("Fail-fast: first 8 queries returned 0 products.")
                 break
         else:
             empty_streak = 0
