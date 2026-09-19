@@ -7,3 +7,12 @@ body {
   background-color: #131921;
   color: #fff;
 }
+
+/* Hide scrollbars on horizontal chip rows */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
