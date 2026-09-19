@@ -28,7 +28,6 @@ from scrape_common import (
     sea_soft_exit,
     using_proxy,
     zenrows_get,
-    zenrows_quota_exceeded,
 )
 
 # Shorter list for ZenRows cost/latency (full STORAGE_QUERIES still available).
@@ -55,11 +54,6 @@ SEA_QUERIES = [
 ]
 
 PLATFORM = "Lazada"
-
-
-class QuotaExceeded(RuntimeError):
-    """ZenRows AUTH004 / HTTP 402."""
-
 SEARCH_BASE = "https://www.lazada.sg/catalog/"
 HEADERS = {
     "User-Agent": (
@@ -190,9 +184,6 @@ def search_catalog(session: requests.Session, keyword: str, page: int = 1) -> li
     if resp is None:
         print(f"  no response for '{keyword}' page {page}")
         return []
-    if zenrows_quota_exceeded(resp):
-        print(f"  ZenRows quota exceeded (HTTP {resp.status_code}): {resp.text[:200]}")
-        raise QuotaExceeded("ZENROWS usage exceeded (AUTH004)")
     if resp.status_code != 200:
         print(f"  HTTP {resp.status_code} for '{keyword}' page {page}: {resp.text[:200]}")
         return []

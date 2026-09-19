@@ -425,16 +425,6 @@ def zenrows_get(
     return None
 
 
-
-def zenrows_quota_exceeded(resp: requests.Response | None) -> bool:
-    """True when ZenRows returns AUTH004 / HTTP 402 usage exceeded."""
-    if resp is None:
-        return False
-    if resp.status_code == 402:
-        return True
-    text = (resp.text or "")[:300]
-    return "AUTH004" in text or "usage limit" in text.lower()
-
 def sea_soft_exit(message: str) -> None:
     """Log ERROR then soft-exit (0) for SEA scrapers in the first week.
 
