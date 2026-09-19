@@ -128,145 +128,26 @@ def is_ssd(title):
     return False
 
 
-KNOWN_ACCESSORY_ASINS = frozenset({
-    "B0BV5V4TVS",  # MAIWO enclosure + SD/CD box reader
-    "B0BJV2Q8JD",  # MAIWO enclosure
-    "B08RVC6F9Y",  # Sabrent enclosure
-    "B0GRVR1WDM",  # Hard drive enclosure
-    "B07Y9BLTBP",  # UGREEN HDD case
-    "B0F9W6HHGL",  # Crucial SSD carrying case
-    "B0G532FXPV",  # SanDisk case
-    "B0GGYLC272",  # T7/Passport case
-    "B0F594GGD9",  # Capacity sticker labels / tray caddy
-    "B09NN1MMDY",  # Kurojin SSD/HDD stand + cloner
-    "B0BDLZQCJY",  # M.2 docking station / adapter
-    "B0GK746VBQ",  # SSK cloner / dual bay dock
-})
-
-
-def _asin_from_url(url: str) -> str | None:
-    m = re.search(r"/dp/([A-Z0-9]{10})", url or "", re.I)
-    return m.group(1).upper() if m else None
-
-
 def is_real_storage(title):
-    """Return True only for actual HDD/SSD products (not accessories).
-
-    Prefer phrase / word-boundary denies so short tokens like box/bay/cable do
-    not false-negative real drives (WD My Book, multi-bay NAS, cable-included
-    SSDs, Xbox game drives). Stale accessory rows are also purged on export.
-    """
     t = title.lower()
     if not re.search(r'\d+\s*tb|\d+\s*gb', t):
         return False
-
-    strong = bool(re.search(
-        r'\b(hdd|ssds?|nvme|hard\s*drives?|hard\s*disks?|solid\s*state)\b', t
-    ))
-
-    # Always deny clear accessories even when the title mentions HDD/SSD.
-    always_deny = [
-        r'\benclosure\b',
-        r'\bdock(?:ing)?(?:\s*station)?\b',
-        r'\bcaddy\b',
-        r'\bclon(?:e|er|ing)\b',
-        r'\bduplicator\b',
-        r'\bcard\s*reader\b',
-        r'\busb\s*flash(?:\s*drive)?\b',
-        r'\bflash\s*drive\b',
-        r'\bpendrive\b',
-        r'\bpen\s*drive\b',
-        r'\bthumb\s*drive\b',
-        r'\bmemory\s*stick\b',
-        r'\bmicrosd\b',
-        r'\bmicro[\s-]?sd\b',
-        r'\bsd\s*cards?\b',
-        r'\bmemory\s*cards?\b',
-        r'\btf\s*cards?\b',
-        r'\bddr[345]\b',
-        r'\b(?:so)?dimm\b',
-        r'\boptical\b',
-        r'\b(?:dvd|blu-?ray)\b',
-        r'\bcarrying\s*case\b',
-        r'\bstorage\s*case\b',
-        r'\btravel\s*case\b',
-        r'\bhdd\s*case\b',
-        r'\bhard\s*drive\s*case\b',
-        r'\bcase\s*compatible\b',
-        r'\bpouch\b',
-        r'\bsleeve\b',
-        r'\bsticker\b',
-        r'\blabel\b',
-        r'\bdecal\b',
-        r'\bhdd\s*stand\b',
-        r'\b(?:ssd\s*/\s*hdd|hdd\s*/\s*ssd)\s*stand\b',
-        r'\bmounting\s*kit\b',
-        r'\binstallation\s*kit\b',
-        r'\bbracket\s*kit\b',
-        r'\btool\s*kit\b',
-        r'\bhdd\s*enclosure\b',
-        r'\bprotector\b',
-        r'\bskin\b',
-        r'\bwrap\b',
-        r'\btray\b',
-        r'\brail\b',
-        r'\bbracket\b',
-        r'\bconverter\b',
-        r'\b(?:sata|nvme|m\.2|hdd|ssd)\s+to\s+usb\b',
-        r'\bto\s+usb[\s-]*c?\s*adapter\b',
+    accessory_kw = [
+        'case', 'enclosure', 'stand', 'cable', 'adapter', 'mount', 'bracket',
+        'dock', 'pouch', 'bag', 'box', 'sleeve', 'protector', 'sticker', 'label',
+        'decal', 'skin', 'wrap', 'cover', 'tray', 'caddy', 'bay', 'rail',
+        'installation kit', 'mounting kit', 'bracket kit', 'tool kit',
+        'carrying case', 'storage case', 'travel case',
+        'hdd stand', 'hdd enclosure', 'hdd case', 'hdd carrying case',
     ]
-    if any(re.search(p, t) for p in always_deny):
+    if any(kw in t for kw in accessory_kw):
         return False
-
-    # Ambiguous short tokens: only deny without a strong storage product marker
-    # (avoids Xbox / My Book / N-bay NAS / cable-included SSD false negatives).
-    if not strong:
-        ambiguous = [
-            r'\bbox\b',
-            r'\bbay\b',
-            r'\bcable\b',
-            r'\bcase\b',
-            r'\bstand\b',
-            r'\bbag\b',
-            r'\bcover\b',
-            r'\bmount\b',
-            r'\bheatsink\b',
-            r'\bcooler\b',
-            r'\badapter\b',
-        ]
-        if any(re.search(p, t) for p in ambiguous):
-            return False
-
     storage_kw = [
         'hdd', 'hard drive', 'hard disk', 'ssd', 'solid state', 'nvme',
         'sata', 'storage', 'internal', 'external', 'portable', 'desktop',
         'enterprise', 'nas', 'data center', 'server', 'drive',
     ]
     return any(kw in t for kw in storage_kw)
-
-
-def deactivate_non_storage(conn: sqlite3.Connection | None = None) -> int:
-    """Mark accessory / non-storage rows inactive. Returns rows deactivated."""
-    own = conn is None
-    if own:
-        conn = sqlite3.connect(DB_PATH)
-    c = conn.cursor()
-    c.execute('SELECT id, title, url, COALESCE(is_active, 1) FROM products')
-    deactivated = 0
-    for row_id, title, url, active in c.fetchall():
-        if not active:
-            continue
-        asin = _asin_from_url(url)
-        drop = (asin in KNOWN_ACCESSORY_ASINS) or (not is_real_storage(title or ''))
-        if drop:
-            c.execute('UPDATE products SET is_active=0 WHERE id=?', (row_id,))
-            deactivated += 1
-    conn.commit()
-    if own:
-        conn.close()
-    return deactivated
-
-
 
 
 def process_products(items, default_platform='Amazon.sg', default_seller=None):
