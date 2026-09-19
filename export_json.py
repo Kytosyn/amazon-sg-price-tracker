@@ -10,8 +10,10 @@ from scrape_common import (
     KNOWN_ACCESSORY_ASINS,
     _asin_from_url,
     deactivate_non_storage,
+    infer_protocols,
     init_db,
     is_real_storage,
+    primary_protocol,
 )
 
 DB_PATH = "./diskprices.db"
@@ -47,6 +49,7 @@ def export_to_json():
         if asin in KNOWN_ACCESSORY_ASINS or not is_real_storage(title or ''):
             skipped += 1
             continue
+        protocols = infer_protocols(title or '', asin=asin)
         products.append({
             'platform': row[0],
             'title': title,
@@ -62,6 +65,8 @@ def export_to_json():
             'review_count': row[11],
             'seller': row[12],
             'timestamp': row[13],
+            'protocols': protocols,
+            'protocol': primary_protocol(protocols),
         })
 
     conn.close()
