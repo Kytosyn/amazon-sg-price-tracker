@@ -24,19 +24,36 @@ jobs:
       - name: Install dependencies
         run: pip install requests beautifulsoup4 lxml
 
-      - name: Run scraper
+      - name: Run Amazon scraper
         id: scrape
         env:
           SCRAPERAPI_KEY: ${{ secrets.SCRAPERAPI_KEY }}
           ZENROWS_API_KEY: ${{ secrets.ZENROWS_API_KEY }}
         run: |
           set -o pipefail
-          echo "Starting scraper..."
+          echo "Starting Amazon scraper..."
           python scraper.py 2>&1 | tee scraper_output.log
 
-      - name: Show scraper output
+      - name: Show Amazon scraper output
         if: always()
         run: cat scraper_output.log || echo "No log"
+
+      - name: Run BuyWhere importer
+        id: buywhere
+        env:
+          BUYWHERE_API_KEY: ${{ secrets.BUYWHERE_API_KEY }}
+        run: |
+          set -o pipefail
+          if [ -z "${BUYWHERE_API_KEY}" ]; then
+            echo "BUYWHERE_API_KEY not set — skipping BuyWhere multi-platform import."
+            exit 0
+          fi
+          echo "Starting BuyWhere importer..."
+          python buywhere_scraper.py 2>&1 | tee buywhere_output.log
+
+      - name: Show BuyWhere output
+        if: always()
+        run: cat buywhere_output.log || echo "No BuyWhere log (skipped or not run)"
 
       - name: Export to JSON
         run: python export_json.py
@@ -71,5 +88,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: scraper-logs
-          path: scraper_output.log
+          path: |
+            scraper_output.log
+            buywhere_output.log
           retention-days: 7
+          if-no-files-found: ignore
