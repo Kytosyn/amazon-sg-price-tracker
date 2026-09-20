@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react'
+import { affiliateUrl, affiliateRel, hasAmazonAssociateTag } from '../lib/affiliate'
 
 const LOCAL_DATA_URL = '/products.json'
 const REMOTE_DATA_URL =
@@ -104,9 +105,9 @@ function DiskPriceCard({ product }) {
 
   return (
     <a
-      href={product.url}
+      href={affiliateUrl(product.url, product.platform)}
       target="_blank"
-      rel="noopener noreferrer"
+      rel={affiliateRel(product.url, product.platform)}
       className="block bg-white/5 rounded-lg px-3 py-2.5 border border-white/10 hover:border-[#4ade80]/50 hover:bg-white/10 transition-all group"
     >
       <div className="flex items-start gap-2.5">
@@ -584,6 +585,12 @@ export default function DiskPrices() {
             })}{' '}
             SGT
           </div>
+        )}
+
+        {hasAmazonAssociateTag() && (
+          <p className="mt-3 text-center text-[10px] text-slate-600 max-w-md mx-auto leading-relaxed">
+            As an Amazon Associate I earn from qualifying purchases.
+          </p>
         )}
       </main>
     </div>
