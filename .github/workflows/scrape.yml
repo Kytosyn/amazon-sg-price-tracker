@@ -235,5 +235,5 @@ jobs:
             buywhere_output.log
             shopee_output.log
             lazada_output.log
-          retention-days: 7
+          retention-days: 3
           if-no-files-found: ignore
