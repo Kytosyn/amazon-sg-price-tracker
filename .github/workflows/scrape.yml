@@ -41,6 +41,8 @@ jobs:
         env:
           ZENROWS_PAUSED: ${{ vars.ZENROWS_PAUSED }}
           SCRAPE_PAUSED: ${{ vars.SCRAPE_PAUSED }}
+          # Presence check only — never echoed. Lets Shopee Apify run while ZenRows is paused.
+          APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
         run: |
           EXPORT_ONLY="${{ inputs.export_only }}"
           FORCE="${{ inputs.force_scrape }}"
@@ -59,10 +61,25 @@ jobs:
             REASON="ZENROWS_PAUSED/SCRAPE_PAUSED (set force_scrape=true to override)"
           fi
 
+          # Shopee: Apify is independent of ZenRows. When paused but APIFY_TOKEN
+          # is set (and not export_only), still run shopee_scraper.py (Apify path).
+          # Amazon / Lazada stay skipped while paused.
+          RUN_SHOPEE=false
+          if [ "$SKIP" != "true" ]; then
+            RUN_SHOPEE=true
+          elif [ "$EXPORT_ONLY" != "true" ] && [ -n "${APIFY_TOKEN}" ]; then
+            RUN_SHOPEE=true
+            echo "ZENROWS_PAUSED/SCRAPE_PAUSED but APIFY_TOKEN set — Shopee Apify path will still run (Amazon/Lazada skipped)."
+          fi
+
           echo "skip_scrape=$SKIP" >> "$GITHUB_OUTPUT"
           echo "paused=$PAUSED" >> "$GITHUB_OUTPUT"
+          echo "run_shopee=$RUN_SHOPEE" >> "$GITHUB_OUTPUT"
           if [ "$SKIP" = "true" ]; then
-            echo "skip_scrape=true ($REASON) — export-only path (no Amazon/ZenRows HTTP)."
+            echo "skip_scrape=true ($REASON) — no Amazon/ZenRows/Lazada HTTP."
+            if [ "$RUN_SHOPEE" = "true" ]; then
+              echo "Exception: run_shopee=true (Apify)."
+            fi
             echo "Will run export_json.py (init_db → deactivate_non_storage → write data/products.json)."
           else
             if [ "$PAUSED" = "true" ] && [ "$FORCE" = "true" ]; then
@@ -87,29 +104,42 @@ jobs:
         if: ${{ always() && steps.mode.outputs.skip_scrape != 'true' }}
         run: cat scraper_output.log || echo "No Amazon log"
 
-      # --- SEA (Shopee / Lazada) via ZenRows — soft-fail first week ---
+      # --- SEA (Shopee Apify / Lazada ZenRows) — soft-fail first week ---
       # Amazon remains the hard fail. These steps use continue-on-error + SEA_SOFT_FAIL=1
       # so one platform outage still lets the other + export ship.
-      - name: Run Shopee ZenRows scraper
+      # Shopee prefers Apify (APIFY_TOKEN); ZenRows is optional fallback.
+      # Shopee: Apify Actor lergassy/shopee-scraper by default when APIFY_TOKEN is set;
+      # ZenRows remains optional fallback (SHOPEE_PROVIDER=zenrows or auto without Apify).
+      # Runs even when ZENROWS_PAUSED if APIFY_TOKEN is present (see resolve step).
+      - name: Run Shopee scraper (Apify / ZenRows)
         id: shopee_zenrows
-        if: ${{ steps.mode.outputs.skip_scrape != 'true' }}
+        if: ${{ steps.mode.outputs.run_shopee == 'true' }}
         continue-on-error: true
         env:
+          APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
           ZENROWS_API_KEY: ${{ secrets.ZENROWS_API_KEY }}
           SCRAPERAPI_KEY: ${{ secrets.SCRAPERAPI_KEY }}
           SEA_SOFT_FAIL: "1"
+          # Optional repo vars; empty → Python defaults (auto / 100).
+          SHOPEE_PROVIDER: ${{ vars.SHOPEE_PROVIDER }}
+          APIFY_SHOPEE_MAX_ITEMS: ${{ vars.APIFY_SHOPEE_MAX_ITEMS }}
         run: |
           set -o pipefail
-          if [ -z "${ZENROWS_API_KEY}" ]; then
-            echo "ZENROWS_API_KEY not set — skipping Shopee ZenRows scrape."
+          if [ -z "${APIFY_TOKEN}" ] && [ -z "${ZENROWS_API_KEY}" ]; then
+            echo "APIFY_TOKEN and ZENROWS_API_KEY both unset — skipping Shopee scrape."
+            echo "Add GitHub secret APIFY_TOKEN (preferred) or ZENROWS_API_KEY."
             exit 0
           fi
-          echo "Starting Shopee ZenRows scraper..."
+          if [ -n "${APIFY_TOKEN}" ]; then
+            echo "Starting Shopee scraper (Apify default when APIFY_TOKEN set; provider=${SHOPEE_PROVIDER})..."
+          else
+            echo "Starting Shopee scraper (ZenRows fallback; no APIFY_TOKEN)..."
+          fi
           python shopee_scraper.py 2>&1 | tee shopee_zenrows_output.log
 
-      - name: Show Shopee ZenRows output
-        if: ${{ always() && steps.mode.outputs.skip_scrape != 'true' }}
-        run: cat shopee_zenrows_output.log || echo "No Shopee ZenRows log (skipped or not run)"
+      - name: Show Shopee scraper output
+        if: ${{ always() && steps.mode.outputs.run_shopee == 'true' }}
+        run: cat shopee_zenrows_output.log || echo "No Shopee log (skipped or not run)"
 
       - name: Run Lazada ZenRows scraper
         id: lazada_zenrows
