@@ -80,7 +80,11 @@ APIFY_API_BASE = "https://api.apify.com/v2"
 # so Apify only runs when intended.
 DEFAULT_APIFY_MAX_ITEMS = 100
 APIFY_COST_PER_ITEM_USD = 0.01  # observed; logged as estimate only
-APIFY_WAIT_FOR_FINISH_SEC = 300
+APIFY_WAIT_FOR_FINISH_SEC = 300  # first attempt via POST waitForFinish
+APIFY_POLL_INTERVAL_SEC = 5
+APIFY_POLL_MAX_SEC = 12 * 60  # total wall clock after POST returns non-terminal
+APIFY_TERMINAL_STATUSES = frozenset({"SUCCEEDED", "FAILED", "TIMED-OUT", "ABORTED"})
+APIFY_SUCCESS_STATUSES = frozenset({"SUCCEEDED"})
 APIFY_PRICE_CENTS_DIVISOR = 100  # Actor price is integer SGD cents
 
 # ZenRows / unofficial search_items path uses Shopee micros.
@@ -430,13 +434,124 @@ def search_items(session: requests.Session, keyword: str, newest: int = 0, limit
     return _parse_response_items(resp, keyword, "html/js_render")
 
 
+def _apify_auth_params(token: str) -> dict[str, str]:
+    """Query-string token auth — never log the value."""
+    return {"token": token}
+
+
+def abort_apify_run(session: requests.Session, token: str, run_id: str) -> None:
+    """Best-effort abort of a still-running Actor run (orphan-spend guard)."""
+    if not run_id or run_id == "?":
+        return
+    abort_url = f"{APIFY_API_BASE}/actor-runs/{run_id}/abort"
+    try:
+        resp = session.post(
+            abort_url,
+            params=_apify_auth_params(token),
+            timeout=30,
+        )
+    except requests.RequestException as e:
+        print(f"Apify abort request failed for run id={run_id}: {e}")
+        return
+    if resp.status_code not in (200, 201):
+        print(f"Apify abort HTTP {resp.status_code} for run id={run_id}: {resp.text[:200]}")
+        return
+    try:
+        payload = resp.json()
+    except ValueError:
+        print(f"Apify abort accepted (non-JSON) for run id={run_id}")
+        return
+    data = payload.get("data") if isinstance(payload, dict) else None
+    status = data.get("status") if isinstance(data, dict) else "?"
+    usage = data.get("usageTotalUsd") if isinstance(data, dict) else None
+    print(
+        f"Apify abort requested for run id={run_id} "
+        f"status={status} usageTotalUsd={usage if usage is not None else 'n/a'}"
+    )
+
+
+def poll_apify_run(
+    session: requests.Session,
+    token: str,
+    run_id: str,
+    *,
+    initial_status: str,
+    max_wait_sec: int = APIFY_POLL_MAX_SEC,
+    interval_sec: int = APIFY_POLL_INTERVAL_SEC,
+) -> dict | None:
+    """Poll GET /v2/actor-runs/{{id}} until terminal or timeout.
+
+    Does not treat READY/RUNNING as failure — those are in-progress.
+    Returns the final run object dict, or None on hard poll failure.
+    """
+    status = (initial_status or "?").upper()
+    print(f"Apify poll start: run id={run_id} status={status} max_wait_sec={max_wait_sec}")
+    if status in APIFY_TERMINAL_STATUSES:
+        return None  # caller already has the run object
+
+    deadline = time.monotonic() + max_wait_sec
+    last_status = status
+    get_url = f"{APIFY_API_BASE}/actor-runs/{run_id}"
+    while time.monotonic() < deadline:
+        time.sleep(interval_sec)
+        try:
+            resp = session.get(
+                get_url,
+                params=_apify_auth_params(token),
+                timeout=60,
+            )
+        except requests.RequestException as e:
+            print(f"Apify poll GET failed for run id={run_id}: {e}")
+            continue
+        if resp.status_code != 200:
+            print(f"Apify poll HTTP {resp.status_code} for run id={run_id}: {resp.text[:200]}")
+            continue
+        try:
+            payload = resp.json()
+        except ValueError:
+            print(f"Apify poll non-JSON for run id={run_id}: {resp.text[:200]}")
+            continue
+        data = payload.get("data") if isinstance(payload, dict) else None
+        if not isinstance(data, dict):
+            print(f"Apify poll unexpected payload for run id={run_id}")
+            continue
+        status = (data.get("status") or "?").upper()
+        if status != last_status:
+            usage = data.get("usageTotalUsd")
+            print(
+                f"Apify status: {last_status} → {status} "
+                f"(run id={run_id}, usageTotalUsd={usage if usage is not None else 'n/a'})"
+            )
+            last_status = status
+        if status in APIFY_TERMINAL_STATUSES:
+            usage = data.get("usageTotalUsd")
+            print(
+                f"Apify poll terminal: run id={run_id} status={status} "
+                f"usageTotalUsd={usage if usage is not None else 'n/a'} "
+                f"dataset={data.get('defaultDatasetId') or 'n/a'}"
+            )
+            return data
+
+    print(
+        f"Apify poll timed out after ~{max_wait_sec}s "
+        f"(run id={run_id}, last_status={last_status})"
+    )
+    return {"id": run_id, "status": last_status, "_poll_timed_out": True}
+
+
 def fetch_apify_items(
     session: requests.Session,
     token: str,
     search_terms: list[str],
     max_items: int,
 ) -> list[dict]:
-    """Run Apify Actor once and return normalized product dicts (soft-fail caller)."""
+    """Run Apify Actor once and return normalized product dicts (soft-fail caller).
+
+    POST with waitForFinish as a first attempt; if the run is still READY/RUNNING
+    (or any non-terminal status), poll GET /v2/actor-runs/{{id}} until SUCCEEDED /
+    FAILED / TIMED-OUT / ABORTED (max ~12 min). On give-up while non-terminal,
+    best-effort abort the run to avoid orphan spend.
+    """
     actor_input = {
         "mode": "search",
         "country": "SG",
@@ -450,12 +565,12 @@ def fetch_apify_items(
         f"maxItems={max_items} enrichProducts=false "
         f"est_cost_usd≈${est_usd:.2f} (@~${APIFY_COST_PER_ITEM_USD}/item observed)"
     )
-    # Token only in query string / Authorization — never print it.
+    # Token only in query string — never print it.
     run_url = f"{APIFY_API_BASE}/acts/{APIFY_ACTOR_ID}/runs"
     try:
         resp = session.post(
             run_url,
-            params={"token": token, "waitForFinish": APIFY_WAIT_FOR_FINISH_SEC},
+            params={**_apify_auth_params(token), "waitForFinish": APIFY_WAIT_FOR_FINISH_SEC},
             json=actor_input,
             timeout=APIFY_WAIT_FOR_FINISH_SEC + 60,
         )
@@ -475,20 +590,58 @@ def fetch_apify_items(
 
     data = payload.get("data") if isinstance(payload, dict) else None
     if not isinstance(data, dict):
-        print(f"Apify run unexpected payload keys: {list(payload)[:10] if isinstance(payload, dict) else type(payload)}")
+        print(
+            f"Apify run unexpected payload keys: "
+            f"{list(payload)[:10] if isinstance(payload, dict) else type(payload)}"
+        )
         return []
 
     run_id = data.get("id") or "?"
-    status = data.get("status") or "?"
+    status = (data.get("status") or "?").upper()
     usage_usd = data.get("usageTotalUsd")
     dataset_id = data.get("defaultDatasetId")
     print(
         f"Apify run id={run_id} status={status} "
+        f"(after waitForFinish={APIFY_WAIT_FOR_FINISH_SEC}s) "
         f"usageTotalUsd={usage_usd if usage_usd is not None else 'n/a'} "
         f"dataset={dataset_id or 'n/a'}"
     )
-    if status not in ("SUCCEEDED", "SUCCEEDED_WITH_WARNINGS"):
-        print(f"Apify run did not succeed (status={status}); statusMessage={data.get('statusMessage')!r}")
+
+    # waitForFinish may return early while still READY/RUNNING — poll, do not fail.
+    if status not in APIFY_TERMINAL_STATUSES:
+        print(
+            f"Apify run not terminal yet (status={status}); "
+            f"polling GET /actor-runs/{run_id} …"
+        )
+        polled = poll_apify_run(
+            session,
+            token,
+            run_id,
+            initial_status=status,
+        )
+        if polled is None:
+            # Should not happen when status was non-terminal; treat as failure.
+            print(f"Apify poll returned no data for run id={run_id}")
+            abort_apify_run(session, token, run_id)
+            return []
+        data = polled
+        status = (data.get("status") or "?").upper()
+        usage_usd = data.get("usageTotalUsd")
+        dataset_id = data.get("defaultDatasetId")
+        if data.get("_poll_timed_out") or status not in APIFY_TERMINAL_STATUSES:
+            print(
+                f"Apify give-up: run id={run_id} still non-terminal "
+                f"(status={status}); aborting to avoid orphan spend"
+            )
+            abort_apify_run(session, token, run_id)
+            return []
+
+    if status not in APIFY_SUCCESS_STATUSES:
+        print(
+            f"Apify run did not succeed (status={status}); "
+            f"statusMessage={data.get('statusMessage')!r} "
+            f"usageTotalUsd={usage_usd if usage_usd is not None else 'n/a'}"
+        )
         return []
     if not dataset_id:
         print("Apify run missing defaultDatasetId")
@@ -498,7 +651,7 @@ def fetch_apify_items(
     try:
         items_resp = session.get(
             items_url,
-            params={"token": token, "format": "json", "clean": "true"},
+            params={**_apify_auth_params(token), "format": "json", "clean": "true"},
             timeout=120,
         )
     except requests.RequestException as e:
@@ -535,6 +688,8 @@ def fetch_apify_items(
             f"est≈${len(raw_items) * APIFY_COST_PER_ITEM_USD:.2f} "
             f"(@~${APIFY_COST_PER_ITEM_USD}/item)"
         )
+    elif usage_usd is not None:
+        print(f"Apify cost: ${float(usage_usd):.4f} total (0 raw items)")
     return out
 
 
