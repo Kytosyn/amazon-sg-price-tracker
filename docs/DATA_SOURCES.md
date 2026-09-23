@@ -6,7 +6,7 @@ DiskPrices SG ingests into the same `diskprices.db` → `export_json.py` →
 | Path | Script | Status | Secrets |
 | --- | --- | --- | --- |
 | **Amazon.sg** (HTML) | `scraper.py` | **Required** — ZenRows / ScraperAPI (or direct); hard fail-closed | `ZENROWS_API_KEY` or `SCRAPERAPI_KEY` |
-| **Shopee.sg** (HTML search + XHR via ZenRows) | `shopee_scraper.py` | **Primary SEA** — `/search?keyword=…` with js_render + json_response (captures search_items XHR) | `ZENROWS_API_KEY` (same as Amazon) |
+| **Shopee.sg** (Apify Actor; ZenRows optional) | `shopee_scraper.py` | **Primary SEA** — Apify `lergassy/shopee-scraper` when `APIFY_TOKEN` set; ZenRows HTML/XHR fallback | `APIFY_TOKEN` (preferred); optional `ZENROWS_API_KEY` |
 | **Lazada.sg** (catalog ajax via ZenRows) | `lazada_scraper.py` | **Primary SEA** — `/catalog/?q=…&ajax=true` through ZenRows | `ZENROWS_API_KEY` (same as Amazon) |
 | **BuyWhere** (multi-platform) | `buywhere_scraper.py` | **Parked / broken** — Eddy: BuyWhere is dead; kept as optional skip | `BUYWHERE_API_KEY` |
 | **Shopee Affiliate** | `shopee_affiliate_scraper.py` | **Parked / dead end** — official GraphQL stalled; optional skip | `SHOPEE_AFFILIATE_APP_ID`, `SHOPEE_AFFILIATE_SECRET` |
@@ -44,22 +44,34 @@ Amazon.sg blocks many datacenter IPs (including GitHub-hosted runners). Direct
 
 ---
 
-## 2. Shopee.sg + Lazada.sg via ZenRows (primary multi-platform path)
+## 2. Shopee.sg (Apify) + Lazada.sg (ZenRows)
 
 BuyWhere and the official Shopee/Lazada affiliate Open APIs are **parked /
-dead ends** for now. The working SEA path is scraping public search JSON
-**only through ZenRows** (no direct unofficial mobile API from Actions IPs).
+dead ends** for now. Shopee prefers Apify; Lazada still uses ZenRows.
 
-### Shopee (`shopee_scraper.py`)
+### Shopee (`shopee_scraper.py`) — Apify default
 
 | Item | Detail |
 | --- | --- |
+| Provider | `SHOPEE_PROVIDER=auto` (default): **Apify** if `APIFY_TOKEN` set, else ZenRows if `ZENROWS_API_KEY`. Force with `apify` / `zenrows`. |
+| Actor | `lergassy/shopee-scraper` (API id `lergassy~shopee-scraper`) |
+| Input | `{ mode: "search", country: "SG", searchTerms: SEA_QUERIES, maxItems: N, enrichProducts: false }` |
+| Cap | `APIFY_SHOPEE_MAX_ITEMS` (default **100**, hard max 200). Same `SEA_QUERIES` list as before; Actor distributes under the total cap. |
+| Cost | Spike run `eYXIMez1kh3nCa6gd` (2026-09-24): **~$0.01/item** ($0.46 / 50 items). Cron is `*/30` — keep the cap low or leave pause vars on until spend is acceptable. |
+| Mapping | `title`, `price` (**integer SGD cents ÷ 100**), `originalPrice`, `url`, `shopId`/`itemId`, `imageUrl` → existing product dict for `process_products` / `save_products` |
+| Platform label | `Shopee` |
+| Filters | `is_real_storage` + `parse_capacity` |
+| Fail behaviour | Soft-fail: log `ERROR`, exit 0 (`SEA_SOFT_FAIL=1` default). Apify errors / 0 products soft-exit; Amazon stays hard-fail. |
+| Pause exception | When `ZENROWS_PAUSED`/`SCRAPE_PAUSED` is true but `APIFY_TOKEN` is set, **Shopee Apify still runs**; Amazon/Lazada stay skipped. |
+
+#### ZenRows fallback (optional)
+
+| Item | Detail |
+| --- | --- |
+| When | `SHOPEE_PROVIDER=zenrows`, or `auto` without `APIFY_TOKEN` |
 | Endpoint (primary) | `GET https://shopee.sg/search?keyword=…` via ZenRows `js_render` + `premium_proxy` + `proxy_country=sg` + `wait=5000` + `json_response` + `custom_headers` — parse captured `search_items` XHR |
 | Endpoint (probe) | `GET https://shopee.sg/api/v4/search/search_items?…` with `premium_proxy` + `proxy_country=sg` + `custom_headers` only (no `js_render` / `mode=auto`) |
-| Mapping | `item_basic.name` / `price` (÷100000 → SGD) / image key / `i.{shopid}.{itemid}` URL |
-| Platform label | `Shopee` |
-| Filters | `is_real_storage` + `parse_capacity` over SEA query list |
-| Fail behaviour | Soft-fail first week: log `ERROR`, exit 0 (`SEA_SOFT_FAIL=1` default). Set `SEA_SOFT_FAIL=0` to harden to exit 1. |
+| Mapping | `item_basic.name` / `price` (÷100000 micros → SGD) / image key / `i.{shopid}.{itemid}` URL |
 
 ### Lazada (`lazada_scraper.py`)
 
@@ -82,7 +94,10 @@ dead ends** for now. The working SEA path is scraping public search JSON
 ### Local spike
 
 ```bash
-export ZENROWS_API_KEY=...
+export APIFY_TOKEN=...           # preferred Shopee path
+# export ZENROWS_API_KEY=...     # Lazada + optional Shopee fallback
+# export SHOPEE_PROVIDER=auto
+# export APIFY_SHOPEE_MAX_ITEMS=100
 export SEA_SOFT_FAIL=0   # optional: hard-fail locally while debugging
 python shopee_scraper.py
 python lazada_scraper.py
@@ -136,16 +151,25 @@ Signup: [lazada.sg/lazada-affiliate-program](https://www.lazada.sg/lazada-affili
 
 `.github/workflows/scrape.yml`:
 
-1. **Resolve scrape mode** — skip scrapers when `export_only` is true, or when
-   repo variable `ZENROWS_PAUSED` / `SCRAPE_PAUSED` is `true` (unless
-   `force_scrape` is set on workflow_dispatch)
+1. **Resolve scrape mode** — skip Amazon/Lazada/ZenRows scrapers when
+   `export_only` is true, or when repo variable `ZENROWS_PAUSED` /
+   `SCRAPE_PAUSED` is `true` (unless `force_scrape` is set on workflow_dispatch).
+   **Exception:** if `APIFY_TOKEN` is set while paused (and not `export_only`),
+   Shopee Apify still runs (`run_shopee=true`).
 2. Always run Amazon (`scraper.py`) when not skipped — **hard** fail-closed
-3. If `ZENROWS_API_KEY` set: run `shopee_scraper.py` then `lazada_scraper.py`
+3. If `APIFY_TOKEN` and/or `ZENROWS_API_KEY` set: run `shopee_scraper.py`
+   (Apify preferred); if `ZENROWS_API_KEY` and not paused: run `lazada_scraper.py`
    (`SEA_SOFT_FAIL=1`, `continue-on-error: true`)
 4. Optionally run BuyWhere / Shopee Affiliate / Lazada Affiliate when their
    secrets are set (otherwise skip with a notice — parked paths)
 5. `export_json.py` → commit `diskprices.db` + `data/products.json` when non-empty
    (always runs, including pause / export_only)
+
+**Secret to add:** GitHub → Settings → Secrets → Actions → `APIFY_TOKEN`
+(Apify API token). Optional vars: `SHOPEE_PROVIDER`, `APIFY_SHOPEE_MAX_ITEMS`.
+
+**Bright Data:** still pending zone provisioning (`web_unlocker` not found on
+account); not wired. Revisit after a Web Unlocker zone exists.
 
 ### Pause ZenRows (repo variable)
 
@@ -153,9 +177,11 @@ Stop cron from calling Amazon/ZenRows without disabling the workflow:
 
 1. GitHub → **Settings** → **Secrets and variables** → **Actions** → **Variables**
 2. Create `ZENROWS_PAUSED` = `true` (alias: `SCRAPE_PAUSED`)
-3. Scheduled runs (and dispatch without override) take the export-only path
-4. Unpause: set to `false` or delete the variable
-5. Emergency scrape while paused: dispatch with **`force_scrape`**
+3. Scheduled runs (and dispatch without override) skip Amazon/Lazada/ZenRows
+4. If `APIFY_TOKEN` secret is set, **Shopee Apify still runs** while paused
+   (spend-aware: set `APIFY_SHOPEE_MAX_ITEMS` or remove the secret to fully idle)
+5. Unpause: set to `false` or delete the variable
+6. Emergency full scrape while paused: dispatch with **`force_scrape`**
 
 ### Export-only (no scrape)
 
@@ -174,7 +200,8 @@ whenever a full scrape runs.
 ## Local refresh
 
 ```bash
-export ZENROWS_API_KEY=...
+export ZENROWS_API_KEY=...   # Amazon + Lazada
+export APIFY_TOKEN=...       # Shopee (preferred)
 python scraper.py
 python shopee_scraper.py
 python lazada_scraper.py
