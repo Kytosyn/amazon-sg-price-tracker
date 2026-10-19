@@ -75,9 +75,8 @@ PLATFORM = "Shopee"
 # Apify Actor (store: lergassy/shopee-scraper). Spike run eYXIMez1kh3nCa6gd.
 APIFY_ACTOR_ID = "lergassy~shopee-scraper"
 APIFY_API_BASE = "https://api.apify.com/v2"
-# Spike: ~$0.01/item. Default 100 ≈ $1/run ceiling; cron is every 30m so keep
-# APIFY_SHOPEE_MAX_ITEMS low or leave ZENROWS_PAUSED/SCRAPE_PAUSED handling
-# so Apify only runs when intended.
+# APIFY_SHOPEE_MAX_ITEMS is a TOTAL budget per run (split across terms).
+# Scheduled runs only call Apify when repo var APIFY_SHOPEE_SCHEDULE=true.
 DEFAULT_APIFY_MAX_ITEMS = 100
 APIFY_COST_PER_ITEM_USD = 0.01  # observed; logged as estimate only
 APIFY_WAIT_FOR_FINISH_SEC = 300  # first attempt via POST waitForFinish
@@ -86,6 +85,14 @@ APIFY_POLL_MAX_SEC = 12 * 60  # total wall clock after POST returns non-terminal
 APIFY_TERMINAL_STATUSES = frozenset({"SUCCEEDED", "FAILED", "TIMED-OUT", "ABORTED"})
 APIFY_SUCCESS_STATUSES = frozenset({"SUCCEEDED"})
 APIFY_PRICE_CENTS_DIVISOR = 100  # Actor price is integer SGD cents
+# Actor list price (store page, 2026-10): $0.004 per search card, $0.007 per detail.
+APIFY_LIST_PRICE_PER_CARD_USD = 0.004
+# NOTE: the Actor's ``maxItems`` caps rows *per keyword/URL*, not per run.
+# Before this fix we sent maxItems=100 with 19 terms → up to 1,900 charged rows
+# per run, on every */30 cron tick. We now split the total budget across terms
+# and also pass Apify's run-level ``maxItems`` + ``maxTotalChargeUsd`` caps.
+DEFAULT_APIFY_MAX_CHARGE_USD = 0.50
+APIFY_MAX_CHARGE_CEILING_USD = 2.00
 
 # ZenRows / unofficial search_items path uses Shopee micros.
 ZENROWS_PRICE_DIVISOR = 100_000
@@ -149,6 +156,36 @@ def apify_max_items() -> int:
     return n
 
 
+def apify_max_charge_usd() -> float:
+    """Run-level spend ceiling sent to Apify as ``maxTotalChargeUsd``."""
+    raw = os.environ.get("APIFY_SHOPEE_MAX_CHARGE_USD", "").strip()
+    if not raw:
+        return DEFAULT_APIFY_MAX_CHARGE_USD
+    try:
+        val = float(raw)
+    except ValueError:
+        print(f"Invalid APIFY_SHOPEE_MAX_CHARGE_USD={raw!r}; using {DEFAULT_APIFY_MAX_CHARGE_USD}")
+        return DEFAULT_APIFY_MAX_CHARGE_USD
+    if val <= 0:
+        return DEFAULT_APIFY_MAX_CHARGE_USD
+    return min(val, APIFY_MAX_CHARGE_CEILING_USD)
+
+
+def apify_per_term_items(max_total: int, n_terms: int) -> tuple[int, int]:
+    """Split a *total* item budget across terms.
+
+    The Actor's ``maxItems`` is per search term, so we pass
+    ``floor(total / terms)`` (min 1) so worst-case rows ≤ total. If the budget is smaller than the number of
+    terms, only the first ``max_total`` terms are used. Returns
+    ``(per_term, terms_used)``.
+    """
+    if n_terms <= 0 or max_total <= 0:
+        return 0, 0
+    terms_used = min(n_terms, max_total)
+    per_term = max(1, max_total // terms_used)
+    return per_term, terms_used
+
+
 def require_zenrows() -> None:
     if not os.environ.get("ZENROWS_API_KEY", "").strip():
         sea_soft_exit(
@@ -193,7 +230,10 @@ def _price_sgd(*candidates: Any) -> float:
 
 
 def _apify_price_sgd(*candidates: Any) -> float:
-    """Apify Actor price is integer SGD cents → divide by 100."""
+    """Apify Actor price is integer SGD cents → divide by 100.
+
+    A value with a fractional part (e.g. ``290.29``) is already SGD and is kept.
+    """
     for raw in candidates:
         if raw is None or raw == "":
             continue
@@ -202,6 +242,10 @@ def _apify_price_sgd(*candidates: Any) -> float:
         except (TypeError, ValueError):
             continue
         if val <= 0:
+            continue
+        if not val.is_integer():
+            if val < 50_000:
+                return val
             continue
         # Cents (29029 → 290.29). If already a small decimal, keep as-is.
         if val >= 100:  # clearly cents (or larger)
@@ -262,6 +306,14 @@ def normalize_apify_item(item: dict) -> dict | None:
         return None
     if item.get("type") and item.get("type") != "product":
         return None
+    if item.get("partial") is True:
+        return None
+    country = str(item.get("country") or "").strip().upper()
+    if country and country != "SG":
+        return None
+    currency = str(item.get("currency") or "").strip().upper()
+    if currency and currency != "SGD":
+        return None
     title = (item.get("title") or "").strip()
     url = (item.get("url") or "").strip()
     shop_id = item.get("shopId") or item.get("shopid")
@@ -278,7 +330,10 @@ def normalize_apify_item(item: dict) -> dict | None:
     if not title or not url or price <= 0:
         return None
     seller = PLATFORM
-    if shop_id is not None and str(shop_id).strip():
+    shop_name = str(item.get("shopName") or "").strip()
+    if shop_name:
+        seller = shop_name
+    elif shop_id is not None and str(shop_id).strip():
         seller = f"{PLATFORM}:{shop_id}"
     return {
         "title": title,
@@ -552,25 +607,41 @@ def fetch_apify_items(
     FAILED / TIMED-OUT / ABORTED (max ~12 min). On give-up while non-terminal,
     best-effort abort the run to avoid orphan spend.
     """
+    per_term, terms_used = apify_per_term_items(max_items, len(search_terms))
+    terms = search_terms[:terms_used]
+    max_charge = apify_max_charge_usd()
     actor_input = {
         "mode": "search",
         "country": "SG",
-        "searchTerms": search_terms,
-        "maxItems": max_items,
+        "searchTerms": terms,
+        # Per keyword (Actor semantics), derived from the total budget.
+        "maxItems": per_term,
         "enrichProducts": False,
+        # Shop name / review count cost an extra page fetch per card (not billed,
+        # but slows runs toward our poll timeout). Cards carry price/title/url.
+        "includeShopAndReviews": False,
+        "sortBy": "relevancy",
     }
-    est_usd = max_items * APIFY_COST_PER_ITEM_USD
+    worst_rows = per_term * len(terms)
     print(
-        f"Shopee Apify: actor={APIFY_ACTOR_ID} terms={len(search_terms)} "
-        f"maxItems={max_items} enrichProducts=false "
-        f"est_cost_usd≈${est_usd:.2f} (@~${APIFY_COST_PER_ITEM_USD}/item observed)"
+        f"Shopee Apify: actor={APIFY_ACTOR_ID} terms={len(terms)}/{len(search_terms)} "
+        f"maxItems/term={per_term} (total budget {max_items}, worst-case rows {worst_rows}) "
+        f"enrichProducts=false run caps: maxItems={max_items} "
+        f"maxTotalChargeUsd=${max_charge:.2f} "
+        f"list≈${max_items * APIFY_LIST_PRICE_PER_CARD_USD:.2f}"
     )
     # Token only in query string — never print it.
     run_url = f"{APIFY_API_BASE}/acts/{APIFY_ACTOR_ID}/runs"
     try:
         resp = session.post(
             run_url,
-            params={**_apify_auth_params(token), "waitForFinish": APIFY_WAIT_FOR_FINISH_SEC},
+            params={
+                **_apify_auth_params(token),
+                "waitForFinish": APIFY_WAIT_FOR_FINISH_SEC,
+                # Platform-level caps (pay-per-event): stop charging past these.
+                "maxItems": max_items,
+                "maxTotalChargeUsd": f"{max_charge:.2f}",
+            },
             json=actor_input,
             timeout=APIFY_WAIT_FOR_FINISH_SEC + 60,
         )
@@ -580,6 +651,11 @@ def fetch_apify_items(
 
     if resp.status_code not in (200, 201):
         print(f"Apify run HTTP {resp.status_code}: {resp.text[:300]}")
+        if resp.status_code == 403 and "hard limit" in (resp.text or "").lower():
+            print(
+                "Apify account monthly usage hard limit reached — no run started, "
+                "no spend. Raise the limit in Apify Console or wait for the cycle reset."
+            )
         return []
 
     try:

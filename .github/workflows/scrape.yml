@@ -13,6 +13,14 @@ on:
         description: 'Override ZENROWS_PAUSED/SCRAPE_PAUSED and run a full scrape (emergency only; burns ZenRows credits)'
         type: boolean
         default: false
+      shopee_only:
+        description: 'Run ONLY the Shopee Apify scraper (no Amazon/Lazada/ZenRows), then export + commit'
+        type: boolean
+        default: false
+      apify_max_items:
+        description: 'Shopee Apify TOTAL item budget for this run (split across search terms; blank = repo var / default 100, max 200)'
+        type: string
+        default: ''
 
 permissions:
   contents: write
@@ -43,9 +51,13 @@ jobs:
           SCRAPE_PAUSED: ${{ vars.SCRAPE_PAUSED }}
           # Presence check only — never echoed. Lets Shopee Apify run while ZenRows is paused.
           APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
+          # Scheduled (cron */30) runs call paid Apify only when this var is "true".
+          APIFY_SHOPEE_SCHEDULE: ${{ vars.APIFY_SHOPEE_SCHEDULE }}
+          EVENT_NAME: ${{ github.event_name }}
         run: |
           EXPORT_ONLY="${{ inputs.export_only }}"
           FORCE="${{ inputs.force_scrape }}"
+          SHOPEE_ONLY="${{ inputs.shopee_only }}"
           PAUSED=false
           if [ "${ZENROWS_PAUSED}" = "true" ] || [ "${SCRAPE_PAUSED}" = "true" ]; then
             PAUSED=true
@@ -56,6 +68,9 @@ jobs:
           if [ "$EXPORT_ONLY" = "true" ]; then
             SKIP=true
             REASON="export_only input"
+          elif [ "$SHOPEE_ONLY" = "true" ]; then
+            SKIP=true
+            REASON="shopee_only input"
           elif [ "$PAUSED" = "true" ] && [ "$FORCE" != "true" ]; then
             SKIP=true
             REASON="ZENROWS_PAUSED/SCRAPE_PAUSED (set force_scrape=true to override)"
@@ -70,6 +85,14 @@ jobs:
           elif [ "$EXPORT_ONLY" != "true" ] && [ -n "${APIFY_TOKEN}" ]; then
             RUN_SHOPEE=true
             echo "ZENROWS_PAUSED/SCRAPE_PAUSED but APIFY_TOKEN set — Shopee Apify path will still run (Amazon/Lazada skipped)."
+          fi
+          # Spend guard: cron ticks every 30m; Apify bills per row. Unless the
+          # repo var APIFY_SHOPEE_SCHEDULE=true, scheduled runs never call Apify
+          # (use workflow_dispatch with shopee_only=true for manual runs).
+          if [ "$RUN_SHOPEE" = "true" ] && [ "$EVENT_NAME" = "schedule" ] \
+             && [ -n "${APIFY_TOKEN}" ] && [ "${APIFY_SHOPEE_SCHEDULE}" != "true" ]; then
+            RUN_SHOPEE=false
+            echo "Scheduled run: Shopee Apify skipped (set repo var APIFY_SHOPEE_SCHEDULE=true to enable)."
           fi
 
           echo "skip_scrape=$SKIP" >> "$GITHUB_OUTPUT"
@@ -122,7 +145,9 @@ jobs:
           SEA_SOFT_FAIL: "1"
           # Optional repo vars; empty → Python defaults (auto / 100).
           SHOPEE_PROVIDER: ${{ vars.SHOPEE_PROVIDER }}
-          APIFY_SHOPEE_MAX_ITEMS: ${{ vars.APIFY_SHOPEE_MAX_ITEMS }}
+          # Dispatch input wins over repo var; empty → Python default (100 total).
+          APIFY_SHOPEE_MAX_ITEMS: ${{ inputs.apify_max_items || vars.APIFY_SHOPEE_MAX_ITEMS }}
+          APIFY_SHOPEE_MAX_CHARGE_USD: ${{ vars.APIFY_SHOPEE_MAX_CHARGE_USD }}
         run: |
           set -o pipefail
           if [ -z "${APIFY_TOKEN}" ] && [ -z "${ZENROWS_API_KEY}" ]; then
