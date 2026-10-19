@@ -245,10 +245,29 @@ jobs:
               sys.exit(1)
           PY
 
+      # Warning only (not a hard fail) while ZenRows is paused.
+      - name: Staleness check (newest lastUpdated > 48h)
+        run: python pipeline_checks.py staleness --max-age-hours 48
+
+      # Export-only ticks rewrite exportedAt every 30m; skip the commit unless
+      # something other than exportedAt changed in products.json.
+      - name: Detect meaningful products.json change
+        id: diff
+        run: python pipeline_checks.py meaningful-diff
+
+      # commit_message is passed literally (no shell), so $(date ...) never
+      # expanded. Build the stamp in a step instead.
+      - name: Build commit message
+        id: msg
+        if: ${{ steps.diff.outputs.changed == 'true' }}
+        run: |
+          echo "message=Update prices: $(date -u +%Y-%m-%d-%H%M) UTC (run ${{ github.run_id }})" >> "$GITHUB_OUTPUT"
+
       - name: Commit and push
+        if: ${{ steps.diff.outputs.changed == 'true' }}
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "Update prices: $(date +%Y-%m-%d-%H%M)"
+          commit_message: ${{ steps.msg.outputs.message }}
           file_pattern: "diskprices.db data/products.json"
           commit_user_name: "github-actions"
           commit_user_email: "actions@github.com"
