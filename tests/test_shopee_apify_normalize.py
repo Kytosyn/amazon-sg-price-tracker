@@ -10,6 +10,8 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from shopee_scraper import (
     APIFY_SUCCESS_STATUSES,
     APIFY_TERMINAL_STATUSES,
+    apify_max_charge_usd,
+    apify_per_term_items,
     normalize_apify_item,
 )
 
@@ -49,6 +51,53 @@ class TestNormalizeApifyItem(unittest.TestCase):
         assert got is not None
         self.assertTrue(got["url"].startswith("https://shopee.sg/"))
         self.assertIn("i.1.2", got["url"])
+
+
+class TestApifyInputMapping(unittest.TestCase):
+    def test_per_term_split_never_exceeds_total(self):
+        for total, terms in ((20, 19), (100, 19), (5, 19), (200, 19), (1, 1)):
+            per, used = apify_per_term_items(total, terms)
+            self.assertGreaterEqual(per, 1)
+            self.assertLessEqual(per * used, max(total, used))
+            self.assertLessEqual(used, terms)
+        self.assertEqual(apify_per_term_items(20, 19), (1, 19))
+        self.assertEqual(apify_per_term_items(100, 19), (5, 19))
+        self.assertEqual(apify_per_term_items(5, 19), (1, 5))
+
+    def test_max_charge_default_and_ceiling(self):
+        os.environ.pop("APIFY_SHOPEE_MAX_CHARGE_USD", None)
+        self.assertEqual(apify_max_charge_usd(), 0.50)
+        os.environ["APIFY_SHOPEE_MAX_CHARGE_USD"] = "99"
+        try:
+            self.assertEqual(apify_max_charge_usd(), 2.00)
+        finally:
+            os.environ.pop("APIFY_SHOPEE_MAX_CHARGE_USD", None)
+
+
+class TestNormalizeGuards(unittest.TestCase):
+    base = {
+        "type": "product",
+        "title": "Seagate IronWolf 8TB NAS HDD",
+        "price": 32900,
+        "url": "https://shopee.sg/x-i.9.8",
+        "shopId": 9,
+        "itemId": 8,
+    }
+
+    def test_decimal_price_kept_as_sgd(self):
+        got = normalize_apify_item({**self.base, "price": 290.29})
+        assert got is not None
+        self.assertAlmostEqual(got["price"], 290.29)
+
+    def test_skips_partial_and_non_sg(self):
+        self.assertIsNone(normalize_apify_item({**self.base, "partial": True}))
+        self.assertIsNone(normalize_apify_item({**self.base, "country": "MY", "currency": "MYR"}))
+        self.assertIsNotNone(normalize_apify_item({**self.base, "country": "SG", "currency": "SGD"}))
+
+    def test_shop_name_preferred_for_seller(self):
+        got = normalize_apify_item({**self.base, "shopName": "Seagate Official Store"})
+        assert got is not None
+        self.assertEqual(got["seller"], "Seagate Official Store")
 
 
 class TestApifyStatusConstants(unittest.TestCase):
