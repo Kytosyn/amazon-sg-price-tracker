@@ -20,7 +20,7 @@ from typing import Any
 
 import requests
 
-from scrape_common import STORAGE_QUERIES, init_db, process_products, save_products
+from scrape_common import STORAGE_QUERIES, init_db, process_products, redact_secrets, save_products
 
 GRAPHQL_URL = "https://open-api.affiliate.shopee.com.sg/graphql"
 SIGNUP_URL = "https://affiliate.shopee.sg/"
@@ -147,7 +147,7 @@ def graphql_product_offer(
     headers = _auth_header(app_id, secret, body)
     resp = session.post(GRAPHQL_URL, data=body.encode("utf-8"), headers=headers, timeout=40)
     if resp.status_code != 200:
-        print(f"  HTTP {resp.status_code} for '{keyword}' page {page}: {resp.text[:300]}")
+        print(f"  HTTP {resp.status_code} for '{keyword}' page {page}: {redact_secrets(resp.text[:300])}")
         return []
     try:
         data = resp.json()
@@ -155,7 +155,7 @@ def graphql_product_offer(
         print(f"  Non-JSON response for '{keyword}' page {page}")
         return []
     if data.get("errors"):
-        print(f"  GraphQL errors for '{keyword}' page {page}: {data['errors']}")
+        print(f"  GraphQL errors for '{keyword}' page {page}: {redact_secrets(data['errors'])}")
         return []
     connection = (data.get("data") or {}).get("productOfferV2") or {}
     nodes = connection.get("nodes") or []

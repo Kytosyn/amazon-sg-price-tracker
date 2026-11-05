@@ -16,6 +16,7 @@ from scrape_common import (
     init_db,
     process_products,
     proxied_url,
+    redact_secrets,
     save_products,
     using_proxy,
 )
@@ -100,7 +101,7 @@ def scrape_page(session, query, page=1, retries=3):
             print(f"  HTTP {resp.status_code} on '{query}' page {page}")
             return items
         except Exception as e:
-            print(f"  request error: {e}")
+            print(f"  request error: {redact_secrets(e)}")
             time.sleep(5)
     return items
 
@@ -110,7 +111,7 @@ def main():
     try:
         session.get(proxied_url("https://www.amazon.sg"), headers=HEADERS, timeout=30)
     except Exception as e:
-        print(f"Warmup failed: {e}")
+        print(f"Warmup failed: {redact_secrets(e)}")
     time.sleep(2)
 
     queries = STORAGE_QUERIES

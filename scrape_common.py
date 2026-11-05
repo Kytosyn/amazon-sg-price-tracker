@@ -8,11 +8,73 @@ import re
 import sqlite3
 import time
 from datetime import datetime
-from urllib.parse import quote, urlencode
+from urllib.parse import parse_qsl, quote, urlencode, urlsplit, urlunsplit
 
 import requests
 
 DB_PATH = "./diskprices.db"
+
+# ─── Secret redaction for logs ────────────────────────────────
+#
+# Outbound requests go through proxy URLs that embed the API key in the query
+# string (ZenRows / ScraperAPI) or a token param (Apify). `requests` exception
+# messages include the full request URL, so a network error printed to stdout
+# would leak the key into CI logs — public for this repository. Redact known
+# secret values before anything is logged.
+
+SENSITIVE_ENV_KEYS = (
+    "SCRAPERAPI_KEY",
+    "ZENROWS_API_KEY",
+    "APIFY_TOKEN",
+    "BUYWHERE_API_KEY",
+    "SHOPEE_AFFILIATE_APP_ID",
+    "SHOPEE_AFFILIATE_SECRET",
+    "LAZADA_AFFILIATE_APP_KEY",
+    "LAZADA_AFFILIATE_APP_SECRET",
+    "LAZADA_AFFILIATE_ACCESS_TOKEN",
+    "ADMIN_API_KEY",
+)
+
+REDACTED = "***REDACTED***"
+
+
+def _secret_values() -> tuple:
+    vals = []
+    for key in SENSITIVE_ENV_KEYS:
+        val = (os.environ.get(key) or "").strip()
+        if len(val) >= 4:
+            vals.append(val)
+    return tuple(vals)
+
+
+def redact_secrets(text) -> str:
+    """Replace any known secret value in ``text`` with a placeholder."""
+    if not text:
+        return text
+    s = str(text)
+    for val in _secret_values():
+        if val and val in s:
+            s = s.replace(val, REDACTED)
+    return s
+
+
+def redact_url(url: str) -> str:
+    """Strip credential-bearing query params from a URL for safe logging."""
+    if not url:
+        return url
+    try:
+        parts = urlsplit(str(url))
+        if not parts.query:
+            return str(url)
+        kept = [
+            (k, v)
+            for k, v in parse_qsl(parts.query, keep_blank_values=True)
+            if k.lower() not in ("apikey", "api_key", "key", "token", "access_token")
+        ]
+        query = urlencode(kept)
+        return urlunsplit((parts.scheme, parts.netloc, parts.path, query, parts.fragment))
+    except Exception:
+        return redact_secrets(url)
 
 # Shared HDD/SSD keyword list (same as Amazon scraper).
 STORAGE_QUERIES = [
@@ -479,8 +541,9 @@ def proxied_url(url: str, *, mode: str | None = None, extra_params: dict | None 
     """
     scraperapi = os.environ.get("SCRAPERAPI_KEY", "").strip()
     if scraperapi:
+        # HTTPS: the key is sent in the query string; never over cleartext HTTP.
         return (
-            f"http://api.scraperapi.com?api_key={quote(scraperapi)}"
+            f"https://api.scraperapi.com?api_key={quote(scraperapi)}"
             f"&url={quote(url, safe='')}&country_code=sg"
         )
     zenrows = os.environ.get("ZENROWS_API_KEY", "").strip()
@@ -543,7 +606,7 @@ def zenrows_get(
             last_err = e
             time.sleep((attempt + 1) * 3)
     if last_err:
-        print(f"  zenrows_get failed for {url[:80]}…: {last_err}")
+        print(f"  zenrows_get failed for {redact_url(url[:80])}…: {redact_secrets(last_err)}")
     return None
 
 
