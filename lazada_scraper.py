@@ -24,6 +24,7 @@ from scrape_common import (
     STORAGE_QUERIES,
     init_db,
     process_products,
+    redact_secrets,
     save_products,
     sea_soft_exit,
     using_proxy,
@@ -191,14 +192,14 @@ def search_catalog(session: requests.Session, keyword: str, page: int = 1) -> li
         print(f"  no response for '{keyword}' page {page}")
         return []
     if zenrows_quota_exceeded(resp):
-        print(f"  ZenRows quota exceeded (HTTP {resp.status_code}): {resp.text[:200]}")
+        print(f"  ZenRows quota exceeded (HTTP {resp.status_code}): {redact_secrets(resp.text[:200])}")
         raise QuotaExceeded("ZENROWS usage exceeded (AUTH004)")
     if resp.status_code != 200:
-        print(f"  HTTP {resp.status_code} for '{keyword}' page {page}: {resp.text[:200]}")
+        print(f"  HTTP {resp.status_code} for '{keyword}' page {page}: {redact_secrets(resp.text[:200])}")
         return []
     data = _parse_payload(resp)
     if data is None:
-        snippet = resp.text[:120].replace("\n", " ")
+        snippet = redact_secrets(resp.text[:120]).replace("\n", " ")
         print(f"  Non-JSON/unparseable for '{keyword}': {snippet}")
         return []
     raw_items = _extract_list_items(data)
@@ -274,7 +275,7 @@ def main() -> None:
             else:
                 empty_streak = 0
     except QuotaExceeded as e:
-        print(f"Aborting Lazada early: {e}")
+        print(f"Aborting Lazada early: {redact_secrets(e)}")
 
     deduped: dict[str, dict] = {}
     for p in all_products:

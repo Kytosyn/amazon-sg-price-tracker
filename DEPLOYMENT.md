@@ -17,6 +17,10 @@
 4. Environment variables:
    - `DATABASE_URL=sqlite:///./prices.db`
    - `DISCORD_WEBHOOK_URL=your_webhook`
+   - `ADMIN_API_KEY=<random secret>` — required for `POST /api/diskprices/scrape`
+     and `POST /api/diskprices/search`; unset ⇒ those endpoints return 503
+   - `CORS_ALLOW_ORIGINS=https://disk.kytosyn.com` — browser origins allowed to
+     call the API (defaults to `http://localhost:3000,https://disk.kytosyn.com`)
 
 ### Option B: Render
 1. Create Web Service

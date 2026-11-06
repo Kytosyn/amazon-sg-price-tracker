@@ -38,6 +38,7 @@ from scrape_common import (
     STORAGE_QUERIES,
     init_db,
     process_products,
+    redact_secrets,
     save_products,
     sea_soft_exit,
     using_proxy,
@@ -396,10 +397,10 @@ def _items_from_zenrows_json_response(payload: Any) -> list[dict]:
 
 def _parse_response_items(resp: requests.Response, keyword: str, label: str) -> list[dict]:
     if zenrows_quota_exceeded(resp):
-        print(f"  ZenRows quota exceeded ({label} HTTP {resp.status_code}): {resp.text[:200]}")
+        print(f"  ZenRows quota exceeded ({label} HTTP {resp.status_code}): {redact_secrets(resp.text[:200])}")
         raise QuotaExceeded("ZENROWS usage exceeded (AUTH004)")
     if resp.status_code != 200:
-        print(f"  HTTP {resp.status_code} ({label}) for '{keyword}': {resp.text[:200]}")
+        print(f"  HTTP {resp.status_code} ({label}) for '{keyword}': {redact_secrets(resp.text[:200])}")
         return []
     text = resp.text or ""
     try:
@@ -421,7 +422,7 @@ def _parse_response_items(resp: requests.Response, keyword: str, label: str) -> 
     err = None
     if isinstance(data, dict):
         err = data.get("error") or data.get("error_msg") or data.get("message") or data.get("code")
-    print(f"  empty/malformed ({label}) for '{keyword}' (error={err})")
+    print(f"  empty/malformed ({label}) for '{keyword}' (error={redact_secrets(err)})")
     return []
 
 
@@ -506,10 +507,10 @@ def abort_apify_run(session: requests.Session, token: str, run_id: str) -> None:
             timeout=30,
         )
     except requests.RequestException as e:
-        print(f"Apify abort request failed for run id={run_id}: {e}")
+        print(f"Apify abort request failed for run id={run_id}: {redact_secrets(e)}")
         return
     if resp.status_code not in (200, 201):
-        print(f"Apify abort HTTP {resp.status_code} for run id={run_id}: {resp.text[:200]}")
+        print(f"Apify abort HTTP {resp.status_code} for run id={run_id}: {redact_secrets(resp.text[:200])}")
         return
     try:
         payload = resp.json()
@@ -556,15 +557,15 @@ def poll_apify_run(
                 timeout=60,
             )
         except requests.RequestException as e:
-            print(f"Apify poll GET failed for run id={run_id}: {e}")
+            print(f"Apify poll GET failed for run id={run_id}: {redact_secrets(e)}")
             continue
         if resp.status_code != 200:
-            print(f"Apify poll HTTP {resp.status_code} for run id={run_id}: {resp.text[:200]}")
+            print(f"Apify poll HTTP {resp.status_code} for run id={run_id}: {redact_secrets(resp.text[:200])}")
             continue
         try:
             payload = resp.json()
         except ValueError:
-            print(f"Apify poll non-JSON for run id={run_id}: {resp.text[:200]}")
+            print(f"Apify poll non-JSON for run id={run_id}: {redact_secrets(resp.text[:200])}")
             continue
         data = payload.get("data") if isinstance(payload, dict) else None
         if not isinstance(data, dict):
@@ -646,11 +647,11 @@ def fetch_apify_items(
             timeout=APIFY_WAIT_FOR_FINISH_SEC + 60,
         )
     except requests.RequestException as e:
-        print(f"Apify run request failed: {e}")
+        print(f"Apify run request failed: {redact_secrets(e)}")
         return []
 
     if resp.status_code not in (200, 201):
-        print(f"Apify run HTTP {resp.status_code}: {resp.text[:300]}")
+        print(f"Apify run HTTP {resp.status_code}: {redact_secrets(resp.text[:300])}")
         if resp.status_code == 403 and "hard limit" in (resp.text or "").lower():
             print(
                 "Apify account monthly usage hard limit reached — no run started, "
@@ -661,7 +662,7 @@ def fetch_apify_items(
     try:
         payload = resp.json()
     except ValueError:
-        print(f"Apify run non-JSON: {resp.text[:200]}")
+        print(f"Apify run non-JSON: {redact_secrets(resp.text[:200])}")
         return []
 
     data = payload.get("data") if isinstance(payload, dict) else None
@@ -731,15 +732,15 @@ def fetch_apify_items(
             timeout=120,
         )
     except requests.RequestException as e:
-        print(f"Apify dataset fetch failed: {e}")
+        print(f"Apify dataset fetch failed: {redact_secrets(e)}")
         return []
     if items_resp.status_code != 200:
-        print(f"Apify dataset HTTP {items_resp.status_code}: {items_resp.text[:300]}")
+        print(f"Apify dataset HTTP {items_resp.status_code}: {redact_secrets(items_resp.text[:300])}")
         return []
     try:
         raw_items = items_resp.json()
     except ValueError:
-        print(f"Apify dataset non-JSON: {items_resp.text[:200]}")
+        print(f"Apify dataset non-JSON: {redact_secrets(items_resp.text[:200])}")
         return []
     if not isinstance(raw_items, list):
         print(f"Apify dataset expected list, got {type(raw_items).__name__}")
@@ -794,7 +795,7 @@ def run_zenrows(session: requests.Session) -> list[dict]:
             else:
                 empty_streak = 0
     except QuotaExceeded as e:
-        print(f"Aborting Shopee early: {e}")
+        print(f"Aborting Shopee early: {redact_secrets(e)}")
     return all_products
 
 
@@ -806,7 +807,7 @@ def run_apify(session: requests.Session) -> list[dict]:
         items = fetch_apify_items(session, token, queries, max_items)
     except Exception as e:
         # Soft-fail path: never raise into hard-fail for SEA.
-        print(f"Apify Shopee error: {type(e).__name__}: {e}")
+        print(f"Apify Shopee error: {type(e).__name__}: {redact_secrets(e)}")
         return []
     return process_products(items, default_platform=PLATFORM, default_seller=PLATFORM)
 

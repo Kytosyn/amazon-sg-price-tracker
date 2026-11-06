@@ -3,12 +3,13 @@ DiskPrices Singapore - Multi-Platform HDD/SSD Price Comparison API
 FastAPI + SQLite
 """
 
-from fastapi import FastAPI, HTTPException, BackgroundTasks
+from fastapi import FastAPI, HTTPException, BackgroundTasks, Depends, Header
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Optional
 import sqlite3
 import asyncio
+import os
 import random
 import time
 from datetime import datetime
@@ -17,8 +18,16 @@ import re
 import requests
 from urllib.parse import quote_plus
 
+try:
+    from auth import is_configured as admin_key_configured
+    from auth import is_valid_admin_key
+except ImportError:  # pragma: no cover - package-style import
+    from .auth import is_configured as admin_key_configured
+    from .auth import is_valid_admin_key
+
 DATABASE_URL = "./diskprices.db"
 AMAZON_SG_BASE = "https://www.amazon.sg"
+MAX_LIMIT = 500
 
 # ─── Database Setup ────────────────────────────────────────────
 
@@ -364,13 +373,46 @@ def get_stats() -> dict:
 
 app = FastAPI(title="DiskPrices Singapore API")
 
+# CORS: default to the known frontend origins instead of "*". Credentials are
+# not used by this API (no cookies/sessions), so allow_credentials stays False.
+DEFAULT_CORS_ORIGINS = "http://localhost:3000,https://disk.kytosyn.com"
+_raw_origins = os.environ.get("CORS_ALLOW_ORIGINS", DEFAULT_CORS_ORIGINS)
+ALLOWED_ORIGINS = [o.strip() for o in _raw_origins.split(",") if o.strip()]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
+    allow_origins=ALLOWED_ORIGINS,
+    allow_credentials=False,
+    allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["*"],
 )
+
+# ─── Admin gate ────────────────────────────────────────────────
+# State-changing endpoints trigger server-side scraping. Require a matching
+# X-API-Key header; fail closed when ADMIN_API_KEY is not configured.
+
+
+def require_admin(x_api_key: str = Header(default="", alias="X-API-Key")):
+    if not admin_key_configured():
+        raise HTTPException(
+            status_code=503,
+            detail="ADMIN_API_KEY is not configured on the server; "
+            "state-changing endpoints are disabled.",
+        )
+    if not is_valid_admin_key(x_api_key):
+        raise HTTPException(status_code=401, detail="Missing or invalid X-API-Key")
+    return True
+
+
+def _clamp_limit(limit: int) -> int:
+    """Bound the page size (public data, but avoid unbounded responses)."""
+    try:
+        n = int(limit)
+    except (TypeError, ValueError):
+        return 100
+    if n < 1:
+        return 1
+    return min(n, MAX_LIMIT)
 
 # ─── API Endpoints ─────────────────────────────────────────────
 
@@ -382,22 +424,22 @@ def list_diskprices(
     sort_by: str = 'cost_per_tb'
 ):
     """List all disk prices with optional filters."""
-    return get_products(platform, is_ssd, limit, sort_by)
+    return get_products(platform, is_ssd, _clamp_limit(limit), sort_by)
 
 @app.get("/api/diskprices/stats")
 def get_diskprices_stats():
     """Get statistics about stored products."""
     return get_stats()
 
-@app.get("/api/diskprices/search")
-def search_diskprices(q: str, background_tasks: BackgroundTasks):
-    """Search all platforms and start scraping in background."""
+@app.post("/api/diskprices/search")
+def search_diskprices(q: str, background_tasks: BackgroundTasks, _admin=Depends(require_admin)):
+    """Search all platforms and start scraping in background. Requires X-API-Key."""
     background_tasks.add_task(scrape_all_platforms, q)
     return {"message": "Search started", "query": q}
 
 @app.post("/api/diskprices/scrape")
-def trigger_scrape(background_tasks: BackgroundTasks):
-    """Trigger a full scrape of all platforms."""
+def trigger_scrape(background_tasks: BackgroundTasks, _admin=Depends(require_admin)):
+    """Trigger a full scrape of all platforms. Requires X-API-Key."""
     background_tasks.add_task(scrape_all_platforms_all_queries)
     return {"message": "Full scrape started"}
 

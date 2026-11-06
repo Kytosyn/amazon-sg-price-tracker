@@ -11,7 +11,7 @@ import time
 import requests
 from collections import Counter
 
-from scrape_common import init_db, process_products, save_products
+from scrape_common import init_db, process_products, redact_secrets, save_products
 
 API_URL = "https://api.buywhere.ai/v1/products/search"
 
@@ -121,7 +121,7 @@ def search_products(session: requests.Session, api_key: str, query: str, limit: 
     try:
         resp = session.get(API_URL, headers=headers, params=params, timeout=40)
     except requests.RequestException as e:
-        print(f"  request error: {e}")
+        print(f"  request error: {redact_secrets(e)}")
         return []
 
     if resp.status_code == 401:
@@ -132,7 +132,7 @@ def search_products(session: requests.Session, api_key: str, query: str, limit: 
         time.sleep(5)
         return []
     if resp.status_code != 200:
-        print(f"  HTTP {resp.status_code} on '{query}': {resp.text[:200]}")
+        print(f"  HTTP {resp.status_code} on '{query}': {redact_secrets(resp.text[:200])}")
         return []
 
     try:
